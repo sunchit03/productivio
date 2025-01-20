@@ -1,5 +1,3 @@
-# PRJ666NAA-G6
-
 # Project Development Workflow
 
 This document outlines the guidelines and conventions to ensure a smooth and consistent development process.
