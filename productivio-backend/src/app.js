@@ -8,6 +8,8 @@ const compression = require('compression');
 // author and version from our package.json file
 const { author, version } = require('../package.json');
 
+const authMiddleware = require('./auth');
+
 const logger = require('./logger');
 const pino = require('pino-http')({
   // Use our default logger instance, which is already configured
@@ -43,6 +45,13 @@ app.get('/', (req, res) => {
     githubUrl: 'https://github.com/sunchit03/PRJ666NAA-G6/tree/main/productivio-backend',
     version,
   });
+});
+
+// Protected routes (require authentication)
+app.use('/protected', authMiddleware);
+
+app.get('/protected/data', (req, res) => {
+  res.status(200).json({ message: 'You have accessed a protected route!' });
 });
 
 // Add 404 middleware to handle any requests for resources that can't be found
