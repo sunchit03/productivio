@@ -9,7 +9,7 @@ const express = require('express');
 const router = express.Router();
 
 // Define our first route, which will be: GET /v1/tasks
-router.get('/tasks', require('./get'));
+router.use('/tasks', require('./get'));
 // Other routes (POST, DELETE, etc.) will go here later on...
 
 module.exports = router;
