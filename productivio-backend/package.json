@@ -11,5 +11,8 @@
     "url": "git+https://github.com/sunchit03/PRJ666NAA-G6/tree/main/productivio-backend"
   },
   "author": "PRJ666NAA-G6",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "prettier": "3.4.2"
+  }
 }
