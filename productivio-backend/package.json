@@ -1,0 +1,15 @@
+{
+  "name": "productivio-backend",
+  "private": true,
+  "version": "0.0.1",
+  "description": "This repository is part of PRJ666 project.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sunchit03/PRJ666NAA-G6/tree/main/productivio-backend"
+  },
+  "author": "PRJ666NAA-G6",
+  "license": "UNLICENSED"
+}
