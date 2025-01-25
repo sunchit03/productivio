@@ -31,6 +31,11 @@ app.use(compression());
 // Define our routes
 app.use('/', require('./routes'));
 
+// Define task routes
+app.use("/api/tasks", require("./routes/api/get"));
+app.use("/api/tasks", require("./routes/api/post"));
+app.use("/api/tasks", require("./routes/api/index"));
+
 // Add 404 middleware to handle any requests for resources that can't be found
 app.use((req, res) => {
   res.status(404).json({
