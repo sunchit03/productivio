@@ -1,14 +1,43 @@
-const pgp = require("pg-promise")();
+const mongoose = require("mongoose");
 require("dotenv").config();
 
-// Database connection settings
-const db = pgp({
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    database: process.env.DB_NAME,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    ssl: process.env.DB_SSL ? { rejectUnauthorized: false } : false, // Required for cloud databases
+const connectDB = async () => {
+    try {
+        await mongoose.connect("mongodb+srv://productivio:IJIstoPkvCViLxQ7@productivio.2ombe.mongodb.net/?retryWrites=true&w=majority&appName=Productivio", {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        console.log("MongoDB Connected");
+    } catch (error) {
+        console.error("MongoDB Connection Failed:", error);
+        process.exit(1);
+    }
+};
+
+module.exports = connectDB;
+
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const uri = "mongodb+srv://productivio:IJIstoPkvCViLxQ7@productivio.2ombe.mongodb.net/?retryWrites=true&w=majority&appName=Productivio";
+
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(uri, {
+    serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+    }
 });
 
-module.exports = db;
+async function run() {
+    try {
+        // Connect the client to the server	(optional starting in v4.7)
+        await client.connect();
+        // Send a ping to confirm a successful connection
+        await client.db("admin").command({ ping: 1 });
+        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    } finally {
+        // Ensures that the client will close when you finish/error
+        await client.close();
+    }
+}
+run().catch(console.dir);

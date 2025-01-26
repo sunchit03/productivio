@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
+const connectDB = require('./config/database');
 
 //const authMiddleware = require('./auth');
 
@@ -15,6 +16,9 @@ const pino = require('pino-http')({
 
 // Create an express app instance we can use to attach middleware and HTTP routes
 const app = express();
+
+//Connect to MongoDB
+connectDB();
 
 // Use pino logging middleware
 app.use(pino);
@@ -30,11 +34,7 @@ app.use(compression());
 
 // Define our routes
 app.use('/', require('./routes'));
-
-// Define task routes
-app.use("/api/tasks", require("./routes/api/get"));
-app.use("/api/tasks", require("./routes/api/post"));
-app.use("/api/tasks", require("./routes/api/index"));
+app.use('/api', require('./routes/api'));
 
 // Add 404 middleware to handle any requests for resources that can't be found
 app.use((req, res) => {
