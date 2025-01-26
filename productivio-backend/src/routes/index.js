@@ -18,6 +18,10 @@ const router = express.Router();
  */
 router.use(`/v1`, authMiddleware, require('./api'));
 
+// Define task routes
+//app.use("/api/tasks", require("../routes/api/get"));
+//app.use("/api/tasks", require("../routes/api/post"));
+//app.use("/api/tasks", require("../routes/api/index"));
 /**
  * Define a simple health check route. If the server is running
  * we'll respond with a 200 OK.  If not, the server isn't healthy.
