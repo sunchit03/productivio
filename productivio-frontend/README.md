@@ -58,11 +58,6 @@ productivio-frontend/
 │   ├── components/             # Reusable global components
 │   │   ├── Button.js           # Reusable button component
 │   │   └── InputField.js       # Reusable input field component (for future)
-│   ├── pages/                  # Route-based files (if App Directory not used)
-│   │   ├── index.js            # Homepage route
-│   │   ├── features.js         # Features page
-│   │   ├── signin.js           # Sign-In page
-│   │   └── signup.js           # Sign-Up page
 │   ├── styles/                 # Styling for the app
 │   │   ├── globals.css         # Global styles (e.g., typography, resets)
 │   │   ├── Navbar.module.css   # Scoped styles for Navbar
@@ -103,3 +98,6 @@ Styling: Tailwind CSS
 State Management: Context API
 API Integration: Axios / Fetch
 Version Control: Git/GitHub
+
+
+
