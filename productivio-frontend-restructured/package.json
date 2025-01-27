@@ -1,0 +1,34 @@
+{
+  "name": "productivio-frontend-restructured",
+  "version": "0.0.1",
+  "private": true,
+  "description": "This repository is part of PRJ666 project.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sunchit03/PRJ666NAA-G6/tree/main/productivio-frontend"
+  },
+  "author": "PRJ666NAA-G6",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@auth0/nextjs-auth0": "^3.5.0",
+    "next": "15.1.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "cross-env": "^7.0.3",
+    "eslint": "^9",
+    "eslint-config-next": "15.1.6",
+    "nodemon": "^3.1.9",
+    "postcss": "^8",
+    "prettier": "^3.1.0",
+    "tailwindcss": "^3.4.1"
+  }
+}
