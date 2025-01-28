@@ -1,8 +1,20 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    username: {type: String, required: true},
-    tasks: [{type: mongoose.Schema.Types.ObjectId, ref:"Task"}]
+  email: { type: String, required: true, unique: true },
+  connectionType: {
+    type: String,
+    required: true,
+    enum: ['Username-Password-Authentication', 'google-oauth2'],
+  },
+  tasks: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Task',
+    },
+  ],
 });
 
-module.exports = mongoose.model("User", userSchema);
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;
