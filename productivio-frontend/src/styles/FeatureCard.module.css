@@ -1,7 +1,0 @@
-.featureCard {
-    transition: transform 0.3s;
-  }
-  .featureCard:hover {
-    transform: scale(1.05);
-  }
-  
