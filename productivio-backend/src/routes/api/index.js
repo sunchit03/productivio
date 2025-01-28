@@ -15,7 +15,12 @@ const router = express.Router();
 
 router.get("/tasks", async (req, res) => {
     try {
-        const tasks = await Task.find().sort({title: 1});
+        const userID = req.query.userId;
+
+        if (!userID){
+            return res.status(400).json({message: "User ID is required."});
+        }
+        const tasks = await Task.find({userID}).sort({title: 1});
         res.status(200).json(tasks);
     } catch (error) {
         res.status(500).json({message: "Error fetching tasks: ", error});
@@ -24,8 +29,8 @@ router.get("/tasks", async (req, res) => {
 
 router.post("/tasks", async(req,res) => {
     try {
-        const {title, description, status, dueDate, userId, priority} = req.body;
-        const newTask = new Task({title, description, status, dueDate, userId, priority});
+        const {title, description, status, dueDate, username, priority} = req.body;
+        const newTask = new Task({title, description, status, dueDate, username, priority});
         await newTask.save();
         res.status(201).json(newTask);
     } catch (error){

@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
 
-console.log("MongoDB URI:", process.env.MONGO_URI);
+console.log("MongoDB URI:", "mongodb+srv://productivio:IJIstoPkvCViLxQ7@productivio.2ombe.mongodb.net/?retryWrites=true&w=majority&appName=Productivio");
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.MONGO_URI, {
+        await mongoose.connect("mongodb+srv://productivio:IJIstoPkvCViLxQ7@productivio.2ombe.mongodb.net/?retryWrites=true&w=majority&appName=Productivio", {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
