@@ -3,7 +3,7 @@
 const express = require('express');
 
 // Our authentication middleware
-const authMiddleware = require('../auth');
+const { checkJwt } = require('../auth');
 
 // version and author from package.json
 const { version, author } = require('../../package.json');
@@ -16,12 +16,8 @@ const router = express.Router();
  * Protect them all with middleware so you have to be authenticated
  * in order to access things.
  */
-router.use(`/v1`, authMiddleware, require('./api'));
+router.use(`/v1`, checkJwt, require('./api'));
 
-// Define task routes
-//app.use("/api/tasks", require("../routes/api/get"));
-//app.use("/api/tasks", require("../routes/api/post"));
-//app.use("/api/tasks", require("../routes/api/index"));
 /**
  * Define a simple health check route. If the server is running
  * we'll respond with a 200 OK.  If not, the server isn't healthy.
