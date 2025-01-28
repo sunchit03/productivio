@@ -1,12 +1,143 @@
-import { withPageAuthRequired } from '@auth0/nextjs-auth0';
+"use client";
 
-export default withPageAuthRequired(function DashboardPage() {
+import { useState } from "react";
+import { useUser } from "@auth0/nextjs-auth0/client";
+import { FaCalendarAlt, FaInbox, FaList, FaSearch, FaSignOutAlt } from "react-icons/fa";
+import { redirect } from "next/navigation";
+
+export default function Dashboard() {
+  const { user, error, isLoading } = useUser();
+
+  // State Variables
+  const [activeMainTab, setActiveMainTab] = useState("inbox"); // Main Sidebar Tabs
+  const [activeInboxTab, setActiveInboxTab] = useState("tasks"); // Inbox Sidebar Tabs
+  const [tasks, setTasks] = useState([]); // General tasks
+  const [lists, setLists] = useState([]); // Dynamic lists
+  const [selectedListId, setSelectedListId] = useState(null); // Currently selected list for tasks
+  const [newTask, setNewTask] = useState(""); // Task input field
+  const [newListName, setNewListName] = useState(""); // List name input
+
+  // Redirect to login if not authenticated
+  if (isLoading) return <p>Loading...</p>;
+  if (!user) {
+    window.location.href = "/api/auth/login";
+    return null;
+  }
+
+  // Add a new list
+  const handleAddList = () => {
+    if (newListName.trim() !== "") {
+      const newList = {
+        id: Date.now().toString(),
+        name: newListName.trim(),
+        tasks: [],
+      };
+      setLists([...lists, newList]);
+      setNewListName(""); // Clear input field
+    }
+  };
+
+  // Add a task to general tasks or a specific list
+  const handleAddTask = () => {
+    if (newTask.trim() !== "") {
+      if (activeInboxTab === "tasks") {
+        setTasks([...tasks, { id: Date.now(), title: newTask.trim(), completed: false }]);
+      } else if (selectedListId) {
+        setLists(
+          lists.map((list) =>
+            list.id === selectedListId
+              ? { ...list, tasks: [...list.tasks, { id: Date.now(), title: newTask.trim(), completed: false }] }
+              : list
+          )
+        );
+      }
+      setNewTask(""); // Clear input field
+    }
+  };
+
+  // Other task-handling functions like `toggleTaskCompletion` and `deleteTask` would go here...
+
+  // Render content for the Inbox tab
+  const renderInboxContent = () => {
+    // Similar to your existing code for rendering tasks, lists, etc.
+  };
+
   return (
-    <>
-        <div>Welcome to your dashboard!</div>
-        <a href="api/auth/logout">
-              Log Out
+    <div className="flex h-screen bg-gray-100">
+      {/* Main Sidebar */}
+      <aside className="w-16 bg-gray-200 p-4 flex flex-col items-center space-y-4">
+        <button
+          className={`p-2 rounded ${
+            activeMainTab === "inbox" ? "bg-blue-500 text-white" : "text-black"
+          }`}
+          onClick={() => setActiveMainTab("inbox")}
+        >
+          <FaInbox />
+        </button>
+        <button
+          className={`p-2 rounded ${
+            activeMainTab === "calendar" ? "bg-blue-500 text-white" : "text-black"
+          }`}
+          onClick={() => setActiveMainTab("calendar")}
+        >
+          <FaCalendarAlt />
+        </button>
+        <button
+          className={`p-2 rounded ${
+            activeMainTab === "search" ? "bg-blue-500 text-white" : "text-black"
+          }`}
+          onClick={() => setActiveMainTab("search")}
+        >
+          <FaSearch />
+        </button>
+        <a href="/api/auth/logout?federated" className="p-2 rounded bg-gray-200 hover:bg-gray-300 text-black">
+          <FaSignOutAlt />
         </a>
-    </>
+      </aside>
+
+      {/* Inbox Sidebar */}
+      {activeMainTab === "inbox" && (
+        <aside className="w-64 bg-white shadow-lg p-4 flex flex-col space-y-4">
+          <h2 className="text-lg font-bold text-black">Inbox Sidebar</h2>
+          <ul className="space-y-2">
+            <li
+              className={`cursor-pointer p-2 rounded ${
+                activeInboxTab === "tasks" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
+              }`}
+              onClick={() => setActiveInboxTab("tasks")}
+            >
+              Tasks
+            </li>
+            <li
+              className={`cursor-pointer p-2 rounded ${
+                activeInboxTab === "lists" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
+              }`}
+              onClick={() => setActiveInboxTab("lists")}
+            >
+              Lists
+            </li>
+            <li
+              className={`cursor-pointer p-2 rounded ${
+                activeInboxTab === "today" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
+              }`}
+              onClick={() => setActiveInboxTab("today")}
+            >
+              Today
+            </li>
+            <li
+              className={`cursor-pointer p-2 rounded ${
+                activeInboxTab === "next7days" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
+              }`}
+              onClick={() => setActiveInboxTab("next7days")}
+            >
+              Next 7 Days
+            </li>
+          </ul>
+        </aside>
+      )}
+
+      {/* Dynamic Content */}
+      <main className="flex-grow bg-gray-50">{renderInboxContent()}</main>
+    </div>
   );
-});
+}

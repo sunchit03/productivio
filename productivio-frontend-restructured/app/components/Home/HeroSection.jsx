@@ -11,9 +11,13 @@ const HeroSection = () => {
         <p className="text-lg text-gray-600 mb-8">
           Simplify your tasks, plan effectively, and achieve your goals with Productivio.
         </p>
-        <button className="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700">
+        <a
+          href="/api/auth/signup"
+          className="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 inline-block text-center"
+        >
           Get Started
-        </button>
+        </a>
+
       </div>
     </section>
   );

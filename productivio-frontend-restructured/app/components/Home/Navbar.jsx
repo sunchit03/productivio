@@ -1,7 +1,6 @@
 'use  client';
 
 import React from 'react';
-import Link from 'next/link';
 import styles from '../../styles/Navbar.module.css';
 
 const Navbar = () => {
@@ -12,12 +11,12 @@ const Navbar = () => {
         <ul className="flex space-x-8">
           <li className="text-gray-700 cursor-pointer hover:text-blue-600">Features</li>
           <li className="text-gray-700 cursor-pointer hover:text-blue-600">
-            <a href="api/auth/login">
+            <a href="/api/auth/login">
               Sign In
             </a>
           </li>
           <li className="text-gray-700 cursor-pointer hover:text-blue-600">
-            <a href="api/auth/signup">
+            <a href="/api/auth/signup">
               Sign Up
             </a>
           </li>
