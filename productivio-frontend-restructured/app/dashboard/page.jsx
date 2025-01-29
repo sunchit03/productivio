@@ -5,8 +5,10 @@
 import { useState, useEffect } from "react";
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0/client";
 import { FaCalendarAlt, FaInbox, FaList, FaSearch, FaSignOutAlt } from "react-icons/fa";
+import { addUserToDatabase, getUserTasks } from "../utils/userAPI";
 import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage"
+import { useRouter } from "next/navigation";
 
 function Dashboard() {
   const { user, error, isLoading } = useUser();
@@ -19,6 +21,20 @@ function Dashboard() {
   const [selectedListId, setSelectedListId] = useState(null); // Currently selected list for tasks
   const [newTask, setNewTask] = useState(""); // Task input field
   const [newListName, setNewListName] = useState(""); // List name input
+
+  useEffect(() => {
+    if (!isLoading && user) {
+      addUserToDatabase(user);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (isLoading) {
+        //getUserTasks(user);
+    }
+  }, [isLoading]);
+
+  const router = useRouter();
 
   // Redirect to login if not authenticated
   if (isLoading) return <Loading />;
