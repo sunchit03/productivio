@@ -84,7 +84,7 @@ function Dashboard() {
   };
 
   const handleLogout = () => {
-    router.push("/api/auth/logout?federated");
+    window.location.href = "/api/auth/logout?federated";
   };
 
   return (
