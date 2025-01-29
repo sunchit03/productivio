@@ -25,7 +25,11 @@ export default function RootLayout({ children }) {
       <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         > 
-        <UserProvider> {children}</UserProvider>
+        <UserProvider>
+          <main id="app" className="d-flex flex-column h-100" data-testid="layout"> 
+            {children}
+          </main>
+        </UserProvider>
       </body>
     </html>
   );

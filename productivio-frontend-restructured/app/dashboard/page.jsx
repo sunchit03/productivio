@@ -1,11 +1,14 @@
+// app/dashboard/page.jsx
+
 "use client";
 
-import { useState } from "react";
-import { useUser } from "@auth0/nextjs-auth0/client";
+import { useState, useEffect } from "react";
+import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0/client";
 import { FaCalendarAlt, FaInbox, FaList, FaSearch, FaSignOutAlt } from "react-icons/fa";
-import { redirect } from "next/navigation";
+import Loading from "../components/Loading";
+import ErrorMessage from "../components/ErrorMessage"
 
-export default function Dashboard() {
+function Dashboard() {
   const { user, error, isLoading } = useUser();
 
   // State Variables
@@ -18,9 +21,11 @@ export default function Dashboard() {
   const [newListName, setNewListName] = useState(""); // List name input
 
   // Redirect to login if not authenticated
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <Loading />;
   if (!user) {
-    window.location.href = "/api/auth/login";
+    useEffect(() => {
+      router.push("/api/auth/login");
+    }, []);
     return null;
   }
 
@@ -62,82 +67,98 @@ export default function Dashboard() {
     // Similar to your existing code for rendering tasks, lists, etc.
   };
 
+  const handleLogout = () => {
+    router.push("/api/auth/logout");
+  };
+
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Main Sidebar */}
-      <aside className="w-16 bg-gray-200 p-4 flex flex-col items-center space-y-4">
-        <button
-          className={`p-2 rounded ${
-            activeMainTab === "inbox" ? "bg-blue-500 text-white" : "text-black"
-          }`}
-          onClick={() => setActiveMainTab("inbox")}
-        >
-          <FaInbox />
-        </button>
-        <button
-          className={`p-2 rounded ${
-            activeMainTab === "calendar" ? "bg-blue-500 text-white" : "text-black"
-          }`}
-          onClick={() => setActiveMainTab("calendar")}
-        >
-          <FaCalendarAlt />
-        </button>
-        <button
-          className={`p-2 rounded ${
-            activeMainTab === "search" ? "bg-blue-500 text-white" : "text-black"
-          }`}
-          onClick={() => setActiveMainTab("search")}
-        >
-          <FaSearch />
-        </button>
-        <a href="/api/auth/logout?federated" className="p-2 rounded bg-gray-200 hover:bg-gray-300 text-black">
-          <FaSignOutAlt />
-        </a>
-      </aside>
+    <>
+      {isLoading && <Loading />}
+      {user && (
+        <>
+          <div className="flex h-screen bg-gray-100">
+            {/* Main Sidebar */}
+            <aside className="w-16 bg-gray-200 p-4 flex flex-col items-center space-y-4">
+              <button
+                className={`p-2 rounded ${
+                  activeMainTab === "inbox" ? "bg-blue-500 text-white" : "text-black"
+                }`}
+                onClick={() => setActiveMainTab("inbox")}
+              >
+                <FaInbox />
+              </button>
+              <button
+                className={`p-2 rounded ${
+                  activeMainTab === "calendar" ? "bg-blue-500 text-white" : "text-black"
+                }`}
+                onClick={() => setActiveMainTab("calendar")}
+              >
+                <FaCalendarAlt />
+              </button>
+              <button
+                className={`p-2 rounded ${
+                  activeMainTab === "search" ? "bg-blue-500 text-white" : "text-black"
+                }`}
+                onClick={() => setActiveMainTab("search")}
+              >
+                <FaSearch />
+              </button>
+              <button onClick={handleLogout} className="p-2 rounded bg-gray-200 hover:bg-gray-300 text-black">
+                <FaSignOutAlt />
+              </button>
+            </aside>
 
-      {/* Inbox Sidebar */}
-      {activeMainTab === "inbox" && (
-        <aside className="w-64 bg-white shadow-lg p-4 flex flex-col space-y-4">
-          <h2 className="text-lg font-bold text-black">Inbox Sidebar</h2>
-          <ul className="space-y-2">
-            <li
-              className={`cursor-pointer p-2 rounded ${
-                activeInboxTab === "tasks" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
-              }`}
-              onClick={() => setActiveInboxTab("tasks")}
-            >
-              Tasks
-            </li>
-            <li
-              className={`cursor-pointer p-2 rounded ${
-                activeInboxTab === "lists" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
-              }`}
-              onClick={() => setActiveInboxTab("lists")}
-            >
-              Lists
-            </li>
-            <li
-              className={`cursor-pointer p-2 rounded ${
-                activeInboxTab === "today" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
-              }`}
-              onClick={() => setActiveInboxTab("today")}
-            >
-              Today
-            </li>
-            <li
-              className={`cursor-pointer p-2 rounded ${
-                activeInboxTab === "next7days" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
-              }`}
-              onClick={() => setActiveInboxTab("next7days")}
-            >
-              Next 7 Days
-            </li>
-          </ul>
-        </aside>
+            {/* Inbox Sidebar */}
+            {activeMainTab === "inbox" && (
+              <aside className="w-64 bg-white shadow-lg p-4 flex flex-col space-y-4">
+                <h2 className="text-lg font-bold text-black">Inbox Sidebar</h2>
+                <ul className="space-y-2">
+                  <li
+                    className={`cursor-pointer p-2 rounded ${
+                      activeInboxTab === "tasks" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
+                    }`}
+                    onClick={() => setActiveInboxTab("tasks")}
+                  >
+                    Tasks
+                  </li>
+                  <li
+                    className={`cursor-pointer p-2 rounded ${
+                      activeInboxTab === "lists" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
+                    }`}
+                    onClick={() => setActiveInboxTab("lists")}
+                  >
+                    Lists
+                  </li>
+                  <li
+                    className={`cursor-pointer p-2 rounded ${
+                      activeInboxTab === "today" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
+                    }`}
+                    onClick={() => setActiveInboxTab("today")}
+                  >
+                    Today
+                  </li>
+                  <li
+                    className={`cursor-pointer p-2 rounded ${
+                      activeInboxTab === "next7days" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
+                    }`}
+                    onClick={() => setActiveInboxTab("next7days")}
+                  >
+                    Next 7 Days
+                  </li>
+                </ul>
+              </aside>
+            )}
+
+            {/* Dynamic Content */}
+            <main className="flex-grow bg-gray-50">{renderInboxContent()}</main>
+          </div>
+        </>
       )}
-
-      {/* Dynamic Content */}
-      <main className="flex-grow bg-gray-50">{renderInboxContent()}</main>
-    </div>
+    </>
   );
 }
+
+export default withPageAuthRequired(Dashboard, {
+  onRedirecting: () => <Loading />,
+  onError: error => <ErrorMessage>{error.message}</ErrorMessage>
+});
