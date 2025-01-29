@@ -1,11 +1,11 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true },
-  connectionType: {
+  email: { type: String, required: true },
+  connection: {
     type: String,
     required: true,
-    enum: ['Username-Password-Authentication', 'google-oauth2'],
+    enum: ['auth0', 'google-oauth2'],
   },
   tasks: [
     {
