@@ -4,7 +4,7 @@
 
 import { useState, useEffect } from "react";
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0/client";
-import { FaCalendarAlt, FaInbox, FaList, FaSearch, FaSignOutAlt } from "react-icons/fa";
+import { FaCalendarAlt, FaInbox, FaList, FaSearch, FaSignOutAlt, FaUser } from "react-icons/fa";
 import { addUserToDatabase, getUserTasks } from "../utils/userAPI";
 import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage"
@@ -84,7 +84,7 @@ function Dashboard() {
   };
 
   const handleLogout = () => {
-    router.push("/api/auth/logout");
+    router.push("/api/auth/logout?federated");
   };
 
   return (
@@ -121,6 +121,9 @@ function Dashboard() {
               </button>
               <button onClick={handleLogout} className="p-2 rounded bg-gray-200 hover:bg-gray-300 text-black">
                 <FaSignOutAlt />
+              </button>
+              <button className="p-2 rounded bg-gray-200 hover:bg-gray-300 text-black">
+                <FaUser /> {user.nickname}
               </button>
             </aside>
 
