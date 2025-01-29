@@ -14,12 +14,10 @@ export async function POST(req) {
 
     // Connect to MongoDB if not already connected
     if (mongoose.connection.readyState === 0) {
-        console.log(mongoose.connection.readyState);
       await mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
     }
 
     const { email, connection } = await req.json();
-    console.log(email, connection);
 
     // Check if the user already exists
     let user = await User.findOne({ email, connection });

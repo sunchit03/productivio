@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
-import Task from "@/models/Task";
-import dbConnect from "@/utils/dbConnect";
+import Task from "../../models/Task";
+import dbConnect from "../../utils/connect";
 
 export async function GET(req) {
   try {
