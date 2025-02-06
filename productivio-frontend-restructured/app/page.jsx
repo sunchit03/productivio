@@ -22,6 +22,21 @@ const features = [
     description: 'Use our tools to boost your productivity and stay on track.',
     icon: 'focus-icon.svg',
   },
+  {
+    title: 'Collaborate Seamlessly',
+    description: 'Work together with your team in real time, share tasks, and communicate efficiently.',
+    icon: 'collaboration-icon.svg',
+  },
+  {
+    title: 'Smart Reminders',
+    description: 'Set intelligent reminders so you never miss a deadline, meeting, or important task.',
+    icon: 'reminder-icon.svg',
+  },
+  {
+    title: 'Track Your Progress',
+    description: 'Visualize your productivity with reports, task completion stats, and streaks.',
+    icon: 'progress-icon.svg',
+  },
 ];
 
 export default function Home() {
