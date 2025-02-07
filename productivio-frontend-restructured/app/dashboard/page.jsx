@@ -8,6 +8,7 @@ import { addUserToDatabase, getUserTasks } from "../utils/userAPI";
 import Sidebar from "../components/MainSidebar"; // Import the Sidebar Component
 import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage"
+import Teams from "./teams/page"
 import { useRouter } from "next/navigation";
 
 function Dashboard() {
@@ -137,7 +138,14 @@ function Dashboard() {
             )}
 
             {/* Dynamic Content */}
-            <main className="flex-grow bg-gray-50">{renderInboxContent()}</main>
+            <main className="flex-grow bg-gray-50">
+              { activeMainTab === "teams" && (
+                <Teams user={user} />
+              )}
+              { activeMainTab === "inbox" && (
+                renderInboxContent()
+              )}
+              </main>
           </div>
         </>
       )}
