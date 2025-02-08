@@ -17,7 +17,14 @@ const HeroSection = () => {
         >
           Get Started
         </a>
-
+        {/* Hero Image */}
+        <div className="mt-10 flex justify-center">
+          <img
+            src="/assets/hero-image.png"  // Place your image in public/assets folder
+            alt="Task Management Dashboard"
+            className="w-full max-w-4xl rounded-2xl shadow-lg"
+          />
+        </div>
       </div>
     </section>
   );
