@@ -20,7 +20,7 @@ export async function POST(req) {
     const { email, connection } = await req.json();
 
     // Check if the user already exists
-    let user = await User.findOne({ email, connection });
+    let user = await User.findOne({ email, connection }).lean();
 
     if (!user) {
       user = new User({ email, connection });

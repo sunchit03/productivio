@@ -21,6 +21,6 @@ const userSchema = new mongoose.Schema({
   ],
 });
 
-const User = mongoose.model('User', userSchema);
+userSchema.index({ email: 1, connection: 1 }, { unique: true });
 
-module.exports = User;
+module.exports = mongoose.models.User || mongoose.model('User', userSchema);
