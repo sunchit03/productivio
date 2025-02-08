@@ -4,18 +4,18 @@
 
 import { useState, useEffect } from "react";
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0/client";
-import { addUserToDatabase, getUserTasks } from "../utils/userAPI";
+import { saveUser, getUserTasks } from "../utils/userAPI";
 import Sidebar from "../components/MainSidebar"; // Import the Sidebar Component
 import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage"
-import Teams from "./teams/page"
+import TeamsPage from "./teams/page"
 import { useRouter } from "next/navigation";
 
 function Dashboard() {
   const { user, error, isLoading } = useUser();
 
   // State Variables
-  const [activeMainTab, setActiveMainTab] = useState("inbox"); // Main Sidebar Tabs
+  const [activeMainTab, setActiveMainTab] = useState(localStorage.getItem("activeTab")); // Main Sidebar Tabs
   const [activeInboxTab, setActiveInboxTab] = useState("tasks"); // Inbox Sidebar Tabs
   const [tasks, setTasks] = useState([]); // General tasks
   const [lists, setLists] = useState([]); // Dynamic lists
@@ -23,11 +23,34 @@ function Dashboard() {
   const [newTask, setNewTask] = useState(""); // Task input field
   const [newListName, setNewListName] = useState(""); // List name input
 
+  const router = useRouter();
+
   useEffect(() => {
-    if (!isLoading && user) {
-      addUserToDatabase(user);
+    if (!isLoading && !user) {
+      router.push("/api/auth/login");
     }
-  }, [user]);
+  }, [isLoading, user]);
+
+  useEffect(() => {
+    if (localStorage.getItem("activeTab") == "") {
+      setActiveMainTab("inbox");
+      localStorage.setItem("activeTab", "inbox");
+    }
+  }, [])
+
+  useEffect(() => {
+    async function init() {
+      console.log(user);
+      const data = await saveUser(user);
+      if (data.success) {
+        localStorage.setItem("userId", data.user._id);
+      }
+    }
+    if (!isLoading && user) {
+      init();
+    }
+  }, [user, isLoading]);
+  
 
   useEffect(() => {
     if (isLoading) {
@@ -35,16 +58,8 @@ function Dashboard() {
     }
   }, [isLoading]);
 
-  const router = useRouter();
-
   // Redirect to login if not authenticated
   if (isLoading) return <Loading />;
-  if (!user) {
-    useEffect(() => {
-      router.push("/api/auth/login");
-    }, []);
-    return null;
-  }
 
   // Add a new list
   const handleAddList = () => {
@@ -84,17 +99,12 @@ function Dashboard() {
     // Similar to your existing code for rendering tasks, lists, etc.
   };
 
-  const handleLogout = () => {
-    window.location.href = "/api/auth/logout?federated";
-  };
-
   return (
     <>
-      {isLoading && <Loading />}
       {user && (
         <>
           <div className="flex h-screen bg-gray-100">
-          <Sidebar activeMainTab={activeMainTab} setActiveMainTab={setActiveMainTab} user={user} handleLogout={handleLogout} />
+          <Sidebar activeMainTab={activeMainTab} setActiveMainTab={setActiveMainTab} user={user} />
 
             {/* Inbox Sidebar */}
             {activeMainTab === "inbox" && (
@@ -137,15 +147,16 @@ function Dashboard() {
               </aside>
             )}
 
+
             {/* Dynamic Content */}
             <main className="flex-grow bg-gray-50">
               { activeMainTab === "teams" && (
-                <Teams user={user} />
+                <TeamsPage/>
               )}
               { activeMainTab === "inbox" && (
                 renderInboxContent()
-              )}
-              </main>
+            )}
+            </main>
           </div>
         </>
       )}
