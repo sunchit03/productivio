@@ -1,12 +1,6 @@
 import { NextResponse } from "next/server";
-import mongoose from "mongoose";
 import Team from "../../models/Team";
 import User from "../../models/User"
-import connectDB from "../../utils/connect";
-
-const MONGO_URI = process.env.MONGO_URI;
-connectDB();
-
 
 export async function GET(req) {
     try {

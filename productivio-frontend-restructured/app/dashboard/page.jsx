@@ -4,7 +4,7 @@
 
 import { useState, useEffect } from "react";
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0/client";
-import { saveUser, getUserTasks } from "../utils/userAPI";
+import { saveUser } from "../services/users";
 import Sidebar from "../components/MainSidebar"; // Import the Sidebar Component
 import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage"

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { FaPlus } from "react-icons/fa";
 import TeamCard from "@/app/components/Teams/TeamCard";
 import CreateTeam from "@/app/components/Teams/CreateTeam";
+import { getUserTeams } from "@/app/services/teams";
 
 export default function TeamsPage() {
 
@@ -16,21 +17,8 @@ export default function TeamsPage() {
     }, [])
 
     async function fetchTeams() {
-        try {
-            const res = await fetch(`/api/teams?userId=${userId}`);
-            const data = await res.json()
-            
-            if (data.success) {
-                console.log(data)
-                setTeams(data.teams)
-                
-            } else {
-                console.error("Error fetching teams:", data.error);
-            }
-
-        } catch (error) {
-            console.log("Error fetching teams: ", error);
-        }
+      const fetchedTeams = await getUserTeams(userId);
+      setTeams(fetchedTeams);
     }
 
     return (

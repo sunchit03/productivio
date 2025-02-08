@@ -7,6 +7,7 @@ import Sidebar from "@/app/components/MainSidebar";
 import TasksSection from "@/app/components/Teams/TasksSection";
 import MembersSection from "@/app/components/Teams/MembersSection";
 import Loading from "@/app/components/Loading";
+import { getOneTeam } from "@/app/services/teams";
 
 function TeamPage() {
     const { user, error, isLoading } = useUser();
@@ -24,19 +25,13 @@ function TeamPage() {
 
     useEffect(() => {
         async function fetchTeam() {
-        try {
             const userId = localStorage.getItem("userId");
-            const res = await fetch(`/api/team/${teamId}?userId=${userId}`);
-            const data = await res.json();
-            if (data.success) {
-                setTeam(data.team);
-                setIsAdmin(data.team.admin._id === localStorage.getItem("userId"));
-                console.log(data.team);
+            const fetchedTeam = await getOneTeam(teamId, userId);
+            setTeam(fetchedTeam);
+            console.log(fetchedTeam)
+            if (fetchedTeam && fetchedTeam.admin._id) {
+                setIsAdmin(fetchedTeam.admin._id === localStorage.getItem("userId"));
             }
-            else console.error("Error fetching team:", data.error);
-        } catch (error) {
-            console.error("Error fetching team:", error);
-        }
         }
         fetchTeam();
     }, [teamId]);
