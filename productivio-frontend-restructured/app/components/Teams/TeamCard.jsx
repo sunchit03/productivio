@@ -6,9 +6,20 @@ export default function TeamCard({ team }) {
   // Function to extract the initials from the title
   const getInitials = (title) => {
     const words = title.toUpperCase().split(" ");
-    return words.length > 1
-      ? words[0][0] + words[1][0]  // First letter of the first and second word
-      : words[0][0];  // Just the first letter if there's no second word
+
+    if (words.length > 1) {
+      if (words[0][0] && words[1][0]) {
+        return words[0][0] + words[1][0];    // First letter of the first and second word
+      } else {
+        return 'UU'
+      }
+    } else {
+      if (words[0][0]) {
+        return words[0][0];    // Just the first letter if there's no second word
+      } else {
+        return 'U'
+      }
+    }
   };
 
   function getRandomColor() {
