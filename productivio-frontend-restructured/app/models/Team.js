@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
 const teamSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    description: { type: String },
+    title: { type: String, required: true, trim: true },
+    description: { type: String, trim: true },
     admin: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -13,9 +13,13 @@ const teamSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
         }
+    ],
+    tasks: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Task',
+        }
     ]
 });
 
-const Team = mongoose.model('Team', teamSchema);
-
-module.exports = Team;
+module.exports = mongoose.models.Team || mongoose.model('Team', teamSchema);
