@@ -17,8 +17,8 @@ export default function TeamsPage() {
     }, [])
 
     async function fetchTeams() {
-      const teams = await getUserTeams(userId);
-      setTeams(teams);
+      const fetchedTeams = await getUserTeams(userId);
+      setTeams(fetchedTeams);
     }
 
     return (
