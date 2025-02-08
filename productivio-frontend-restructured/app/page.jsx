@@ -5,6 +5,7 @@ import Navbar from './components/Home/Navbar';
 import HeroSection from './components/Home/HeroSection';
 import FeatureCard from './components/Home/FeatureCard';
 import Footer from './components/Home/Footer';
+import ProductivityFeatures from './components/Home/ProductivityFeatures';
 
 const features = [
   {
@@ -54,6 +55,7 @@ export default function Home() {
           />
         ))}
       </section>
+      <ProductivityFeatures />
       <Footer />
     </>
   );
