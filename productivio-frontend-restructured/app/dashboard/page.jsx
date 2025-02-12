@@ -10,6 +10,7 @@ import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage"
 import TeamsPage from "./teams/page"
 import { useRouter } from "next/navigation";
+import PomodoroPage from "@/app/dashboard/pomodoro/page";
 
 function Dashboard() {
   const { user, error, isLoading } = useUser();
@@ -50,11 +51,11 @@ function Dashboard() {
       init();
     }
   }, [user, isLoading]);
-  
+
 
   useEffect(() => {
     if (isLoading) {
-        //getUserTasks(user);
+      //getUserTasks(user);
     }
   }, [isLoading]);
 
@@ -81,11 +82,11 @@ function Dashboard() {
         setTasks([...tasks, { id: Date.now(), title: newTask.trim(), completed: false }]);
       } else if (selectedListId) {
         setLists(
-          lists.map((list) =>
-            list.id === selectedListId
-              ? { ...list, tasks: [...list.tasks, { id: Date.now(), title: newTask.trim(), completed: false }] }
-              : list
-          )
+            lists.map((list) =>
+                list.id === selectedListId
+                    ? { ...list, tasks: [...list.tasks, { id: Date.now(), title: newTask.trim(), completed: false }] }
+                    : list
+            )
         );
       }
       setNewTask(""); // Clear input field
@@ -100,67 +101,70 @@ function Dashboard() {
   };
 
   return (
-    <>
-      {user && (
-        <>
-          <div className="flex h-screen bg-gray-100">
-          <Sidebar activeMainTab={activeMainTab} setActiveMainTab={setActiveMainTab} user={user} />
+      <>
+        {user && (
+            <>
+              <div className="flex h-screen bg-gray-100">
+                <Sidebar activeMainTab={activeMainTab} setActiveMainTab={setActiveMainTab} user={user} />
 
-            {/* Inbox Sidebar */}
-            {activeMainTab === "inbox" && (
-              <aside className="w-64 bg-white shadow-lg p-4 flex flex-col space-y-4">
-                <h2 className="text-lg font-bold text-black">Inbox Sidebar</h2>
-                <ul className="space-y-2">
-                  <li
-                    className={`cursor-pointer p-2 rounded ${
-                      activeInboxTab === "tasks" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
-                    }`}
-                    onClick={() => setActiveInboxTab("tasks")}
-                  >
-                    Tasks
-                  </li>
-                  <li
-                    className={`cursor-pointer p-2 rounded ${
-                      activeInboxTab === "lists" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
-                    }`}
-                    onClick={() => setActiveInboxTab("lists")}
-                  >
-                    Lists
-                  </li>
-                  <li
-                    className={`cursor-pointer p-2 rounded ${
-                      activeInboxTab === "today" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
-                    }`}
-                    onClick={() => setActiveInboxTab("today")}
-                  >
-                    Today
-                  </li>
-                  <li
-                    className={`cursor-pointer p-2 rounded ${
-                      activeInboxTab === "next7days" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
-                    }`}
-                    onClick={() => setActiveInboxTab("next7days")}
-                  >
-                    Next 7 Days
-                  </li>
-                </ul>
-              </aside>
-            )}
+                {/* Inbox Sidebar */}
+                {activeMainTab === "inbox" && (
+                    <aside className="w-64 bg-white shadow-lg p-4 flex flex-col space-y-4">
+                      <h2 className="text-lg font-bold text-black">Inbox Sidebar</h2>
+                      <ul className="space-y-2">
+                        <li
+                            className={`cursor-pointer p-2 rounded ${
+                                activeInboxTab === "tasks" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
+                            }`}
+                            onClick={() => setActiveInboxTab("tasks")}
+                        >
+                          Tasks
+                        </li>
+                        <li
+                            className={`cursor-pointer p-2 rounded ${
+                                activeInboxTab === "lists" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
+                            }`}
+                            onClick={() => setActiveInboxTab("lists")}
+                        >
+                          Lists
+                        </li>
+                        <li
+                            className={`cursor-pointer p-2 rounded ${
+                                activeInboxTab === "today" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
+                            }`}
+                            onClick={() => setActiveInboxTab("today")}
+                        >
+                          Today
+                        </li>
+                        <li
+                            className={`cursor-pointer p-2 rounded ${
+                                activeInboxTab === "next7days" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
+                            }`}
+                            onClick={() => setActiveInboxTab("next7days")}
+                        >
+                          Next 7 Days
+                        </li>
+                      </ul>
+                    </aside>
+                )}
 
 
-            {/* Dynamic Content */}
-            <main className="flex-grow bg-gray-50">
-              { activeMainTab === "teams" && (
-                <TeamsPage/>
-              )}
-              { activeMainTab === "inbox" && (
-                renderInboxContent()
-            )}
-            </main>
-          </div>
-        </>
-      )}
-    </>
+                {/* Dynamic Content */}
+                <main className="flex-grow bg-gray-50">
+                  { activeMainTab === "teams" && (
+                      <TeamsPage/>
+                  )}
+                  { activeMainTab === "pomodoro" && (
+                      <PomodoroPage/>
+                  )}
+                  { activeMainTab === "inbox" && (
+                      renderInboxContent()
+                  )}
+                </main>
+              </div>
+            </>
+        )}
+      </>
   );
 }
 
