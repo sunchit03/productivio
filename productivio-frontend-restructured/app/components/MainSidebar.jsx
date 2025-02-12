@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaCalendarAlt, FaInbox, FaSearch, FaSignOutAlt, FaUser } from "react-icons/fa";
-import { RiTeamFill } from "react-icons/ri";
+import { RiTeamFill, RiTimer2Line} from "react-icons/ri";
 import { IoMdNotifications } from "react-icons/io";
 import NotificationsModal from "../components/NotificationsModal";
 import { useRouter } from "next/navigation";
@@ -84,6 +84,20 @@ const Sidebar = ({ activeMainTab, setActiveMainTab, user }) => {
       >
         <RiTeamFill />
       </button>
+        <button
+            className={`p-2 rounded ${
+                activeMainTab === "pomodoro" ? "bg-blue-500 text-white" : "text-black"
+            }`}
+            onClick={() => {
+                if (activeMainTab != "pomodoro") {
+                    router.push("/dashboard");
+                    setActiveMainTab("pomodoro");
+                    localStorage.setItem("activeTab", "pomodoro");
+                }
+            }}
+        >
+            <RiTimer2Line />
+        </button>
       {/* Notifications Button */}
       <button 
         className="p-2 rounded text-black"

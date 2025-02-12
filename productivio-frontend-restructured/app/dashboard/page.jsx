@@ -10,6 +10,7 @@ import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage"
 import TeamsPage from "./teams/page"
 import { useRouter } from "next/navigation";
+import PomodoroPage from "@/app/dashboard/pomodoro/page";
 
 function Dashboard() {
   const { user, error, isLoading } = useUser();
@@ -152,6 +153,9 @@ function Dashboard() {
             <main className="flex-grow bg-gray-50">
               { activeMainTab === "teams" && (
                 <TeamsPage/>
+              )}
+              { activeMainTab === "pomodoro" && (
+                  <PomodoroPage/>
               )}
               { activeMainTab === "inbox" && (
                 renderInboxContent()
