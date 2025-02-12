@@ -1,26 +1,51 @@
-// MembersSection.jsx
 import { useState } from "react";
+import { FaUserPlus } from "react-icons/fa";
 import AddMemberModal from "./AddMemberModal";
 
-export default function MembersSection({ members, isAdmin, onRemove, onAdd }) {
+export default function MembersSection({ members, isAdmin, onRemove, onAdd, currentUserEmail }) {
   const [showModal, setShowModal] = useState(false);
-  
+
   return (
-    <div className="w-64 bg-gray-300 p-4">
-      <h2 className="text-lg font-bold mb-2 text-black">Members</h2>
+    <div className="w-80 bg-gray-300 p-4">
+      {/* Members Header with Add Icon */}
+      <div className="flex justify-between items-center mb-2">
+        <h2 className="text-lg font-bold text-black">Members</h2>
+        {isAdmin &&
+          <button onClick={() => setShowModal(true)} className="text-blue-500 hover:text-blue-700">
+            <FaUserPlus size={20} />
+          </button>
+        }
+      </div>
+
+      {/* Search Bar */}
       <input type="text" placeholder="Search..." className="w-full p-2 mb-2 border rounded" />
-      <button className="w-full bg-blue-500 text-white p-2 rounded" onClick={() => setShowModal(true)}>Add</button>
-      <ul className="mt-4 h-screen">
+
+      {/* Members List */}
+      <ul className="mt-4 space-y-3">
         {members.map((member) => (
-          <li key={member.id} className="flex justify-between items-center p-2 border-b">
-            {member.email}
+          <li key={member.id} className="flex items-center justify-between p-2 border-b">
+            {/* Profile Picture & Email */}
+            <div className="flex items-center space-x-3">
+              <img
+                src={member.profilePicture || "/default-avatar.png"} // Use a default image if no profile picture
+                alt={member.email}
+                className="w-8 h-8 rounded-full border"
+              />
+              <span className="text-black">{member.email}</span>
+            </div>
+
+            {/* Admin Actions */}
             {isAdmin && (
-              <button onClick={() => onRemove(member.id)} className="text-red-500">...</button>
+              <button onClick={() => onRemove(member.id)} className="text-red-500 hover:text-red-700">
+                ⋮
+              </button>
             )}
           </li>
         ))}
       </ul>
-      {showModal && <AddMemberModal onClose={() => setShowModal(false)} onAdd={onAdd} />}
+
+      {/* Add Member Modal */}
+      {showModal && <AddMemberModal onClose={() => setShowModal(false)} onAdd={onAdd} teamMembers={members} currentUserEmail={currentUserEmail}/>}
     </div>
   );
 }

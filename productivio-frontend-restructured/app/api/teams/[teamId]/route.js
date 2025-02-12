@@ -3,7 +3,7 @@ import Team from "../../../models/Team";
 
 export async function GET(req, { params }) {
   try {
-    const { teamId } = params;
+    const { teamId } = await params;
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId");
 

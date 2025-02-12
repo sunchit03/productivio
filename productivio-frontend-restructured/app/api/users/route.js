@@ -6,6 +6,24 @@ const connectDB = require('../../utils/connect');
 const MONGO_URI = process.env.MONGO_URI;
 connectDB();
 
+export async function GET(req) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const email = searchParams.get("email");
+
+    if (!email) {
+      return NextResponse.json({ success: false, error: "Email is required" }, { status: 400 });
+    }
+
+    const user = await User.findOne({ email });
+    
+    return NextResponse.json({ exists: !!user });
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}
+
 export async function POST(req) {
   try {
     if (!MONGO_URI) {
@@ -17,13 +35,13 @@ export async function POST(req) {
       await mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
     }
 
-    const { email, connection } = await req.json();
+    const { email, profilePicture, connection } = await req.json();
 
     // Check if the user already exists
     let user = await User.findOne({ email, connection }).lean();
 
     if (!user) {
-      user = new User({ email, connection });
+      user = new User({ email, profilePicture, connection });
       await user.save();
     }
 

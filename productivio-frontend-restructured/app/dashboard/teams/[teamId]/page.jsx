@@ -54,7 +54,7 @@ function TeamPage() {
             </div>
 
             {/* Right Section - Members */}
-            <MembersSection members={team.members} isAdmin={isAdmin}  />
+            <MembersSection members={team.members} isAdmin={isAdmin} currentUserEmail={user.email} />
         </div>
         </div>
     )}

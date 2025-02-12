@@ -23,8 +23,9 @@ export async function getOneTeam(teamId, userId) {
 }
 
 export async function createTeam(userId, title, description) {
+    let res;
     try {
-        const res = await fetch("/api/teams", {
+         res = await fetch("/api/teams", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userId, title, description }),
