@@ -1,8 +1,8 @@
 // // app/views/ListsView.jsx
 "use client";
 import { useState } from "react";
-import { useLists } from "../context/ListsContext";
-import TaskItem from "../components/TaskItem";
+import { useLists } from "../../../context/ListsContext";
+import TaskItem from "../../../components/Tasks/TaskItem";
 
 const ListsView = () => {
   const { activeList, addTaskToList } = useLists();

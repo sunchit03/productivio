@@ -1,7 +1,7 @@
 // // app/views/NextSevenDays.jsx
-import { useTasks } from "../context/TasksContext";
-import { useLists } from "../context/ListsContext";
-import TaskItem from "../components/TaskItem";
+import { useTasks } from "../../../context/TasksContext";
+import { useLists } from "../../../context/ListsContext";
+import TaskItem from "../../../components/Tasks/TaskItem";
 
 const NextSevenDays = () => {
   const { tasks } = useTasks(); // Get regular tasks

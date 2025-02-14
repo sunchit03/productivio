@@ -38,20 +38,20 @@
 // }
 "use client";
 import { useState } from "react";
-import { TasksProvider } from "../context/TasksContext";
-import { useLists } from "../context/ListsContext";
-import MainSidebar from "../components/MainSidebar";
-import TasksSidebar from "../components/TasksSidebar";
-import TasksView from "../views/TasksView";
-import ListsView from "../views/ListsView";
-import TodayTasks from "../views/TodayTasks";
-import NextSevenDays from "../views/NextSevenDays";
-import CompletedTasks from "../views/CompletedTasks";
-import TrashTasks from "../views/TrashTasks";
+import { ListsProvider } from "../../context/ListsContext";
+import { TasksProvider } from "../../context/TasksContext";
+import { useLists } from "../../context/ListsContext";
+import TasksSidebar from "../../components/Tasks/TasksSidebar";
+import TasksView from "./views/TasksView";
+import ListsView from "./views/ListsView";
+import TodayTasks from "./views/TodayTasks";
+import NextSevenDays from "./views/NextSevenDays";
+import CompletedTasks from "./views/CompletedTasks";
+import TrashTasks from "./views/TrashTasks";
 
-export default function FeaturesPage() {
+export default function TaskPage() {
   const [selectedTab, setSelectedTab] = useState("tasks");
-  const { activeList } = useLists();
+  //const { activeList } = useLists();
 
   const renderView = () => {
     if (selectedTab.startsWith("list-")) {
@@ -69,14 +69,13 @@ export default function FeaturesPage() {
   };
 
   return (
-    <TasksProvider>
-      <div className="flex h-screen">
-        <MainSidebar setSelectedTab={setSelectedTab} />
-        {selectedTab !== "calendar" && selectedTab !== "search" && (
-          <TasksSidebar setActiveTab={setSelectedTab} />
-        )}
-        <div className="flex-grow p-6 bg-white overflow-auto">{renderView()}</div>
-      </div>
-    </TasksProvider>
+    <ListsProvider>
+      <TasksProvider>
+          {selectedTab !== "calendar" && selectedTab !== "teams" && (
+            <TasksSidebar setActiveTab={setSelectedTab} />
+          )}
+          <div className="flex-grow p-6 bg-gray overflow-auto">{renderView()}</div>
+      </TasksProvider>
+    </ListsProvider>
   );
 }

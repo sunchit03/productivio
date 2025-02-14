@@ -1,6 +1,6 @@
 // app/views/CompletedTasks.jsx
-import { useTasks } from "../context/TasksContext";
-import TaskItem from "../components/TaskItem";
+import { useTasks } from "../../../context/TasksContext";
+import TaskItem from "../../../components/Tasks/TaskItem";
 
 const CompletedTasks = () => {
   const { tasks } = useTasks();

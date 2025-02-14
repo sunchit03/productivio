@@ -6,11 +6,12 @@
 import { useState, useEffect } from "react";
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0/client";
 import { saveUser } from "../services/users";
-import Sidebar from "../components/MainSidebar"; // Import the Sidebar Component
+import MainSidebar from "../components/MainSidebar"; // Import the Sidebar Component
 import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage"
 import TeamsPage from "./teams/page"
 import { useRouter } from "next/navigation";
+import TaskPage from "./tasks/page";
 
 function Dashboard() {
   const { user, error, isLoading } = useUser();
@@ -34,8 +35,8 @@ function Dashboard() {
 
   useEffect(() => {
     if (localStorage.getItem("activeTab") == "") {
-      setActiveMainTab("inbox");
-      localStorage.setItem("activeTab", "inbox");
+      setActiveMainTab("task");
+      localStorage.setItem("activeTab", "task");
     }
   }, [])
 
@@ -105,47 +106,12 @@ function Dashboard() {
       {user && (
         <>
           <div className="flex h-screen bg-gray-100">
-          <Sidebar activeMainTab={activeMainTab} setActiveMainTab={setActiveMainTab} user={user} />
+          <MainSidebar activeMainTab={activeMainTab} setActiveMainTab={setActiveMainTab} user={user} />
 
             {/* Inbox Sidebar */}
-            {activeMainTab === "inbox" && (
-              <aside className="w-64 bg-white shadow-lg p-4 flex flex-col space-y-4">
-                <h2 className="text-lg font-bold text-black">Inbox Sidebar</h2>
-                <ul className="space-y-2">
-                  <li
-                    className={`cursor-pointer p-2 rounded ${
-                      activeInboxTab === "tasks" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
-                    }`}
-                    onClick={() => setActiveInboxTab("tasks")}
-                  >
-                    Tasks
-                  </li>
-                  <li
-                    className={`cursor-pointer p-2 rounded ${
-                      activeInboxTab === "lists" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
-                    }`}
-                    onClick={() => setActiveInboxTab("lists")}
-                  >
-                    Lists
-                  </li>
-                  <li
-                    className={`cursor-pointer p-2 rounded ${
-                      activeInboxTab === "today" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
-                    }`}
-                    onClick={() => setActiveInboxTab("today")}
-                  >
-                    Today
-                  </li>
-                  <li
-                    className={`cursor-pointer p-2 rounded ${
-                      activeInboxTab === "next7days" ? "bg-gray-200 text-black" : "hover:bg-gray-100 text-black"
-                    }`}
-                    onClick={() => setActiveInboxTab("next7days")}
-                  >
-                    Next 7 Days
-                  </li>
-                </ul>
-              </aside>
+            {activeMainTab === "task" && (
+              <TaskPage />
+              
             )}
 
 
@@ -154,9 +120,9 @@ function Dashboard() {
               { activeMainTab === "teams" && (
                 <TeamsPage/>
               )}
-              { activeMainTab === "inbox" && (
+              {/* { activeMainTab === "task" && (
                 renderInboxContent()
-            )}
+              )} */}
             </main>
           </div>
         </>
