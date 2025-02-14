@@ -1,6 +1,6 @@
 // // app/components/TaskItem.jsx
 import { useState } from "react";
-import { useTasks } from "../context/TasksContext";
+import { useTasks } from "../../context/TasksContext";
 
 const TaskItem = ({ task }) => {
   const { deleteTask, toggleTaskCompletion, editTask } = useTasks();

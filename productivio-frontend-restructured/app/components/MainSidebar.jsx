@@ -5,7 +5,7 @@ import { IoMdNotifications } from "react-icons/io";
 import NotificationsModal from "../components/NotificationsModal";
 import { useRouter } from "next/navigation";
 
-const Sidebar = ({ activeMainTab, setActiveMainTab, user }) => {
+const MainSidebar = ({ activeMainTab, setActiveMainTab, user }) => {
   const [showNotifications, setShowNotifications] = useState(false);
 
   const handleLogout = () => {
@@ -27,13 +27,13 @@ const Sidebar = ({ activeMainTab, setActiveMainTab, user }) => {
       />
       <button
         className={`p-2 rounded ${
-          activeMainTab === "inbox" ? "bg-blue-500 text-white" : "text-black"
+          activeMainTab === "task" ? "bg-blue-500 text-white" : "text-black"
         }`}
         onClick={() => {
-          if (activeMainTab != "inbox") {
+          if (activeMainTab != "task") {
             router.push("/dashboard")
-            setActiveMainTab("inbox")
-            localStorage.setItem("activeTab", "inbox");
+            setActiveMainTab("task")
+            localStorage.setItem("activeTab", "task");
           }
         }}
       >
@@ -97,4 +97,4 @@ const Sidebar = ({ activeMainTab, setActiveMainTab, user }) => {
   );
 };
 
-export default Sidebar;
+export default MainSidebar;

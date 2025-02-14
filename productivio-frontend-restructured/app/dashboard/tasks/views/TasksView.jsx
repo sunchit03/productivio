@@ -1,8 +1,8 @@
 // // app/views/TasksView.jsx
 
-import { useTasks } from "../context/TasksContext";
-import TaskItem from "../components/TaskItem";
-import TaskForm from "../components/TaskForm";
+import { useTasks } from "../../../context/TasksContext";
+import TaskItem from "../../../components/Tasks/TaskItem";
+import TaskForm from "../../../components/Tasks/TaskForm";
 
 const TasksView = () => {
   const { tasks } = useTasks();
