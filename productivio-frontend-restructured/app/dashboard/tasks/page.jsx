@@ -1,81 +1,31 @@
-// "use client";
-// import { useState } from "react";
-// import { TasksProvider } from "../context/TasksContext";
-// import MainSidebar from "../components/MainSidebar";
-// import TasksSidebar from "../components/TasksSidebar";
-// import TasksView from "../views/TasksView";
-// import ListsView from "../views/ListsView";
-// import TodayTasks from "../views/TodayTasks";
-// import NextSevenDays from "../views/NextSevenDays";
-// import CompletedTasks from "../views/CompletedTasks";
-// import TrashTasks from "../views/TrashTasks";
-
-// export default function FeaturesPage() {
-//   const [selectedTab, setSelectedTab] = useState("tasks");
-
-//   const renderView = () => {
-//     switch (selectedTab) {
-//       case "lists": return <ListsView />;
-//       case "today": return <TodayTasks />;
-//       case "next7days": return <NextSevenDays />;
-//       case "completed": return <CompletedTasks />;
-//       case "trash": return <TrashTasks />;
-//       default: return <TasksView />;
-//     }
-//   };
-
-//   return (
-//     <TasksProvider>
-//       <div className="flex h-screen">
-//         <MainSidebar setSelectedTab={setSelectedTab} />
-//         {selectedTab !== "calendar" && selectedTab !== "search" && (
-//           <TasksSidebar setActiveTab={setSelectedTab} />
-//         )}
-//         <div className="flex-grow p-6 overflow-auto">{renderView()}</div>
-//       </div>
-//     </TasksProvider>
-//   );
-// }
 "use client";
 import { useState } from "react";
 import { ListsProvider } from "../../context/ListsContext";
-import { TasksProvider } from "../../context/TasksContext";
-import { useLists } from "../../context/ListsContext";
 import TasksSidebar from "../../components/Tasks/TasksSidebar";
 import TasksView from "./views/TasksView";
-import ListsView from "./views/ListsView";
-import TodayTasks from "./views/TodayTasks";
-import NextSevenDays from "./views/NextSevenDays";
-import CompletedTasks from "./views/CompletedTasks";
-import TrashTasks from "./views/TrashTasks";
 
 export default function TaskPage() {
-  const [selectedTab, setSelectedTab] = useState("tasks");
-  //const { activeList } = useLists();
+  const [selectedTab, setSelectedTab] = useState("inbox");
+  const [selectedList, setSelectedList] = useState({id: "", emoji: "", name: ""});
 
   const renderView = () => {
-    if (selectedTab.startsWith("list-")) {
-      return <ListsView />; // ✅ Show ListsView for selected list
-    }
 
     switch (selectedTab) {
-      case "lists": return <ListsView />;
-      case "today": return <TodayTasks />;
-      case "next7days": return <NextSevenDays />;
-      case "completed": return <CompletedTasks />;
-      case "trash": return <TrashTasks />;
-      default: return <TasksView />;
+      case "lists": return <TasksView title={ selectedList.emoji + " " + selectedList.name } listId={selectedList.id} />
+      case "today": return <TasksView title={"Today"} today={true} />;
+      case "Next 7 Days": return <TasksView title={"Next 7 Days"} next7days={true} />;
+      case "completed": return <TasksView title={"Completed"} completed={true}/>;
+      case "trash": return <TasksView title={"Trash"} trash={true}/>;
+      default: return <TasksView title={"Inbox"} inbox={true} />;
     }
   };
 
   return (
     <ListsProvider>
-      <TasksProvider>
-          {selectedTab !== "calendar" && selectedTab !== "teams" && (
-            <TasksSidebar setActiveTab={setSelectedTab} />
-          )}
-          <div className="flex-grow p-6 bg-gray overflow-auto">{renderView()}</div>
-      </TasksProvider>
+      {selectedTab !== "calendar" && selectedTab !== "teams" && (
+        <TasksSidebar activeTab={selectedTab} setActiveTab={setSelectedTab} activeList={selectedList} setActiveList={setSelectedList} />
+      )}
+      <div className="flex-grow py-6 px-5 bg-white overflow-auto">{renderView()}</div>
     </ListsProvider>
   );
 }

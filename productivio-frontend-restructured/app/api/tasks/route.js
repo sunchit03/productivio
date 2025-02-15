@@ -3,7 +3,7 @@ import Task from "../../models/Task";
 
 export async function POST(req) {
   try {
-    const { title, description, assignedTo, team, priority, dueDate, createdBy } = await req.json();
+    const { title, description, assignedTo, createdBy, list, team, priority, dueDate } = await req.json();
 
     if (!title || !createdBy) {
       return NextResponse.json({ success: false, error: "Title and CreatedBy are required" }, { status: 400 });
@@ -14,6 +14,7 @@ export async function POST(req) {
       title,
       description,
       assignedTo: team ? assignedTo : createdBy, // If it's an individual task, assignedTo = createdBy
+      list: list || null,
       team: team || null, // Ensure null if it's an individual task
       priority,
       dueDate,
