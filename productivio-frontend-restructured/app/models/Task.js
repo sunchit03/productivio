@@ -5,6 +5,7 @@ const taskSchema = new mongoose.Schema({
   description: { type: String , trim: true },
   assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  list: { type: mongoose.Schema.Types.ObjectId, ref: 'List', default: null }, // If null, it's in the inbox
   team: { type: mongoose.Schema.Types.ObjectId, ref: "Team", default: null }, // Null means it's a personal task
   completed: { type: Boolean, default: false },
   dueDate: { type: Date, default: null },
