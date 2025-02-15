@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useTasks } from "../../context/TasksContext";
 
-const TaskForm = () => {
+const TaskForm = ( {todayOrNext = false} ) => {
   const { addTask } = useTasks();
   const [title, setTitle] = useState("");
   const [dueDate, setDueDate] = useState("");
@@ -22,7 +22,7 @@ const TaskForm = () => {
         type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Task title..."
+        placeholder={todayOrNext ? 'Add task to "Inbox"' : 'Add task'}
         className="p-2 border rounded w-80 text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <input
