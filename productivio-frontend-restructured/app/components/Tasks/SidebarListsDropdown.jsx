@@ -122,7 +122,7 @@ const SidebarListsDropdown = ({ setActiveTab, setActiveList }) => {
                       <EmojiPicker
                         width={300}
                         height={350}
-                        autoFocusSearch={false}
+                        autoFocusSearch={true}
                         emojiStyle="google"
                         onEmojiClick={handleEmojiClick}
                         previewConfig={{ showPreview: false }}

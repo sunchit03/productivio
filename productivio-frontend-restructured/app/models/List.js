@@ -7,4 +7,4 @@ const listSchema = new mongoose.Schema({
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
   }, { timestamps: true });
   
-  module.exports = mongoose.models.List || mongoose.model('List', listSchema);
+module.exports = mongoose.models.List || mongoose.model('List', listSchema);
