@@ -44,10 +44,6 @@ import { useLists } from "../../context/ListsContext";
 import TasksSidebar from "../../components/Tasks/TasksSidebar";
 import TasksView from "./views/TasksView";
 import ListsView from "./views/ListsView";
-import TodayTasks from "./views/TodayTasks";
-import NextSevenDays from "./views/NextSevenDays";
-import CompletedTasks from "./views/CompletedTasks";
-import TrashTasks from "./views/TrashTasks";
 
 export default function TaskPage() {
   const [selectedTab, setSelectedTab] = useState("tasks");
@@ -60,11 +56,11 @@ export default function TaskPage() {
 
     switch (selectedTab) {
       case "lists": return <ListsView />;
-      case "today": return <TodayTasks />;
-      case "next7days": return <NextSevenDays />;
-      case "completed": return <CompletedTasks />;
-      case "trash": return <TrashTasks />;
-      default: return <TasksView />;
+      case "today": return <TasksView title={"Today"} todayOrNext={true} completedOrTrash={false}/>;
+      case "Next 7 Days": return <TasksView title={"Next 7 Days"} todayOrNext={true} completedOrTrash={false}/>;
+      case "completed": return <TasksView title={"Completed"} completedOrTrash={true}/>;
+      case "trash": return <TasksView title={"Trash"} completedOrTrash={true}/>;
+      default: return <TasksView title={"Inbox"} todayOrNext={false} completedOrTrash={false}/>;
     }
   };
 
@@ -74,7 +70,7 @@ export default function TaskPage() {
           {selectedTab !== "calendar" && selectedTab !== "teams" && (
             <TasksSidebar setActiveTab={setSelectedTab} />
           )}
-          <div className="flex-grow p-6 bg-gray overflow-auto">{renderView()}</div>
+          <div className="flex-grow p-6 bg-white overflow-auto">{renderView()}</div>
       </TasksProvider>
     </ListsProvider>
   );
