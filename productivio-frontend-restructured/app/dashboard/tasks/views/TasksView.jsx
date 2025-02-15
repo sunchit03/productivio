@@ -4,7 +4,7 @@ import { useTasks } from "../../../context/TasksContext";
 import TaskItem from "../../../components/Tasks/TaskItem";
 import TaskForm from "../../../components/Tasks/TaskForm";
 
-const TasksView = ( { title, todayOrNext = false, completedOrTrash = false, isList = false } ) => {
+const TasksView = ( { title, todayOrNext = false, completedOrTrash = false, isList = false, listId = null } ) => {
   const { tasks } = useTasks();
 
   return (
@@ -17,7 +17,7 @@ const TasksView = ( { title, todayOrNext = false, completedOrTrash = false, isLi
         {tasks.length > 0 ? (
           tasks.map((task) => <TaskItem key={task.id} task={task} />)
         ) : (
-          <p className=" text-black  mb-4">No tasks available.</p>
+          <p className=" text-black  mb-4">{isList ? "No tasks available in this list." : "No tasks available."}</p>
         )}
       </div>
     </div>

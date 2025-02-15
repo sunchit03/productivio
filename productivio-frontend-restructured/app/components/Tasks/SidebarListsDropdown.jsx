@@ -4,7 +4,7 @@ import EmojiPicker from 'emoji-picker-react';
 import { FaAngleRight, FaAngleDown } from "react-icons/fa6";
 import { useLists } from "../../context/ListsContext";
 
-const SidebarListsDropdown = ({ setActiveTab }) => {
+const SidebarListsDropdown = ({ setActiveTab, setActiveList }) => {
   const [isListsDropdownOpen, setIsListsDropdownOpen] = useState(false);
   const [isListModalOpen, setIsListModalOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -76,7 +76,8 @@ const SidebarListsDropdown = ({ setActiveTab }) => {
                 <li key={list.id} className="flex relative px-[10px]">
                   <button  
                     onClick={() => {
-                      setActiveTab(`list-${list.id}`);
+                      setActiveTab(`lists`);
+                      setActiveList({id: list.id, emoji: list.emoji, name: list.name});
                       selectList(list.id);
                     }}
                     className="w-full text-left px-3 py-2 hover:bg-gradient-to-bl from-violet-100 to-fuchsia-100 hover:rounded-sm flex items-center"

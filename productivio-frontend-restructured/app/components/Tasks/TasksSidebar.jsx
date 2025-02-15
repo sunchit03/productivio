@@ -28,14 +28,14 @@ const renderButton = (tab) => {
   }
 }
 
-const createTabs = (tabs, setActiveTab) => {
+const createTabs = (tabs, setActiveTab, setActiveList = null) => {
   return (
     <ul className="py-[14px]">
         {tabs.map((tab) => (
           <li key={tab} className="flex flex-col relative px-[10px]">
             
             {tab === "lists" ? (
-              <SidebarListsDropdown setActiveTab={setActiveTab} />
+              <SidebarListsDropdown setActiveTab={setActiveTab} setActiveList={setActiveList} />
             ) : (
               <button
                 onClick={() => setActiveTab(tab)}
@@ -51,7 +51,7 @@ const createTabs = (tabs, setActiveTab) => {
   )
 }
 
-const TasksSidebar = ({ setActiveTab }) => {
+const TasksSidebar = ({ setActiveTab, setActiveList = null }) => {
   const upperTabs = ["today", "Next 7 Days", "inbox"];
   const tabs = ["today", "Next 7 Days", "inbox", "lists", "completed", "trash"];
   const lowerTabs = ["completed", "trash"];
@@ -64,7 +64,7 @@ const TasksSidebar = ({ setActiveTab }) => {
 
       <div className="w-4/5 h-[1px] bg-purple-950 place-self-center"></div>
 
-      {createTabs(["lists"], setActiveTab)}
+      {createTabs(["lists"], setActiveTab, setActiveList)}
 
       <div className="w-4/5 h-[1px] bg-purple-950 place-self-center"></div>
 
