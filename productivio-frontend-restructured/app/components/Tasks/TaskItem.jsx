@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useTasks } from "../../context/TasksContext";
 
 const TaskItem = ({ task }) => {
-  const { deleteTask, toggleTaskCompletion, editTask } = useTasks();
+  // const { deleteTask, toggleTaskCompletion, editTask } = useTasks();
   const [isHovered, setIsHovered] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedTask, setEditedTask] = useState({
@@ -18,7 +18,7 @@ const TaskItem = ({ task }) => {
   // Handle task update
   const handleUpdate = (e) => {
     e.preventDefault();
-    editTask(task.id, editedTask);
+   // editTask(task.id, editedTask);
     closeEditModal();
   };
 
@@ -35,14 +35,14 @@ const TaskItem = ({ task }) => {
 
       <div className="flex items-center">
         {/* Complete Task Button */}
-        <button onClick={() => toggleTaskCompletion(task.id)} className="text-green-600 mx-2">
+        {/* <button onClick={() => toggleTaskCompletion(task.id)} className="text-green-600 mx-2">
           ✅
-        </button>
+        </button> */}
 
         {/* Delete Task Button */}
-        <button onClick={() => deleteTask(task.id)} className="text-red-600">
+        {/* <button onClick={() => deleteTask(task.id)} className="text-red-600">
           ❌
-        </button>
+        </button> */}
 
         {/* Three Dots Button (Visible on Hover) */}
         {isHovered && (
