@@ -64,10 +64,10 @@ export default function EisenhowerMatrix() {
       setShowModal(true);
     }
 
-    const urgentImportantTasks = tasks.filter(task => task.priority === "1");
-    const notUrgentImportantTasks = tasks.filter(task => task.priority === "2");
-    const urgentUnimportantTasks = tasks.filter(task => task.priority === "3");
-    const notUrgentUnimportantTasks = tasks.filter(task => task.priority === "4");
+    const urgentImportantTasks = tasks.filter(task => !task.isTrash && task.priority === "1");
+    const notUrgentImportantTasks = tasks.filter(task => !task.isTrash && task.priority === "2");
+    const urgentUnimportantTasks = tasks.filter(task => !task.isTrash && task.priority === "3");
+    const notUrgentUnimportantTasks = tasks.filter(task => !task.isTrash && task.priority === "4");
 
     return (
       <div className="h-screen flex flex-col items-center bg-gray-100 p-4 overflow-hidden">
