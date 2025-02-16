@@ -52,7 +52,7 @@ const createTabs = (tabs, activeTab, setActiveTab, setActiveList = null) => {
   )
 }
 
-const TasksSidebar = ({ activeTab, setActiveTab, activeList, setActiveList = null }) => {
+const TasksSidebar = ({ activeTab, setActiveTab, activeList, setActiveList = null, taskBarCollapse }) => {
   const upperTabs = ["today", "Next 7 Days", "inbox"];
   const tabs = ["today", "Next 7 Days", "inbox", "lists", "completed", "trash"];
   const lowerTabs = ["completed", "trash"];

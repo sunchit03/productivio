@@ -3,6 +3,7 @@
 import TaskItem from "../../../components/Tasks/TaskItem";
 import TaskForm from "../../../components/Tasks/TaskForm";
 import { useEffect, useState } from "react";
+import { TbLayoutSidebarLeftCollapse, TbLayoutSidebarRightCollapse  } from "react-icons/tb";
 import { getUserTasks } from "@/app/services/tasks";
 import DetailTaskView from "@/app/components/Tasks/DetailTaskView";
 
@@ -13,7 +14,9 @@ const TasksView = ({
   next7days = false,
   completed = false, 
   trash = false,
-  listId = null 
+  listId = null,
+  taskBarCollapse,
+  setTaskBarCollapse
 }) => {
   const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState({});
@@ -73,11 +76,20 @@ const TasksView = ({
     }
   }
 
+  const toggleTaskBarCollapse = () => {
+    setTaskBarCollapse(!taskBarCollapse);
+  }
+
   return (
     <div className="w-full flex h-full px-5">
 
       <div className="w-3/5">
         <div className="flex flex-row items-center">
+          {!taskBarCollapse ?
+            <TbLayoutSidebarLeftCollapse size={"1.5em"} className="text-gray-500 cursor-pointer font-thin" onClick={toggleTaskBarCollapse}/>
+            :
+            <TbLayoutSidebarRightCollapse  size={"1.5em"} className="text-gray-500 cursor-pointer font-thin" onClick={toggleTaskBarCollapse}/>
+          }
           <h2 className="ml-1 text-xl text-black font-semibold my-4">{title}</h2>
         </div>
         {!completed && !trash && (
