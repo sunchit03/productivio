@@ -15,6 +15,7 @@ const TasksView = ({
   listId = null 
 }) => {
   const [tasks, setTasks] = useState([]);
+  const [selectedTask, setSelectedTask] = useState({});
   let todayOrNext = today || next7days;
 
   const fetchTasks = async() => {
@@ -59,22 +60,47 @@ const TasksView = ({
 
   useEffect(() => {
     fetchTasks();
+    setSelectedTask(null);
   }, [inbox, today, next7days, completed, trash, listId]);
 
+  const handleTaskSelection = (task) => { 
+
+    if (selectedTask == task) {
+      //setSelectedTask({});
+    } else {
+      setSelectedTask(task);
+    }
+  }
+
   return (
-    <div className="w-full">
-      <h2 className="text-xl text-black font-semibold mb-4">{title}</h2>
-      {!completed && !trash && (
-        <TaskForm todayOrNext={todayOrNext} listId={listId} refresh={fetchTasks}/>
-      )}
-      <div className="mt-4">
-        {tasks.length > 0 ? (
-          tasks.map((task) => <TaskItem key={task._id} task={task} />)
-        ) : (
-          <p className=" text-black  mb-4">
-            {listId != null ? "No tasks available in this list." : "No tasks available."}
-          </p>
+    <div className="w-full flex h-full px-5">
+
+      <div className="w-3/5">
+        <div className="flex flex-row items-center">
+          <h2 className="ml-1 text-xl text-black font-semibold my-4">{title}</h2>
+        </div>
+        {!completed && !trash && (
+          <TaskForm todayOrNext={todayOrNext} listId={listId} refresh={fetchTasks}/>
         )}
+        <div className="mt-4 h-[calc(100vh-150px)] overflow-y-auto">
+          {tasks.length > 0 ? (
+            tasks.map(task => { return (
+              <div className="group pr-2" key={task._id}>
+                <div className={`px-3 py-2 rounded-md ${selectedTask == task ? "bg-purple-50 hover:bg-purple-50" : "hover:bg-gray-50"}`} 
+                  onClick={() => handleTaskSelection(task)}>
+                  <TaskItem task={task} />
+                </div>
+                <div className="h-[1px] bottom-0 bg-purple-50 group-hover:invisible z-10"></div>
+              </div>
+            )})
+          ) : (
+            <p className=" text-black mb-4">
+              {listId != null ? "No tasks available in this list." : "No tasks available."}
+            </p>
+          )}
+        </div>
+      </div>
+      
       </div>
     </div>
   );
