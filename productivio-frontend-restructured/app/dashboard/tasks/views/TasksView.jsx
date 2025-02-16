@@ -4,6 +4,7 @@ import TaskItem from "../../../components/Tasks/TaskItem";
 import TaskForm from "../../../components/Tasks/TaskForm";
 import { useEffect, useState } from "react";
 import { getUserTasks } from "@/app/services/tasks";
+import DetailTaskView from "@/app/components/Tasks/DetailTaskView";
 
 const TasksView = ({
   title,
@@ -101,7 +102,11 @@ const TasksView = ({
         </div>
       </div>
       
+      <div className="relative ml-5 w-2/5">
+        <div className="absolute w-[1px] h-dvh left-0 z-10 bg-purple-50"></div>
+        <DetailTaskView task={selectedTask} />
       </div>
+
     </div>
   );
 };
