@@ -1,3 +1,4 @@
+import { createTeam } from "@/app/services/teams";
 import { useState } from "react";
 
 export default function CreateTeam({ onClose, refresh }) {
@@ -8,19 +9,11 @@ export default function CreateTeam({ onClose, refresh }) {
   const handleCreateTeam = async () => {
     if (!title.trim()) return;
 
-    try {
-      const res = await fetch("/api/teams", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, title, description }),
-      });
+    const data = await createTeam(userId, title, description);
 
-      if (res.ok) {
-        onClose(); // Close modal on success
-        refresh() // Refresh to show new team
-      }
-    } catch (error) {
-      console.error("Error creating team:", error);
+    if (data.ok) {
+      onClose(); // Close modal on success
+      refresh() // Refresh to show new team
     }
   };
 

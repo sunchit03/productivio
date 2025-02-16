@@ -5,7 +5,7 @@ export default function NotificationsModal({ onClose, notifications, activities 
     const [tab, setTab] = useState("notifications");
     
     return (
-      <div className="fixed top-2 left-16 min-h-[70%] w-80 bg-white shadow-lg rounded-lg">
+      <div className="fixed top-2 left-16 min-h-[70%] w-80 bg-white shadow-lg rounded-lg z-50">
         <div className="bg-white p-4 rounded ">
           <div className="flex justify-evenly">
             <button onClick={() => setTab("notifications")} className={tab === "notifications" ? "font-bold text-black" : "text-black"}>Notifications</button>
