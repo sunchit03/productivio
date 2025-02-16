@@ -3,7 +3,7 @@ import Task from "../../../../models/Task";
 
 export async function GET(req, { params }) {
   try {
-    const { userId } = params;
+    const { userId } = await params;
 
     if (!userId) {
       return NextResponse.json({ success: false, error: "User ID is required" }, { status: 400 });
