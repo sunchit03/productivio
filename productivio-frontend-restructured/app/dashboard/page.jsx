@@ -10,6 +10,7 @@ import ErrorMessage from "../components/ErrorMessage"
 import TeamsPage from "./teams/page"
 import { useRouter } from "next/navigation";
 import TaskPage from "./tasks/page";
+import EisenhowerMatrix from "./eisenhowerMatrix/page";
 
 function Dashboard() {
   const { user, error, isLoading } = useUser();
@@ -73,7 +74,9 @@ function Dashboard() {
             :
             /* Eisenhower Matrix Page */
             activeMainTab === "matrix" ? (
-              <main className="flex-grow bg-gray-50"></main>
+              <main className="flex-grow bg-gray-50">
+                <EisenhowerMatrix />
+              </main>
             )
             :
             /* Teams Page */

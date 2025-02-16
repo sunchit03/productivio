@@ -3,7 +3,7 @@ import Task from "../../../models/Task";
 
 export async function GET(req, { params }) {
     try {
-        const { taskId } = params;
+        const { taskId } = await params;
         const task = await Task.findById(taskId);
         if (!task) return NextResponse.json({ success: false, message: "Task not found" }, { status: 404 });
     
