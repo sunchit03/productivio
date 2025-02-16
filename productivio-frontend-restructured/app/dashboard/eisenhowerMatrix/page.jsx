@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { ImBin } from "react-icons/im";
 import { FaEdit } from "react-icons/fa"; // Import edit icon
 import EisenHowerTask from "@/app/components/EisenhowerMatrix/EisenhowerTask";
+import { getUserTasks } from "@/app/services/tasks";
 
 
 export default function EisenhowerMatrix() {
@@ -13,30 +14,19 @@ export default function EisenhowerMatrix() {
     const [selectedTask, setSelectedTask] = useState(null); // Track the task being edited
     const userId = typeof window !== "undefined" ? localStorage.getItem("userId") : null;
 
-    useEffect(() => {
-        if(userId){
-            fetchUserTasks();
-        }
-    }, [userId])
-
-    async function fetchUserTasks() {
+    const fetchTasks = async() => {
         try {
-            const res = await fetch(`/api/user/tasks?userId=${userId}`);
-            const data = await res.json();
-    
-            if (data.success) {
-                console.log("Tasks fetched:", data.tasks);
-                setTasks(data.tasks);
-            } else {
-                console.log("Tasks do not exist: ", data.error);
-                setTasks([]);
-            }
+          const data = await getUserTasks(localStorage.getItem("userId"));
+          setTasks(data);
+          console.log(data);
         } catch (error) {
-            console.error("Error fetching tasks: ", error.message);
-            setTasks([]);
+          console.error("Error fetching tasks:", error);
         }
-    }
+      };
     
+    useEffect(() => {
+      fetchTasks();
+    }, []);
 
     async function deleteTask(taskId) {
         try{
@@ -48,7 +38,7 @@ export default function EisenhowerMatrix() {
             const data = await res.json();
             if(data.success){
                 console.log(data.tasks);
-                fetchUserTasks();
+                fetchTasks();
             }
             else{
                 console.log("Tasks not deleted: ", data.error);
@@ -64,10 +54,10 @@ export default function EisenhowerMatrix() {
       setShowModal(true);
     }
 
-    const urgentImportantTasks = tasks.filter(task => task.priority === "1");
-    const notUrgentImportantTasks = tasks.filter(task => task.priority === "2");
-    const urgentUnimportantTasks = tasks.filter(task => task.priority === "3");
-    const notUrgentUnimportantTasks = tasks.filter(task => task.priority === "4");
+    const urgentImportantTasks = tasks.filter(task => !task.isTrash && task.priority === "1");
+    const notUrgentImportantTasks = tasks.filter(task => !task.isTrash && task.priority === "2");
+    const urgentUnimportantTasks = tasks.filter(task => !task.isTrash && task.priority === "3");
+    const notUrgentUnimportantTasks = tasks.filter(task => !task.isTrash && task.priority === "4");
 
     return (
       <div className="h-screen flex flex-col items-center bg-gray-100 p-4 overflow-hidden">
@@ -162,7 +152,7 @@ export default function EisenhowerMatrix() {
             <EisenHowerTask                             
                 userId={userId}
                 onClose={() => {setShowModal(false), setSelectedTask(null)}}
-                refresh={fetchUserTasks}
+                refresh={fetchTasks}
                 task={selectedTask} /> //pass the task to be edited
         }
       </div>
