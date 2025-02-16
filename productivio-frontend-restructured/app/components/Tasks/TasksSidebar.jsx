@@ -39,8 +39,8 @@ const createTabs = (tabs, activeTab, setActiveTab, setActiveList = null) => {
             ) : (
               <button
                 onClick={() => setActiveTab(tab)}
-                className={`w-full text-left px-3 py-2 flex items-center rounded-sm
-                  ${activeTab === tab ? "bg-gradient-to-bl from-violet-200 to-fuchsia-200" : "hover:bg-gradient-to-bl from-violet-100 to-fuchsia-100"}`}
+                className={`w-full text-left px-3 py-2 flex items-center rounded-md
+                  ${activeTab === tab ? "bg-indigo-500/15" : "hover:bg-indigo-500/5"}`}
               >
                 <div className="mr-[8px] w-[18px] h-[18px] flex-none">{renderButton(tab)}</div>
                 <p className="text-sm font-normal flex-auto">{tab.charAt(0).toUpperCase() + tab.slice(1)}</p>
@@ -58,7 +58,8 @@ const TasksSidebar = ({ activeTab, setActiveTab, activeList, setActiveList = nul
   const lowerTabs = ["completed", "trash"];
 
   return (
-    <div className="bg-gradient-to-bl from-violet-50 to-fuchsia-50 w-56 bg-white text-black h-screen flex flex-col justify-between overflow-y-auto">
+    <div className={`w-1/5 bg-gradient-to-b from-indigo-100 to-pink-50 bg-white text-black h-screen flex flex-col justify-between overflow-y-auto
+      ${!taskBarCollapse ? "visible" : "hidden"}`}>
 
       <div>
       {createTabs(upperTabs, activeTab, setActiveTab)}

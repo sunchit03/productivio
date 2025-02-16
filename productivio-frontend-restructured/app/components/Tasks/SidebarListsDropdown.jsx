@@ -42,32 +42,34 @@ const SidebarListsDropdown = ({ setActiveTab, setActiveList }) => {
     <div className="relative w-full" 
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}>
-      <button
-        onClick={() => setIsListsDropdownOpen(!isListsDropdownOpen)}
-        className="w-full text-left py-1 hover:bg-gradient-to-bl from-violet-100 to-fuchsia-100 hover:rounded-sm flex items-center"
-      >
-        { isHovered ? (
-          <>
-            <span>{isListsDropdownOpen ? 
-              <FaAngleDown size={"0.75em"} className="text-black/50 hover:text-black/100"/> 
-              : 
-              <FaAngleRight size={"0.75em"} className="text-black/50 hover:text-black/100"/> }
-            </span>
-            <span className="ml-1 text-xs font-semibold">Lists</span>
-          </>
-        ):
-        <span className="ml-4 text-xs font-semibold">Lists</span>
-        }
-        
-      </button>
-      {isHovered &&
-        <button
-          onClick={openListModal}
-          className="absolute right-3 top-0 text-black/50 hover:text-black/100 px-2 text-md"
-        >
-          +
-        </button>
-      }
+        <div className="flex justify-between hover:hover:bg-indigo-500/5 rounded-md">
+          <button
+            onClick={() => setIsListsDropdownOpen(!isListsDropdownOpen)}
+            className="w-full text-left py-1 flex items-center"
+          >
+            { isHovered ? (
+              <>
+                <span>{isListsDropdownOpen ? 
+                  <FaAngleDown size={"0.75em"} className="text-black/50 hover:text-black/100"/> 
+                  : 
+                  <FaAngleRight size={"0.75em"} className="text-black/50 hover:text-black/100"/> }
+                </span>
+                <span className="ml-1 text-xs font-semibold">Lists</span>
+              </>
+            ):
+            <span className="ml-4 text-xs font-semibold">Lists</span>
+            }
+            
+          </button>
+          {isHovered &&
+            <button
+              onClick={openListModal}
+              className="text-black/50 hover:text-black/100 px-2 text-md"
+            >
+              +
+            </button>
+          }
+        </div>
       {isListsDropdownOpen && (
         <div className="rounded-md">
           <ul className="">
@@ -88,7 +90,7 @@ const SidebarListsDropdown = ({ setActiveTab, setActiveList }) => {
                 </li>
               ))
             ) : (
-              <div className="px-3 py-2 bg-gray-100 rounded-sm text-gray-400 text-xs">Use lists to categorize and manage your tasks and notes</div>
+              <div className="px-3 py-2 bg-gray-100/50 rounded-md text-gray-400 text-xs">Use lists to categorize and manage your tasks and notes</div>
             )}
           </ul>
         </div>
