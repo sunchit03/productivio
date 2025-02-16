@@ -1,6 +1,6 @@
 // // app/components/TaskItem.jsx
 import { useState } from "react";
-import { useTasks } from "../../context/TasksContext";
+import { MdCheckBoxOutlineBlank, MdCheckBox } from "react-icons/md";
 
 const TaskItem = ({ task }) => {
   // const { deleteTask, toggleTaskCompletion, editTask } = useTasks();
@@ -10,6 +10,8 @@ const TaskItem = ({ task }) => {
     title: task?.title , // Ensure title is always present
     dueDate: task?.dueDate || "",
   });
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
   // Open and close edit modal
   const openEditModal = () => setIsEditing(true);
@@ -22,27 +24,84 @@ const TaskItem = ({ task }) => {
     closeEditModal();
   };
 
+  const getPriorityColor = () => {
+    let color;
+    switch (task.priority) {
+      case '1':
+        color = "text-rose-500";
+        break;
+
+      case '2':
+        color = "text-amber-500";
+        break;
+
+      case '3':
+        color = "text-blue-500";
+        break;
+
+      case '4':
+        color = "text-teal-400";
+        break;
+    }
+    return color;
+  }
+
+  const handleCheckBoxCheck = () => {
+    task.isCompleted = !task.isCompleted;
+    console.log(task.isCompleted);
+  }
+
+  const formatDate = () => {
+    let dateVal = new Date(task.dueDate);
+    let now = new Date();
+    const todayEnd = new Date();
+    todayEnd.setHours(23, 59, 59, 999);
+
+    if (dateVal <= todayEnd && dateVal >= now) {
+      return "Today";
+    }
+    
+    // Set the time to midnight for accurate date comparison
+    now.setHours(0, 0, 0, 0);
+    dateVal.setHours(0, 0, 0, 0);
+  
+    let next7Days = new Date();
+    next7Days.setDate(now.getDate() + 7);
+  
+    if (dateVal <= next7Days && dateVal >= now) {
+      return dayNames[dateVal.getDay()];
+    }
+  
+    let date = dateVal.getDate().toString();
+    let month = monthNames[dateVal.getMonth()];
+    let year = dateVal.getFullYear();
+  
+    let dateString = `${date} ${month} ${year !== now.getFullYear() ? year.toString() : ""}`;
+    return dateString;
+  };
+  
+
   return (
     <div
-      className="flex items-center justify-between bg-gray-100 p-3 rounded-md mb-2 relative"
+      className={`flex items-center justify-between relative`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Task Name */}
-      <span className={`text-black ${task?.completed ? "line-through text-gray-500" : ""}`}>
+      <span className={`text-black text-base flex items-center ${task?.isCompleted ? "line-through text-gray-500" : ""}`}>
+        {task.isCompleted ? 
+          <MdCheckBox className={`mr-2 cursor-pointer ${getPriorityColor()}`} onClick={handleCheckBoxCheck}/> 
+        :
+          <MdCheckBoxOutlineBlank className={`mr-2 cursor-pointer ${getPriorityColor()}`} onClick={handleCheckBoxCheck}/> 
+        }
+        
         {task?.title || "Untitled Task"} {/* Ensures task title is displayed */}
       </span>
 
       <div className="flex items-center">
-        {/* Complete Task Button */}
-        {/* <button onClick={() => toggleTaskCompletion(task.id)} className="text-green-600 mx-2">
-          ✅
-        </button> */}
-
-        {/* Delete Task Button */}
-        {/* <button onClick={() => deleteTask(task.id)} className="text-red-600">
-          ❌
-        </button> */}
+        {task.dueDate &&
+          <span className="text-black text-xs font-thin">{formatDate()}</span>
+        }
 
         {/* Three Dots Button (Visible on Hover) */}
         {isHovered && (

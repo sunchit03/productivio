@@ -20,17 +20,17 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user }) => {
   const router = useRouter();
 
   return (
-    <aside className="bg-gradient-to-bl from-violet-400 to-fuchsia-200 w-14 p-4 flex flex-col items-center justify-between h-full">
+    <aside className="w-[50px] bg-gradient-to-b from-indigo-300 to-pink-200 p-4 flex flex-col items-center justify-between h-full">
       <div className="flex flex-col items-center space-y-4 flex-grow">
       <img
         src={user?.picture}
         alt="Profile"
-        className="rounded-md img-fluid profile-picture mb-3 mb-md-0"
+        className="rounded-md img-fluid profile-picture mb-md-0"
         decode="async"
         data-testid="profile-picture"
       />
       <button
-        className={`p-2 rounded ${
+        className={`px-2 py-1 rounded ${
           activeMainTab === "task" ? "text-white/100" : "text-white/50 hover:text-white/75"
         }`}
         title="Task"
@@ -45,7 +45,7 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user }) => {
         <IoIosCheckbox size="1.4em"/>
       </button>
       <button
-        className={`p-2 rounded ${
+        className={`px-2 py-1 rounded ${
           activeMainTab === "calendar" ? "text-white/100" : "text-white/50 hover:text-white/75"
         }`}
         title="Calendar View"
@@ -60,7 +60,7 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user }) => {
         <FaCalendarAlt size="1.4em"/>
       </button>
       <button
-        className={`p-2 rounded ${
+        className={`px-2 py-1 rounded ${
           activeMainTab === "pomodoro" ? "text-white/100" : "text-white/50 hover:text-white/75"
         }`}
         title="Pomodoro"
@@ -76,7 +76,7 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user }) => {
       </button>
 
       <button
-        className={`p-2 rounded ${
+        className={`px-2 py-1 rounded ${
           activeMainTab === "matrix" ? "text-white/100" : "text-white/50 hover:text-white/75"
         }`}
         title="Eisenhower Matrix"
@@ -92,7 +92,7 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user }) => {
       </button>
       
       <button
-        className={`p-2 rounded ${
+        className={`px-2 py-1 rounded ${
           activeMainTab === "teams" ? "text-white/100" : "text-white/50 hover:text-white/75"
         }`}
         title="Teams"
@@ -111,7 +111,7 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user }) => {
       <div className="flex flex-col items-center space-y-4 mt-auto">
       {/* Notifications Button */}
       <button 
-        className="p-2 rounded text-white/50 hover:text-white/75"
+        className="px-2 py-1 rounded text-white/50 hover:text-white/75"
         title="Notifications"
         onClick={() => setShowNotifications(true)}>
         <IoMdNotifications size="1.4em"/>
@@ -119,7 +119,7 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user }) => {
 
       <button 
         onClick={() => handleLogout()} 
-        className="p-2 rounded text-white/50 hover:text-white/75"
+        className="px-2 py-1 rounded text-white/50 hover:text-white/75"
         title="Sign Out"
         >
         <FaSignOutAlt size="1.4em"/>

@@ -16,6 +16,7 @@ function Dashboard() {
 
   // State Variables
   const [activeMainTab, setActiveMainTab] = useState(localStorage.getItem("activeTab")); // Main Sidebar Tabs
+  const [taskBarCollapse, setTaskBarCollapse] = useState(false)
 
   const router = useRouter();
 
@@ -58,7 +59,7 @@ function Dashboard() {
 
             {/* Tasks Page */}
             {activeMainTab === "task" ? (
-              <TaskPage />       
+              <TaskPage taskBarCollapse={taskBarCollapse} setTaskBarCollapse={setTaskBarCollapse}/>       
             ) 
             : 
             /* Calendar Page */
