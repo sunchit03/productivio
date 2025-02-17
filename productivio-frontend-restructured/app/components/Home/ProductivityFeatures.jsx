@@ -3,19 +3,19 @@ import React from "react";
 const features = [
   {
     title: "Todo List",
-    description: "Organize everything in your life with structured task lists.",
+    description: "Organize everything in your life with structured task lists. Whether it's work projects, personal tasks, or study plans, TickTick helps you organize and confidently tackle everything in your life.",
     image: "/assets/todo-list.jpg",
     textAlign: "left",
   },
   {
     title: "Pomodoro Technique",
-    description: "Boost focus with timed work and break sessions.",
+    description: "Track time and stay focused. Adopt the popular - Pomodoro Technique. Break tasks into 25-minute intervals to stay focused and achieve a productive flow.",
     image: "/assets/pomodoro.jpg",
     textAlign: "right",
   },
   {
     title: "Eisenhower Matrix",
-    description: "Prioritize tasks effectively based on urgency & importance.",
+    description: "Focus on important and urgent tasks. Different strategies for different matrix. Edit filters to create a customized perspective. Effective plans guide the sequence of actions.",
     image: "/assets/eisenhower-matrix.png",
     textAlign: "left",
   },
@@ -23,7 +23,7 @@ const features = [
 
 const ProductivityFeatures = () => {
   return (
-    <section className="py-16 bg-gray-100">
+    <section className="px-5 py-16 bg-gradient-to-r from-blue-100 to-blue-200">
       <div className="container mx-auto flex flex-col gap-16">
         {features.map((feature, index) => (
           <div
@@ -42,7 +42,7 @@ const ProductivityFeatures = () => {
             </div>
 
             {/* Image Section */}
-            <div className="relative md:w-1/3">
+            <div className="relative ml-10 mr-10 md:w-1/3">
               <img
                 src={feature.image}
                 alt={feature.title}
