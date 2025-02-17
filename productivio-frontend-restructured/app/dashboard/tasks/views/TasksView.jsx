@@ -117,7 +117,7 @@ const TasksView = ({
           <h2 className="ml-1 text-xl text-black font-semibold my-4">{title}</h2>
         </div>
         {!completed && !trash && (
-          <TaskForm todayOrNext={todayOrNext} listId={listId} refresh={fetchTasks}/>
+          <TaskForm todayOrNext={todayOrNext} listId={listId} refresh={fetchTasks} userId={userId}/>
         )}
         <div className="mt-4 h-[calc(100vh-150px)] overflow-y-auto">
           {tasks.length > 0 ? (

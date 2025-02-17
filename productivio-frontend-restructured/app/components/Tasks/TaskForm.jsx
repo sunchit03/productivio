@@ -8,7 +8,7 @@ import { createTask } from "@/app/services/tasks";
 
 import 'react-calendar/dist/Calendar.css';
 
-const TaskForm = ( {todayOrNext = false, listId = null, refresh } ) => {
+const TaskForm = ( {todayOrNext = false, listId = null, refresh, userId } ) => {
   const [title, setTitle] = useState("");
   const [datePicker, setDatePicker] = useState(false);
   const [dueDate, setDueDate] = useState(new Date());
@@ -26,8 +26,8 @@ const TaskForm = ( {todayOrNext = false, listId = null, refresh } ) => {
     try {
       let data = await createTask({
         title,
-        createdBy: localStorage.getItem("userId"),
-        list: listId,
+        createdBy: userId,
+        listId,
         dueDate
       });
 
