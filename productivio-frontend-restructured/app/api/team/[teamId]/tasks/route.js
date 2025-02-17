@@ -1,41 +1,48 @@
 import { NextResponse } from "next/server";
+import mongoose from "mongoose";
 import Team from "../../../../models/Team";
 import Task from "../../../../models/Task";
+const connectDB = require('../../../../utils/connect');
 
 export async function GET(req,{params}){
     try{
+
+        // Connect to MongoDB if not already connected
+        if (mongoose.connection.readyState === 0) {
+            await connectDB();
+        }
         
-    const { teamId } = params;
-    const {searchParams} = new URL(req.url);
-    const userId = searchParams.get("userId");
+        const { teamId } = params;
+        const {searchParams} = new URL(req.url);
+        const userId = searchParams.get("userId");
 
-    if (!userId) {
-        return NextResponse.json({ success: false, error: "User ID is required" }, { status: 400 });
-    }
+        if (!userId) {
+            return NextResponse.json({ success: false, error: "User ID is required" }, { status: 400 });
+        }
 
-    if(!teamId){
-        return NextResponse.json ({success: false, error: "teamId is required"}, {status: 400})
-    }
+        if(!teamId){
+            return NextResponse.json ({success: false, error: "teamId is required"}, {status: 400})
+        }
 
-    const team = await Team.findById(teamId).populate({path: "tasks"}).populate("members");
+        const team = await Team.findById(teamId).populate({path: "tasks"}).populate("members");
 
-    if(!team){
-        return NextResponse.json({success: false, error: "Team not found"},{status: 400})
-    }  
+        if(!team){
+            return NextResponse.json({success: false, error: "Team not found"},{status: 400})
+        }  
 
-    const isMember = team.members.some(member => member._id.toString() === userId);
+        const isMember = team.members.some(member => member._id.toString() === userId);
 
-    if (!isMember) {
-        return NextResponse.json({ success: false, error: "Access denied. You are not a team member." }, { status: 403 });
-      }
+        if (!isMember) {
+            return NextResponse.json({ success: false, error: "Access denied. You are not a team member." }, { status: 403 });
+        }
 
-    if (!team.tasks || team.tasks.length === 0) {
-            return NextResponse.json({ success: true, tasks: [], message: "No tasks available for this team." }, { status: 201 });
-    }
-    
-    console.log(" Returning tasks:", team.tasks);
+        if (!team.tasks || team.tasks.length === 0) {
+                return NextResponse.json({ success: true, tasks: [], message: "No tasks available for this team." }, { status: 201 });
+        }
+        
+        console.log(" Returning tasks:", team.tasks);
 
-    return NextResponse.json({success: true, tasks: team.tasks},{status: 200})
+        return NextResponse.json({success: true, tasks: team.tasks},{status: 200})
 }
    catch(error){
     console.error("Error fetching team tasks:", error);
