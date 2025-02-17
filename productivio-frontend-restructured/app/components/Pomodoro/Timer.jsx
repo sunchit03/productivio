@@ -3,6 +3,7 @@ import 'react-circular-progressbar/dist/styles.css';
 import PlayButton from "./PlayButton";
 import PauseButton from "./PauseButton";
 import SettingsButton from "./SettingsButton";
+import StopButton from "./StopButton";
 import {useContext, useState, useEffect, useRef} from "react";
 import SettingsContext from "./SettingsContext";
 
@@ -76,6 +77,9 @@ export default function Timer() {
                         tailColor: 'rgba(255,255,255,.2)',
                     })}
                 />
+                <p className="mt-3 text-lg font-semibold" style={{ color: mode === 'work' ? red : green }}>
+                    {mode === 'work' ? "Work Time" : "Break Time"}
+                </p>
 
                 {/* Buttons aligned horizontally */}
                 <div className="flex justify-center items-center gap-4 mt-5">
@@ -90,7 +94,18 @@ export default function Timer() {
                             isPausedRef.current = true;
                         }}/>
                     )}
-                    {/*<SettingsButton onClick={() => settingsInfo.setShowSettings(true)}/>*/}
+                    <StopButton onClick={() => {
+                        setIsPaused(true);
+                        isPausedRef.current = true;
+
+                        setMode("work");
+                        modeRef.current = "work";
+
+                        const resetTime = settingsInfo.workMinutes * 60;
+                        setSecondsLeft(resetTime);
+                        secondsLeftRef.current = resetTime;
+                    }}/>
+                    <SettingsButton onClick={() => settingsInfo.setShowSettings(true)}/>
                 </div>
             </div>
         </div>

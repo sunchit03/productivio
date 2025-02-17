@@ -1,10 +1,8 @@
+"use client"
 import Timer from "../../components/Pomodoro/Timer";
 import Settings from "../../components/Pomodoro/Settings";
 import {useState} from "react";
 import SettingsContext from "../../components/Pomodoro/SettingsContext";
-import TeamCard from "@/app/components/Teams/TeamCard";
-import {FaPlus} from "react-icons/fa";
-import CreateTeam from "@/app/components/Teams/CreateTeam";
 
 export default function PomodoroPage() {
 
