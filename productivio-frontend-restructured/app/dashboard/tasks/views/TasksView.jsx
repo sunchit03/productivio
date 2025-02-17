@@ -10,6 +10,7 @@ import DetailTaskView from "@/app/components/Tasks/DetailTaskView";
 const TasksView = ({
   title,
   listId = null,
+  userId,
   taskBarCollapse,
   setTaskBarCollapse
 }) => {
@@ -84,8 +85,11 @@ const TasksView = ({
     }
     todayOrNext = today || next7days;
 
+    if (userId) {
+      fetchTasks();
+    }
     setSelectedTask(null);
-  }, [inbox, today, next7days, completed, trash, listId]);
+  }, [title, userId]);  
 
 
   const handleTaskSelection = (task) => { 
