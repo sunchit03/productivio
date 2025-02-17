@@ -78,7 +78,7 @@ function Dashboard() {
             /* Eisenhower Matrix Page */
             activeMainTab === "matrix" ? (
               <main className="flex-grow bg-gray-50">
-                <EisenhowerMatrix />
+                <EisenhowerMatrix userId={userId}/>
               </main>
             )
             :

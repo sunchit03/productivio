@@ -55,7 +55,6 @@ const MatrixBlock = ({tasks, title, refresh, userId}) => {
                 (<p className="text-sm text-gray-500">
                     No tasks</p>
                 ) : (tasks.map(task => (
-                  //<div className="flex flex col" key={task._id}>
                   <div className="group pr-2" key={task._id}>
                     <div className= "px-3 py-2 rounded-md hover:bg-gray-200">
                     <TaskItem task={task}/>

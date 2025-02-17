@@ -6,15 +6,14 @@ import { getUserTasks } from "@/app/services/tasks";
 import MatrixBlock from "../../components/EisenhowerMatrix/MatrixBlock"
 
 
-export default function EisenhowerMatrix() {
+export default function EisenhowerMatrix( {userId} ) {
 
     const [tasks, setTasks] = useState([]);
     const [selectedTask, setSelectedTask] = useState(null); // Track the task being edited
-    const userId = typeof window !== "undefined" ? localStorage.getItem("userId") : null;
 
     const fetchTasks = async() => {
         try {
-          const data = await getUserTasks(localStorage.getItem("userId"));
+          const data = await getUserTasks(userId);
           setTasks(data);
           console.log(data);
         } catch (error) {

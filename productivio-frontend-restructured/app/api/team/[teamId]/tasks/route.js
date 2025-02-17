@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
 import Team from "../../../../models/Team";
 import Task from "../../../../models/Task";
-import connectDB from "../../../../utils/connect";
-
-connectDB();
 
 export async function GET(req,{params}){
     try{
