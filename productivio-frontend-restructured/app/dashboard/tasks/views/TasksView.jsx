@@ -9,22 +9,29 @@ import DetailTaskView from "@/app/components/Tasks/DetailTaskView";
 
 const TasksView = ({
   title,
-  inbox = false,
-  today = false, 
-  next7days = false,
-  completed = false, 
-  trash = false,
   listId = null,
   taskBarCollapse,
   setTaskBarCollapse
 }) => {
   const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState({});
+
+  let inbox = false;
+  let today = false;
+  let next7days = false;
+  let completed = false;
+  let trash = false;
+
   let todayOrNext = today || next7days;
 
   const fetchTasks = async() => {
     try {
-      const data = await getUserTasks(localStorage.getItem("userId"));
+      const data = await getUserTasks(userId);
+
+      if (!data) {
+        setTasks([]);
+        return;
+      }
 
       let filteredTasks = data;
       const now = new Date();
@@ -61,17 +68,28 @@ const TasksView = ({
       console.error("Error fetching tasks:", error);
     }
   };
-
+  
   useEffect(() => {
-    fetchTasks();
+    inbox = false;
+    today = false;
+    next7days = false;
+    completed = false;
+    trash = false;
+    switch(title) {
+      case "Today": today = true; break;
+      case "Next 7 Days": next7days = true; break;
+      case "Inbox": inbox = true; break;
+      case "Completed": completed = true; break;
+      case "Trash": trash = true; break;
+    }
+    todayOrNext = today || next7days;
+
     setSelectedTask(null);
   }, [inbox, today, next7days, completed, trash, listId]);
 
-  const handleTaskSelection = (task) => { 
 
-    if (selectedTask == task) {
-      //setSelectedTask({});
-    } else {
+  const handleTaskSelection = (task) => { 
+    if (selectedTask !== task) {
       setSelectedTask(task);
     }
   }
@@ -82,7 +100,6 @@ const TasksView = ({
 
   return (
     <div className="w-full flex h-full px-5">
-
       <div className="w-3/5">
         <div className="flex flex-row items-center">
           {!taskBarCollapse ?
@@ -118,7 +135,7 @@ const TasksView = ({
         <div className="absolute w-[1px] h-dvh left-0 z-10 bg-purple-50"></div>
         <DetailTaskView task={selectedTask} />
       </div>
-
+  
     </div>
   );
 };

@@ -78,7 +78,7 @@ const SidebarListsDropdown = ({ setActiveTab, setActiveList }) => {
                 <li key={list.id} className="flex relative px-[10px]">
                   <button  
                     onClick={() => {
-                      setActiveTab(`lists`);
+                      setActiveTab(`Lists`);
                       setActiveList({id: list.id, emoji: list.emoji, name: list.name});
                       selectList(list.id);
                     }}

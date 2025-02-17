@@ -1,30 +1,15 @@
-// // app/components/TasksSidebar.jsx
-import { useState } from "react";
+// app/components/TasksSidebar.jsx
 import { BsCalendar2Date, BsCalendar2Day } from "react-icons/bs";
 import { FiInbox, FiTrash2 , FiCheckSquare  } from "react-icons/fi";
 import SidebarListsDropdown from "./SidebarListsDropdown";
 
 const renderButton = (tab) => {
   switch(tab) {
-    case "today":
-      return <BsCalendar2Date />
-      break;
-
-    case "Next 7 Days":
-      return <BsCalendar2Day />
-      break;
-
-    case "inbox":
-      return <FiInbox />
-      break;
-
-    case "completed":
-      return <FiCheckSquare />
-      break;
-
-    case "trash":
-      return <FiTrash2 />
-      break;
+    case "Today": return <BsCalendar2Date />
+    case "Next 7 Days": return <BsCalendar2Day />
+    case "Inbox": return <FiInbox />
+    case "Completed": return <FiCheckSquare />
+    case "Trash": return <FiTrash2 />
   }
 }
 
@@ -34,7 +19,7 @@ const createTabs = (tabs, activeTab, setActiveTab, setActiveList = null) => {
         {tabs.map((tab) => (
           <li key={tab} className="flex flex-col relative px-[10px]">
             
-            {tab === "lists" ? (
+            {tab === "Lists" ? (
               <SidebarListsDropdown setActiveTab={setActiveTab} setActiveList={setActiveList} />
             ) : (
               <button
@@ -53,23 +38,18 @@ const createTabs = (tabs, activeTab, setActiveTab, setActiveList = null) => {
 }
 
 const TasksSidebar = ({ activeTab, setActiveTab, activeList, setActiveList = null, taskBarCollapse }) => {
-  const upperTabs = ["today", "Next 7 Days", "inbox"];
-  const tabs = ["today", "Next 7 Days", "inbox", "lists", "completed", "trash"];
-  const lowerTabs = ["completed", "trash"];
+  const upperTabs = ["Today", "Next 7 Days", "Inbox"];
+  const lowerTabs = ["Completed", "Trash"];
 
   return (
     <div className={`w-1/5 bg-gradient-to-b from-indigo-100 to-pink-50 bg-white text-black h-screen flex flex-col justify-between overflow-y-auto
       ${!taskBarCollapse ? "visible" : "hidden"}`}>
 
       <div>
-      {createTabs(upperTabs, activeTab, setActiveTab)}
-
-      <div className="w-4/5 h-[1px] bg-purple-950 place-self-center"></div>
-
-      {createTabs(["lists"], activeTab, setActiveTab, setActiveList)}
-
-      <div className="w-4/5 h-[1px] bg-purple-950 place-self-center"></div>
-
+        {createTabs(upperTabs, activeTab, setActiveTab)}
+        <div className="w-4/5 h-[1px] bg-purple-950 place-self-center"></div>
+        {createTabs(["Lists"], activeTab, setActiveTab, setActiveList)}
+        <div className="w-4/5 h-[1px] bg-purple-950 place-self-center"></div>
       </div>
 
       {createTabs(lowerTabs, activeTab, setActiveTab)}
