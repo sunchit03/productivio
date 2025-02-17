@@ -1,18 +1,24 @@
 import { useState, useEffect} from "react";
+import { createTask } from "@/app/services/tasks";
 
 
-export default function EisenHowerTask({ refresh, onClose, userId, task }) {
-    const [title, setTitle] = useState(task ? task.title : "");
-    const [description, setDescription] = useState(task ? task.description : "");
-    const [priority, setPriority] = useState(task ? task.priority : "4");
 
-    useEffect(()=>{
-        if(task){
-            setTitle(task.title);
-            setDescription(task.description);
-            setPriority(task.priority);
-        }
-    },[task])
+export default function EisenHowerTask({ reloadTasks, onClose, userId}) {
+    // const [title, setTitle] = useState(task ? task.title : "");
+    // const [description, setDescription] = useState(task ? task.description : "");
+    // const [priority, setPriority] = useState(task ? task.priority : "4");
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [priority, setPriority] = useState("");
+
+
+    // useEffect(()=>{
+    //     if(task){
+    //         setTitle(task.title);
+    //         setDescription(task.description);
+    //         setPriority(task.priority);
+    //     }
+    // },[task])
 
 
     const handleCreateTask = async () => {
@@ -21,31 +27,28 @@ export default function EisenHowerTask({ refresh, onClose, userId, task }) {
             return;
         }
         try {
-            let res;
-            if (task) {
-                // Update existing Task (PUT request)
-                res = await fetch(`/api/user/tasks/${task._id}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ title, description, priority, userId }),
-                });
-            } else {
+            // let res;
+            // if (task) {
+            //     // Update existing Task (PUT request)
+            //     res = await fetch(`/api/user/tasks/${task._id}`, {
+            //         method: "PUT",
+            //         headers: { "Content-Type": "application/json" },
+            //         body: JSON.stringify({ title, description, priority, userId }),
+            //     });
+            // } else {
                 // Create New Task (POST request)
-                res = await fetch(`/api/user/tasks`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ title, description, priority, userId }),
-                });
-            }
+            //}
+            const res = await createTask({title, description, priority, createdBy: userId})
+            
 
-            if (res.ok) {
+            if (res.success) {
                 onClose();
-                await refresh();
+                await reloadTasks();
             } else {
-                console.log("Task operation failed");
+                console.log("Task creation operation failed");
             }
         } catch (error) {
-            console.error("Error handling task:", error.message);
+            console.error("Error adding task:", error.message);
         }
     }
 
@@ -53,7 +56,7 @@ export default function EisenHowerTask({ refresh, onClose, userId, task }) {
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white p-6 rounded-lg shadow-md w-96">
-                <h2 className="text-xl font-semibold mb-4 text-black">{task ? "Edit Task" : "Create New Task"}</h2>
+                <h2 className="text-xl font-semibold mb-4 text-black">Create New Task</h2>
 
                 <input
                     type="text"
@@ -87,7 +90,7 @@ export default function EisenHowerTask({ refresh, onClose, userId, task }) {
                         Cancel
                     </button>
                     <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={handleCreateTask}>
-                    {task ? "Update" : "Create"}
+                    Create
                     </button>
                 </div>
             </div>
