@@ -26,7 +26,6 @@ const TasksView = ({
 
   const fetchTasks = async() => {
     try {
-      console.log("this is the title right now - " + title);
       const data = await getUserTasks(userId);
 
       if (!data) {
