@@ -4,6 +4,8 @@ import TaskItem from "../../../components/Tasks/TaskItem";
 import TaskForm from "../../../components/Tasks/TaskForm";
 import { useEffect, useState } from "react";
 import { TbLayoutSidebarLeftCollapse, TbLayoutSidebarRightCollapse  } from "react-icons/tb";
+import { RiProgress5Line } from "react-icons/ri";
+import { BsTrash2 } from "react-icons/bs";
 import { GiPapers } from "react-icons/gi";
 import { FaPencilAlt } from "react-icons/fa";
 import { getUserTasks } from "@/app/services/tasks";
@@ -127,11 +129,33 @@ const TasksView = ({
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-black cursor-default">
               <div className="flex mb-2 items-center">
-                <GiPapers size={"4em"} className="text-violet-200"/>
-                <FaPencilAlt size={"2em"} className="text-violet-900"/>
+                {title == "Completed" ? (
+                  <RiProgress5Line size={"4em"} className="text-violet-300" />       
+                ) : title == "Trash" ? (
+                  <BsTrash2 size={"4em"} className="text-violet-300"/>
+                ) :
+                  <>
+                    <GiPapers size={"4em"} className="text-violet-200"/>
+                    <FaPencilAlt size={"2em"} className="text-violet-900"/>
+                  </>
+                }
               </div>
-              <span className="text-center text-base font-medium">No tasks</span>
-              <span className="text-center text-xs font-thin">Click the input box to add</span>
+              { title == "Completed" ? (
+                <>
+                  <span className="text-center text-base font-medium">No tasks completed yet</span>
+                  <span className="text-center text-xs font-thin">Keep it up :&#41;</span>
+                </>
+              ) : title == "Trash" ? (
+                <>
+                  <span className="text-center text-base font-medium">Trash can is tidy</span>
+                  <span className="text-center text-xs font-thin">No deleted tasks yet</span>
+                </>
+              ) : (
+                <>
+                  <span className="text-center text-base font-medium">No tasks</span>
+                  <span className="text-center text-xs font-thin">Click the input box to add</span>
+                </>
+              )}
             </div>
           )}
         </div>
