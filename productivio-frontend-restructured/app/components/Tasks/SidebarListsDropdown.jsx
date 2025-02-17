@@ -54,7 +54,8 @@ const SidebarListsDropdown = ({ activeTab, setActiveTab, activeList, setActiveLi
       let data = await createList({name: newList.name, emoji: newList.emoji || "📁", createdBy: userId});
 
       if (data.success) {
-        console.log("task is created!");
+        console.log("List is created!");
+        fetchLists();
       }
     } catch (error) {
       console.error("Error creating list:", error);
