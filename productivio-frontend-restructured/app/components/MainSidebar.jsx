@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoIosCheckbox } from "react-icons/io";
 import { FaCalendarAlt, FaSignOutAlt, FaUser } from "react-icons/fa";
 import { MdTimer } from "react-icons/md";
@@ -9,6 +9,7 @@ import NotificationsModal from "../components/NotificationsModal";
 import { useRouter } from "next/navigation";
 
 const MainSidebar = ({ activeMainTab, setActiveMainTab, user }) => {
+  const [userPicture, setUserPicture] = useState(user?.picture || null);
   const [showNotifications, setShowNotifications] = useState(false);
 
   const handleLogout = () => {
@@ -19,16 +20,40 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user }) => {
 
   const router = useRouter();
 
+  useEffect(() => {
+    console.log("userrrrrrr "+ user.picture)
+    if (user) {
+    setUserPicture(user.picture);
+    console.log("userrrrrrr picccccc "+ user.picture)
+    }
+  }, [user]);
+
   return (
     <aside className="w-[50px] bg-gradient-to-b from-indigo-300 to-pink-200 p-4 flex flex-col items-center justify-between h-full">
       <div className="flex flex-col items-center space-y-4 flex-grow">
-      <img
-        src={user?.picture}
-        alt="Profile"
-        className="rounded-md img-fluid profile-picture mb-md-0"
-        decode="async"
-        data-testid="profile-picture"
-      />
+        {user ? (
+          <img
+          src={userPicture}
+          alt="Profile"
+          className="rounded-md img-fluid profile-picture mb-md-0"
+          decode="async"
+          data-testid="profile-picture"
+        />
+        ) : (
+          <button
+          className={`px-2 py-1 rounded text-white/50 hover:text-white/75`}
+          title={user?.name || "Profile"}
+          onClick={() => {
+            // if (activeMainTab != "task") {
+            //   router.push("/dashboard")
+            //   setActiveMainTab("task")
+            //   localStorage.setItem("activeTab", "task");
+            // }
+          }}
+        >
+          <FaUser size="1.4em"/>
+        </button>
+        )}
       <button
         className={`px-2 py-1 rounded ${
           activeMainTab === "task" ? "text-white/100" : "text-white/50 hover:text-white/75"

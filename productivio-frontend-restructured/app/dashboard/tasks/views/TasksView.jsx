@@ -114,7 +114,7 @@ const TasksView = ({
         {!completedOrTrash && (
           <TaskForm todayOrNext={todayOrNext} listId={listId} refresh={fetchTasks} userId={userId}/>
         )}
-        <div className="mt-4 h-[calc(100vh-150px)] overflow-y-auto relative">
+        <div className="mt-4 h-[calc(100vh-150px)] hover:overflow-y-auto relative">
           {tasks.length > 0 ? (
             tasks.map(task => { return (
               <div className="group pr-2" key={task._id}>
