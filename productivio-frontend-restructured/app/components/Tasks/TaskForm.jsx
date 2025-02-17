@@ -1,25 +1,33 @@
-// // app/components/TaskForm.jsx
+// app/components/TaskForm.jsx
 import { useState } from "react";
-import DatePicker from "react-datepicker";
+import Calendar from 'react-calendar';
+import { BsCalendar2Date } from "react-icons/bs";
+import { IoCalendarOutline } from "react-icons/io5";
+import { GrClear } from "react-icons/gr";
 import { createTask } from "@/app/services/tasks";
 
-import "react-datepicker/dist/react-datepicker.css";
+import 'react-calendar/dist/Calendar.css';
 
-
-const TaskForm = ( {todayOrNext = false, listId = null, refresh } ) => {
+const TaskForm = ( {todayOrNext = false, listId = null, refresh, userId } ) => {
   const [title, setTitle] = useState("");
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [dueDate, setDueDate] = useState("");
+  const [datePicker, setDatePicker] = useState(false);
+  const [dueDate, setDueDate] = useState(new Date());
+  const [dueDateSelected, setDueDateSelected] = useState(false);
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title || !dueDate) return;
+    if (!title.trim()) return;
+
+    if (!dueDateSelected) {
+      setDueDate("")
+    }
 
     try {
       let data = await createTask({
         title,
-        createdBy: localStorage.getItem("userId"),
-        list: listId,
+        createdBy: userId,
+        listId,
         dueDate
       });
 
@@ -31,41 +39,63 @@ const TaskForm = ( {todayOrNext = false, listId = null, refresh } ) => {
       console.error("Error creating task:", error);
     }
 
+    setDueDateSelected(false);
     setTitle("");
     setDueDate("");
   };
 
+  const handleDueDateSelection = (date) => {
+    const updatedDate = new Date(date);
+    updatedDate.setHours(23, 59, 59, 999); // 11:59:59 PM
+
+    setDueDate(updatedDate);
+    setDueDateSelected(true);
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="mb-4 w-96">
+    <form onSubmit={handleSubmit} className="mb-4 w-full" >
       <div className="relative">
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder={todayOrNext ? '+ Add task to "Inbox"' : '+ Add task'}
-          className="py-2 px-3 w-full text-base rounded font-weight:bold text-black bg-gray-50 placeholder-gray-300 focus:outline-none focus:bg-white focus:ring-1 focus:ring-violet-500"
+          onKeyDown={(e) => {
+          if (e.key === "Enter")
+              handleSubmit;
+          }}
+          onClick={() => setDatePicker(false)}
+          className="py-2 px-3 pr-25 w-full text-base rounded font-weight:bold text-black bg-gray-50 placeholder-gray-300 focus:outline-none focus:bg-white focus:ring-1 focus:ring-violet-500"
         />
         <span 
-          className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer text-sm"
+          className="absolute inset-y-0 right-0 pr-2 flex items-center cursor-pointer text-base text-black"
         >
-          <DatePicker
-            showIcon
-            toggleCalendarOnIconClick
-            selected={selectedDate}
-            onChange={(date) => setSelectedDate(date)}
-            
-          />
+          {
+            dueDateSelected ? 
+              <>
+                <div className="flex items-center" onClick={() => setDatePicker((val) => !val)}>
+                  <BsCalendar2Date className="mr-2"/>
+                  <span> {dueDate.getFullYear() != new Date().getFullYear() ? 
+                    dueDate.getDate().toString() + " " + monthNames[dueDate.getMonth()] + " " + dueDate.getFullYear().toString() 
+                    : 
+                    dueDate.getDate().toString() + " " + monthNames[dueDate.getMonth()]
+                    } 
+                  </span>
+                </div>
+                { datePicker &&
+                  <GrClear className="ml-2" onClick={() => { setDueDate(""); setDueDateSelected(false); }}/>
+                }
+              </>
+              :
+              <IoCalendarOutline onClick={() => setDatePicker((val) => !val)}/>
+          }
         </span>
+        {datePicker &&
+          <div className="absolute right-0 z-10 mt-1">
+            <Calendar className="text-black" onChange={handleDueDateSelection} value={dueDate} />
+          </div>
+        }
       </div>
-      {/* <input
-        type="datetime-local"
-        value={dueDate}
-        onChange={(e) => setDueDate(e.target.value)}
-        className="ml-2 p-2 border rounded text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <button type="submit" className="ml-2 bg-blue-500 text-white px-4 py-2 rounded">
-        Add Task
-      </button> */}
     </form>
   );
 };
