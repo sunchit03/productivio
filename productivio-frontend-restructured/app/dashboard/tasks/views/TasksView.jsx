@@ -4,27 +4,35 @@ import TaskItem from "../../../components/Tasks/TaskItem";
 import TaskForm from "../../../components/Tasks/TaskForm";
 import { useEffect, useState } from "react";
 import { TbLayoutSidebarLeftCollapse, TbLayoutSidebarRightCollapse  } from "react-icons/tb";
+import { RiProgress5Line } from "react-icons/ri";
+import { BsTrash2 } from "react-icons/bs";
+import { GiPapers } from "react-icons/gi";
+import { FaPencilAlt } from "react-icons/fa";
 import { getUserTasks } from "@/app/services/tasks";
 import DetailTaskView from "@/app/components/Tasks/DetailTaskView";
 
 const TasksView = ({
   title,
-  inbox = false,
-  today = false, 
-  next7days = false,
-  completed = false, 
-  trash = false,
   listId = null,
+  userId,
   taskBarCollapse,
   setTaskBarCollapse
 }) => {
   const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState({});
-  let todayOrNext = today || next7days;
+
+  let todayOrNext = title == "Today" || title == "Next 7 Days";
+  let completedOrTrash = title == "Completed" || title == "Trash";
 
   const fetchTasks = async() => {
     try {
-      const data = await getUserTasks(localStorage.getItem("userId"));
+      console.log("this is the title right now - " + title);
+      const data = await getUserTasks(userId);
+
+      if (!data) {
+        setTasks([]);
+        return;
+      }
 
       let filteredTasks = data;
       const now = new Date();
@@ -34,26 +42,36 @@ const TasksView = ({
       const next7Days = new Date();
       next7Days.setDate(now.getDate() + 7);
 
-      if (listId != null) {
-        filteredTasks = data.filter(task => !task.isTrash && task.list === listId);
-      } else if (today) {
-        filteredTasks = data.filter(task => {
-          const dueDate = new Date(task.dueDate);
-          return !task.isTrash && dueDate >= now && dueDate <= todayEnd;
-        });
-      }
-      else if (next7days) {
-        filteredTasks = data.filter(task => {
-          const dueDate = new Date(task.dueDate);
-          return !task.isTrash && dueDate > now && dueDate <= next7Days;
-        });
-      }
-      else if (completed) {
-        filteredTasks = data.filter(task => !task.isTrash && task.isCompleted);
-      } else if (trash) {
-        filteredTasks = data.filter(task => task.isTrash);
-      } else if (inbox) {
-        filteredTasks = data.filter(task => !task.isTrash && !task.list);
+      switch (title) {
+        case "Today": 
+          filteredTasks = data.filter(task => {
+            const dueDate = new Date(task.dueDate);
+            return !task.isTrash && dueDate >= now && dueDate <= todayEnd;
+          });
+          break;
+
+        case "Next 7 Days": 
+          filteredTasks = data.filter(task => {
+            const dueDate = new Date(task.dueDate);
+            return !task.isTrash && dueDate > now && dueDate <= next7Days;
+          });
+          break;
+
+        case "Inbox": 
+          filteredTasks = data.filter(task => !task.isTrash && !task.list);
+          break;
+
+        case "Completed": 
+          filteredTasks = data.filter(task => !task.isTrash && task.isCompleted);
+          break;
+
+        case "Trash": 
+          filteredTasks = data.filter(task => task.isTrash);
+          break;
+
+        default:
+          filteredTasks = data.filter(task => !task.isTrash && task.list === listId);
+          break;
       }
 
       setTasks(filteredTasks);
@@ -61,17 +79,20 @@ const TasksView = ({
       console.error("Error fetching tasks:", error);
     }
   };
-
+  
   useEffect(() => {
-    fetchTasks();
+    todayOrNext = title == "Today" || title == "Next 7 Days";
+    completedOrTrash = title == "Completed" || title == "Trash";
+
+    if (userId) {
+      fetchTasks();
+    }
     setSelectedTask(null);
-  }, [inbox, today, next7days, completed, trash, listId]);
+  }, [title, userId]);  
+
 
   const handleTaskSelection = (task) => { 
-
-    if (selectedTask == task) {
-      //setSelectedTask({});
-    } else {
+    if (selectedTask !== task) {
       setSelectedTask(task);
     }
   }
@@ -82,7 +103,6 @@ const TasksView = ({
 
   return (
     <div className="w-full flex h-full px-5">
-
       <div className="w-3/5">
         <div className="flex flex-row items-center">
           {!taskBarCollapse ?
@@ -92,10 +112,10 @@ const TasksView = ({
           }
           <h2 className="ml-1 text-xl text-black font-semibold my-4">{title}</h2>
         </div>
-        {!completed && !trash && (
-          <TaskForm todayOrNext={todayOrNext} listId={listId} refresh={fetchTasks}/>
+        {!completedOrTrash && (
+          <TaskForm todayOrNext={todayOrNext} listId={listId} refresh={fetchTasks} userId={userId}/>
         )}
-        <div className="mt-4 h-[calc(100vh-150px)] overflow-y-auto">
+        <div className="mt-4 h-[calc(100vh-150px)] overflow-y-auto relative">
           {tasks.length > 0 ? (
             tasks.map(task => { return (
               <div className="group pr-2" key={task._id}>
@@ -107,9 +127,36 @@ const TasksView = ({
               </div>
             )})
           ) : (
-            <p className=" text-black mb-4">
-              {listId != null ? "No tasks available in this list." : "No tasks available."}
-            </p>
+            <div className="flex flex-col items-center justify-center h-full text-black cursor-default">
+              <div className="flex mb-2 items-center">
+                {title == "Completed" ? (
+                  <RiProgress5Line size={"4em"} className="text-violet-300" />       
+                ) : title == "Trash" ? (
+                  <BsTrash2 size={"4em"} className="text-violet-300"/>
+                ) :
+                  <>
+                    <GiPapers size={"4em"} className="text-violet-200"/>
+                    <FaPencilAlt size={"2em"} className="text-violet-900"/>
+                  </>
+                }
+              </div>
+              { title == "Completed" ? (
+                <>
+                  <span className="text-center text-base font-medium">No tasks completed yet</span>
+                  <span className="text-center text-xs font-thin">Keep it up :&#41;</span>
+                </>
+              ) : title == "Trash" ? (
+                <>
+                  <span className="text-center text-base font-medium">Trash can is tidy</span>
+                  <span className="text-center text-xs font-thin">No deleted tasks yet</span>
+                </>
+              ) : (
+                <>
+                  <span className="text-center text-base font-medium">No tasks</span>
+                  <span className="text-center text-xs font-thin">Click the input box to add</span>
+                </>
+              )}
+            </div>
           )}
         </div>
       </div>
@@ -118,7 +165,7 @@ const TasksView = ({
         <div className="absolute w-[1px] h-dvh left-0 z-10 bg-purple-50"></div>
         <DetailTaskView task={selectedTask} />
       </div>
-
+  
     </div>
   );
 };

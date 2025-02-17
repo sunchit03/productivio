@@ -14,7 +14,7 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user }) => {
   const handleLogout = () => {
     window.location.href = "/api/auth/logout?federated";
     localStorage.setItem("userId", "")
-    localStorage.setItem("activeTab", "");
+    localStorage.setItem("activeTab", "task");
   };
 
   const router = useRouter();
