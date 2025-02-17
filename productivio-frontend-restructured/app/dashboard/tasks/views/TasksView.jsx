@@ -17,17 +17,12 @@ const TasksView = ({
   const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState({});
 
-  let inbox = false;
-  let today = false;
-  let next7days = false;
-  let completed = false;
-  let trash = false;
-  let list = false;
-
-  let todayOrNext = today || next7days;
+  let todayOrNext = title == "Today" || title == "Next 7 Days";
+  let completedOrTrash = title == "Completed" || title == "Trash";
 
   const fetchTasks = async() => {
     try {
+      console.log("this is the title right now - " + title);
       const data = await getUserTasks(userId);
 
       if (!data) {
@@ -43,26 +38,36 @@ const TasksView = ({
       const next7Days = new Date();
       next7Days.setDate(now.getDate() + 7);
 
-      if (list) {
-        filteredTasks = data.filter(task => !task.isTrash && task.list === listId);
-      } else if (today) {
-        filteredTasks = data.filter(task => {
-          const dueDate = new Date(task.dueDate);
-          return !task.isTrash && dueDate >= now && dueDate <= todayEnd;
-        });
-      }
-      else if (next7days) {
-        filteredTasks = data.filter(task => {
-          const dueDate = new Date(task.dueDate);
-          return !task.isTrash && dueDate > now && dueDate <= next7Days;
-        });
-      }
-      else if (completed) {
-        filteredTasks = data.filter(task => !task.isTrash && task.isCompleted);
-      } else if (trash) {
-        filteredTasks = data.filter(task => task.isTrash);
-      } else if (inbox) {
-        filteredTasks = data.filter(task => !task.isTrash && !task.list);
+      switch (title) {
+        case "Today": 
+          filteredTasks = data.filter(task => {
+            const dueDate = new Date(task.dueDate);
+            return !task.isTrash && dueDate >= now && dueDate <= todayEnd;
+          });
+          break;
+
+        case "Next 7 Days": 
+          filteredTasks = data.filter(task => {
+            const dueDate = new Date(task.dueDate);
+            return !task.isTrash && dueDate > now && dueDate <= next7Days;
+          });
+          break;
+
+        case "Inbox": 
+          filteredTasks = data.filter(task => !task.isTrash && !task.list);
+          break;
+
+        case "Completed": 
+          filteredTasks = data.filter(task => !task.isTrash && task.isCompleted);
+          break;
+
+        case "Trash": 
+          filteredTasks = data.filter(task => task.isTrash);
+          break;
+
+        default:
+          filteredTasks = data.filter(task => !task.isTrash && task.list === listId);
+          break;
       }
 
       setTasks(filteredTasks);
@@ -72,21 +77,8 @@ const TasksView = ({
   };
   
   useEffect(() => {
-    inbox = false;
-    today = false;
-    next7days = false;
-    completed = false;
-    trash = false;
-    list = false;
-    switch(title) {
-      case "Today": today = true; break;
-      case "Next 7 Days": next7days = true; break;
-      case "Inbox": inbox = true; break;
-      case "Completed": completed = true; break;
-      case "Trash": trash = true; break;
-      default: list = true; break;
-    }
-    todayOrNext = today || next7days;
+    todayOrNext = title == "Today" || title == "Next 7 Days";
+    completedOrTrash = title == "Completed" || title == "Trash";
 
     if (userId) {
       fetchTasks();
@@ -116,7 +108,7 @@ const TasksView = ({
           }
           <h2 className="ml-1 text-xl text-black font-semibold my-4">{title}</h2>
         </div>
-        {!completed && !trash && (
+        {!completedOrTrash && (
           <TaskForm todayOrNext={todayOrNext} listId={listId} refresh={fetchTasks} userId={userId}/>
         )}
         <div className="mt-4 h-[calc(100vh-150px)] overflow-y-auto">
