@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { ListsProvider } from "../../context/ListsContext";
 import TasksSidebar from "../../components/Tasks/TasksSidebar";
 import TasksView from "./views/TasksView";
 
@@ -18,9 +17,9 @@ export default function TaskPage( {taskBarCollapse, setTaskBarCollapse, userId} 
   };
 
   return (
-    <ListsProvider>
-        <TasksSidebar activeTab={selectedTab} setActiveTab={setSelectedTab} activeList={selectedList} setActiveList={setSelectedList} taskBarCollapse={taskBarCollapse}/>
+    <>
+        <TasksSidebar activeTab={selectedTab} setActiveTab={setSelectedTab} activeList={selectedList} setActiveList={setSelectedList} taskBarCollapse={taskBarCollapse} userId={userId}/>
         <div className="flex-grow bg-white overflow-auto">{renderView()}</div>
-    </ListsProvider>
+    </>
   );
 }
