@@ -1,16 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TbMoodWink2 } from "react-icons/tb";
 import EmojiPicker from 'emoji-picker-react';
 import { FaAngleRight, FaAngleDown } from "react-icons/fa6";
-import { useLists } from "../../context/ListsContext";
+import { createList, getUserLists } from "@/app/services/lists";
 
-const SidebarListsDropdown = ({ setActiveTab, setActiveList }) => {
+const SidebarListsDropdown = ({ activeTab, setActiveTab, activeList, setActiveList, userId }) => {
+  const [lists, setLists] = useState([]);
   const [isListsDropdownOpen, setIsListsDropdownOpen] = useState(false);
   const [isListModalOpen, setIsListModalOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [newList, setNewList] = useState({ name: "", emoji: "" });
   const [showPicker, setShowPicker] = useState(false);
-  const { lists, addList, selectList } = useLists();
+
+  const fetchLists = async () => {
+    try {
+      const data = await getUserLists(userId);
+
+      if (!data) {
+        setLists([]);
+        return;
+      }
+
+      setLists(data);
+    } catch(error) {
+      console.error("Error fetching lists:", error);
+    }
+  }
+
+  useEffect(() => {
+    if (userId) {
+      fetchLists()
+    }
+  }, [userId])
 
   const openListModal = () => {
     setNewList({ name: "", emoji: "" });
@@ -24,14 +45,19 @@ const SidebarListsDropdown = ({ setActiveTab, setActiveList }) => {
     setShowPicker(false);
   };
 
-  const handleAddList = (e) => {
+
+  const handleAddList = async (e) => {
     e.preventDefault();
     if (!newList.name) return;
 
-    if (!newList.emoji) {
-      addList({name: newList.name, emoji: "📁"});
-    } else {
-      addList(newList);
+    try {
+      let data = await createList({name: newList.name, emoji: newList.emoji || "📁", createdBy: userId});
+
+      if (data.success) {
+        console.log("task is created!");
+      }
+    } catch (error) {
+      console.error("Error creating list:", error);
     }
 
     setNewList({ name: "", emoji: "" });
@@ -72,17 +98,17 @@ const SidebarListsDropdown = ({ setActiveTab, setActiveList }) => {
         </div>
       {isListsDropdownOpen && (
         <div className="rounded-md">
-          <ul className="">
+          <ul>
             {lists.length > 0 ? (
               lists.map((list) => (
-                <li key={list.id} className="flex relative px-[10px]">
+                <li key={list._id} className="flex relative px-[10px]">
                   <button  
                     onClick={() => {
-                      setActiveTab(`Lists`);
-                      setActiveList({id: list.id, emoji: list.emoji, name: list.name});
-                      selectList(list.id);
+                      setActiveTab('Lists');
+                      setActiveList({id: list._id, emoji: list.emoji, name: list.name});
                     }}
-                    className="w-full text-left px-3 py-2 hover:bg-gradient-to-bl from-violet-100 to-fuchsia-100 hover:rounded-sm flex items-center"
+                    className={`w-full text-left px-3 py-2 flex items-center rounded-md 
+                      ${activeTab === 'Lists' && activeList.id === list._id ? "bg-indigo-500/15" : "hover:bg-indigo-500/5"}`}
                   >
                     <span className="mr-[8px] w-[18px] h-[18px] flex-none">{list.emoji}</span>
                     <p className="text-sm font-normal flex-auto">{list.name}</p>

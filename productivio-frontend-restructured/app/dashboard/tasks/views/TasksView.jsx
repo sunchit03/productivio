@@ -22,6 +22,7 @@ const TasksView = ({
   let next7days = false;
   let completed = false;
   let trash = false;
+  let list = false;
 
   let todayOrNext = today || next7days;
 
@@ -42,7 +43,7 @@ const TasksView = ({
       const next7Days = new Date();
       next7Days.setDate(now.getDate() + 7);
 
-      if (listId != null) {
+      if (list) {
         filteredTasks = data.filter(task => !task.isTrash && task.list === listId);
       } else if (today) {
         filteredTasks = data.filter(task => {
@@ -76,12 +77,14 @@ const TasksView = ({
     next7days = false;
     completed = false;
     trash = false;
+    list = false;
     switch(title) {
       case "Today": today = true; break;
       case "Next 7 Days": next7days = true; break;
       case "Inbox": inbox = true; break;
       case "Completed": completed = true; break;
       case "Trash": trash = true; break;
+      default: list = true; break;
     }
     todayOrNext = today || next7days;
 
