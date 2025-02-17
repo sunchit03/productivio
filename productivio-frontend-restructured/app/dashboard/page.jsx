@@ -16,7 +16,9 @@ function Dashboard() {
   const { user, error, isLoading } = useUser();
 
   // State Variables
+  const [userId, setUserId] = useState(null);
   const [activeMainTab, setActiveMainTab] = useState(localStorage.getItem("activeTab")); // Main Sidebar Tabs
+  const [taskBarCollapse, setTaskBarCollapse] = useState(false)
 
   const router = useRouter();
 
@@ -41,6 +43,7 @@ function Dashboard() {
       const data = await saveUser(user);
       if (data.success) {
         localStorage.setItem("userId", data.user._id);
+        setUserId(data.user._id);
       }
     }
     if (!isLoading && user) {
@@ -59,7 +62,7 @@ function Dashboard() {
 
             {/* Tasks Page */}
             {activeMainTab === "task" ? (
-              <TaskPage />       
+              <TaskPage taskBarCollapse={taskBarCollapse} setTaskBarCollapse={setTaskBarCollapse} userId={userId}/>       
             ) 
             : 
             /* Calendar Page */
