@@ -3,12 +3,13 @@
 // Get All Lists for a User
 export const getUserLists = async (userId) => {
     try {
-      const response = await fetch(`/api/lists/user/${userId}`);
-      const data = await response.json();
-      return data.lists;
+        if (!userId) return [];
+        const response = await fetch(`/api/lists/user/${userId}`);
+        const data = await response.json();
+        return data.lists;
     } catch (error) {
-      console.error("Error fetching user lists:", error);
-      return [];
+        console.error("Error fetching user lists:", error);
+        return [];
     }
 };
 
