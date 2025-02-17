@@ -3,7 +3,7 @@ import styles from '../../styles/Footer.module.css';
 
 const Footer = () => {
   return (
-    <footer className={`${styles.footer} bg-gray-100 py-8`}>
+    <footer className={`${styles.footer} bg-gray-100 py-20`}>
       <div className="container mx-auto text-center">
         <div className="flex justify-center space-x-8 mb-4">
           <a href="#" className="text-gray-600 hover:text-blue-600">Products</a>
