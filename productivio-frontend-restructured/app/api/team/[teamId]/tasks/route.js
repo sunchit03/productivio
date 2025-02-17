@@ -17,7 +17,7 @@ export async function GET(req,{params}){
         return NextResponse.json ({success: false, error: "teamId is required"}, {status: 400})
     }
 
-    const team = await Team.findById(teamId).populate({path: "tasks"}).populate("members")
+    const team = await Team.findById(teamId).populate({path: "tasks"}).populate("members");
 
     if(!team){
         return NextResponse.json({success: false, error: "Team not found"},{status: 400})

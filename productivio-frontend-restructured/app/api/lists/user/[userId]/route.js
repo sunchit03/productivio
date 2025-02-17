@@ -9,7 +9,7 @@ export async function GET(req, { params }) {
       return NextResponse.json({ success: false, error: "User ID is required" }, { status: 400 });
     }
 
-    const lists = await List.find({ createdBy: userId });
+    const lists = await List.find({ createdBy: userId }).lean();
 
     return NextResponse.json({ success: true, lists }, { status: 200 });
 

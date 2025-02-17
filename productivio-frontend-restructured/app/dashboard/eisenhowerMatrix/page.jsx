@@ -22,8 +22,10 @@ export default function EisenhowerMatrix( {userId} ) {
       };
     
     useEffect(() => {
-      fetchTasks();
-    }, []);
+      if (userId) {
+        fetchTasks();
+      }
+    }, [userId]);
 
     async function deleteTask(taskId) {
         try{
