@@ -4,6 +4,8 @@ import TaskItem from "../../../components/Tasks/TaskItem";
 import TaskForm from "../../../components/Tasks/TaskForm";
 import { useEffect, useState } from "react";
 import { TbLayoutSidebarLeftCollapse, TbLayoutSidebarRightCollapse  } from "react-icons/tb";
+import { GiPapers } from "react-icons/gi";
+import { FaPencilAlt } from "react-icons/fa";
 import { getUserTasks } from "@/app/services/tasks";
 import DetailTaskView from "@/app/components/Tasks/DetailTaskView";
 
@@ -111,7 +113,7 @@ const TasksView = ({
         {!completedOrTrash && (
           <TaskForm todayOrNext={todayOrNext} listId={listId} refresh={fetchTasks} userId={userId}/>
         )}
-        <div className="mt-4 h-[calc(100vh-150px)] overflow-y-auto">
+        <div className="mt-4 h-[calc(100vh-150px)] overflow-y-auto relative">
           {tasks.length > 0 ? (
             tasks.map(task => { return (
               <div className="group pr-2" key={task._id}>
@@ -123,9 +125,14 @@ const TasksView = ({
               </div>
             )})
           ) : (
-            <p className=" text-black mb-4">
-              {listId != null ? "No tasks available in this list." : "No tasks available."}
-            </p>
+            <div className="flex flex-col items-center justify-center h-full text-black cursor-default">
+              <div className="flex mb-2 items-center">
+                <GiPapers size={"4em"} className="text-violet-200"/>
+                <FaPencilAlt size={"2em"} className="text-violet-900"/>
+              </div>
+              <span className="text-center text-base font-medium">No tasks</span>
+              <span className="text-center text-xs font-thin">Click the input box to add</span>
+            </div>
           )}
         </div>
       </div>
