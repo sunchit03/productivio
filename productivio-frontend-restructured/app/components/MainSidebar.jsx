@@ -21,10 +21,8 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user }) => {
   const router = useRouter();
 
   useEffect(() => {
-    console.log("userrrrrrr "+ user.picture)
     if (user) {
     setUserPicture(user.picture);
-    console.log("userrrrrrr picccccc "+ user.picture)
     }
   }, [user]);
 

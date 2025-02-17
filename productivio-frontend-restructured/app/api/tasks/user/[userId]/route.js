@@ -1,8 +1,15 @@
 import { NextResponse } from "next/server";
+import mongoose from "mongoose";
 import Task from "../../../../models/Task";
+const connectDB = require('../../../../utils/connect');
 
 export async function GET(req, { params }) {
   try {
+    // Connect to MongoDB if not already connected
+    if (mongoose.connection.readyState === 0) {
+      await connectDB();
+    }
+
     const { userId } = await params;
 
     if (!userId) {
