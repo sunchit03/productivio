@@ -19,3 +19,63 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Change the color of month and year title */
+.fc .fc-toolbar-title {
+  color: black !important;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+/* Change the color of day labels (Sun, Mon, Tue, etc.) */
+.fc-col-header-cell {
+  color: black !important;
+  font-weight: normal;
+  font-size: 1rem;
+}
+
+/* Change the colour of the day numbers (1,2,3,..)*/
+.fc-daygrid-day-number {
+  color: black !important;
+  font-weight: normal !important;
+  font-size: 1rem;
+}
+
+/* Change all time labels (left-side hour markings) */
+.fc-timegrid-slot-label {
+  color: black !important;  /* Change text color */
+  font-weight: normal;         /* Make it stand out */
+  font-size: 0.9rem;         /* Adjust size if needed */
+}
+
+.fc-daygrid-event .fc-event-title {
+  color: black !important;  /* Change to black or any other high-contrast color */
+  font-weight: normal;
+  font-size: 1rem; /* Adjust size if necessary */
+}
+
+/* Change the color of the time displayed next to each event */
+.fc-daygrid-event .fc-event-time {
+  color: gray !important;  /* Change to any color you prefer */
+  font-weight: bold;        /* Optional: Make it bold */
+  font-size: 0.9rem;        /* Adjust size if necessary */
+}
+
+.fc-timegrid-slot {
+  height: 50px !important; /* Adjust slot height */
+}
+
+/* Allow events to take up more space */
+.fc-timegrid-event {
+  min-height: 40px !important; /* Increase height dynamically */
+  line-height: 1.2 !important; /* Adjust line spacing */
+}
+
+/* Ensure event titles wrap properly */
+.fc-event-title {
+  white-space: normal !important; /* Allow text to wrap */
+  word-wrap: break-word !important;
+  overflow: visible !important;
+  text-overflow: clip;
+  display: block; /* Ensures proper wrapping */
+}
