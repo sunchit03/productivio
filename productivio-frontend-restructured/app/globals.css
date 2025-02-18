@@ -79,3 +79,9 @@ body {
   text-overflow: clip;
   display: block; /* Ensures proper wrapping */
 }
+
+/* Increase visibility of the all-day row text */
+.fc-timegrid .fc-timegrid-axis-cushion {
+  color: gray !important;  /* Change text color */
+  font-weight: normal !important; /* Make text bold */
+}
