@@ -17,6 +17,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@auth0/nextjs-auth0": "^3.5.0",
+    "@szhsin/react-menu": "^4.3.0",
     "emoji-picker-react": "^4.12.0",
     "mongoose": "^8.9.5",
     "next": "15.1.6",
