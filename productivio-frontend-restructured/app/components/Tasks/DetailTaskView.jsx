@@ -11,6 +11,7 @@ import { GrClear } from "react-icons/gr";
 
 const DetailTaskView = ( { task = null, userId, refresh } ) => {
 
+    const [datePicker, setDatePicker] = useState(false);
     const [title, setTitle] = useState(task ? task.title : "What would you like to do?");
     const [description, setDescription] = useState(task ? task.description : "Would you like to add task description?");
     const [priority, setPriority] = useState(task ? task.priority : "4");
