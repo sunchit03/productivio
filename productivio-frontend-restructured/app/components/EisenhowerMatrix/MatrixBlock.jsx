@@ -24,12 +24,12 @@ const MatrixBlock = ({tasks, title, refresh, userId}) => {
 
 
     return(
-        <div className= "group-quad border rounded-md p-2 bg-white shadow-md h-[43vh] flex flex-col">
+        <div className= "group border rounded-md p-2 bg-white shadow-md h-[43vh] flex flex-col">
             <div className={`text-sm p-2 font-bold flex w-full justify-between items-center ${textColor}`}>
                 <div className="flex items-center gap-2">
                     {title} 
                 </div>
-                <div className="invisible group-quad-hover:visible flex items-center gap-2">
+                <div className="invisible group-hover:visible flex items-center gap-2">
                     <button className="hover:bg-gray-300 rounded-sm" onClick={()=>{setAddTaskModal(true)}}>
                         <HiOutlinePlusSm size={20} />
                     </button>
@@ -48,7 +48,7 @@ const MatrixBlock = ({tasks, title, refresh, userId}) => {
                 }
 
             </div>
-            <div className="hover:overflow-y-auto relative">
+            <div className={`${tasks.length === 0 ? "p-2 flex flex-1 justify-center items-center" :  "overflow-hidden hover:overflow-y-auto"}`}>
                 {tasks.length > 0 ? (
                     tasks.map(task => { return (
                     <div className="group-task pr-2" key={task._id}>
@@ -61,9 +61,9 @@ const MatrixBlock = ({tasks, title, refresh, userId}) => {
                     )})
                 ) : 
                 (
-                    <>
-                        <span className="text-center text-base font-medium">No tasks</span>
-                    </>
+                    
+                <span className="text-center text-sm font-thin text-gray-400">No Tasks</span>
+                    
                 )}
             </div>
         </div>

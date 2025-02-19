@@ -3,7 +3,7 @@
 import TaskItem from "../../../components/Tasks/TaskItem";
 import TaskForm from "../../../components/Tasks/TaskForm";
 import { useEffect, useState } from "react";
-import { TbLayoutSidebarLeftCollapse, TbLayoutSidebarRightCollapse  } from "react-icons/tb";
+import { TbLayoutSidebarLeftCollapse, TbLayoutSidebarRightCollapse } from "react-icons/tb";
 import { RiProgress5Line } from "react-icons/ri";
 import { BsTrash2 } from "react-icons/bs";
 import { GiPapers } from "react-icons/gi";
@@ -40,6 +40,7 @@ const TasksView = ({
 
       const next7Days = new Date();
       next7Days.setDate(now.getDate() + 7);
+      next7Days.setHours(0, 0, 0, 0);
 
       switch (title) {
         case "Today": 
@@ -118,9 +119,9 @@ const TasksView = ({
           {tasks.length > 0 ? (
             tasks.map(task => { return (
               <div className="group pr-2" key={task._id}>
-                <div className={`px-3 py-2 rounded-md ${selectedTask == task ? "bg-purple-50 hover:bg-purple-50" : "hover:bg-gray-50"}`} 
+                <div className={`px-3 py-2 rounded-md ${ selectedTask == task ? "bg-purple-50 hover:bg-purple-100" : "hover:bg-gray-50"}`} 
                   onClick={() => handleTaskSelection(task)}>
-                  <TaskItem task={task} />
+                  <TaskItem task={task} refresh={fetchTasks} />
                 </div>
                 <div className="h-[1px] bottom-0 bg-purple-50 group-hover:invisible z-10"></div>
               </div>
@@ -160,10 +161,11 @@ const TasksView = ({
         </div>
       </div>
       
+      {!completedOrTrash && (
       <div className="relative ml-5 w-2/5">
         <div className="absolute w-[1px] h-dvh left-0 z-10 bg-purple-50"></div>
-        <DetailTaskView task={selectedTask} />
-      </div>
+        <DetailTaskView task={selectedTask} userId={userId} refresh={fetchTasks}/>
+      </div>)};
   
     </div>
   );
