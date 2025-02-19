@@ -16,7 +16,7 @@ export async function POST(req) {
         return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
     }
 
-    // Determine task type (Individual or Team)
+    // Create new list
     const newList = new List({
       name,
       emoji,
@@ -28,7 +28,7 @@ export async function POST(req) {
     user.lists.push(newList._id);
     await user.save();
 
-    return NextResponse.json({ success: true, task: newList }, { status: 201 });
+    return NextResponse.json({ success: true, list: newList }, { status: 201 });
 
   } catch (error) {
     console.error("Error creating list:", error);
