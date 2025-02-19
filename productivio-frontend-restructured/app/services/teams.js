@@ -2,7 +2,7 @@
 
 export async function getUserTeams(userId) {
     try {
-        const res = await fetch(`/api/teams?userId=${userId}`);
+        const res = await fetch(`/api/teams/user/${userId}`);
         const data = await res.json()
         return data.teams;
     }   catch (error) {
