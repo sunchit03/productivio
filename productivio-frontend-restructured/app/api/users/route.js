@@ -3,36 +3,11 @@ import mongoose from "mongoose";
 import User from "../../models/User";
 const connectDB = require('../../utils/connect');
 
-const MONGO_URI = process.env.MONGO_URI;
-connectDB();
-
-export async function GET(req) {
-  try {
-    const { searchParams } = new URL(req.url);
-    const email = searchParams.get("email");
-
-    if (!email) {
-      return NextResponse.json({ success: false, error: "Email is required" }, { status: 400 });
-    }
-
-    const user = await User.findOne({ email });
-    
-    return NextResponse.json({ exists: !!user });
-  } catch (error) {
-    console.error("Error fetching user:", error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
-  }
-}
-
 export async function POST(req) {
   try {
-    if (!MONGO_URI) {
-      throw new Error("MONGO_URI is not defined in environment variables.");
-    }
-
     // Connect to MongoDB if not already connected
     if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+      await connectDB();
     }
 
     const { email, profilePicture, connection } = await req.json();

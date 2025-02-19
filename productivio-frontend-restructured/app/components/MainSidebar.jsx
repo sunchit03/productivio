@@ -1,48 +1,77 @@
-import React, { useState } from "react";
-import { FaCalendarAlt, FaInbox, FaSearch, FaSignOutAlt, FaUser } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { IoIosCheckbox } from "react-icons/io";
+import { FaCalendarAlt, FaSignOutAlt, FaUser } from "react-icons/fa";
+import { MdTimer } from "react-icons/md";
+import { PiGridFourFill } from "react-icons/pi";
 import { RiTeamFill } from "react-icons/ri";
 import { IoMdNotifications } from "react-icons/io";
 import NotificationsModal from "../components/NotificationsModal";
 import { useRouter } from "next/navigation";
 
-const Sidebar = ({ activeMainTab, setActiveMainTab, user }) => {
+const MainSidebar = ({ activeMainTab, setActiveMainTab, user }) => {
+  const [userPicture, setUserPicture] = useState(user?.picture || null);
   const [showNotifications, setShowNotifications] = useState(false);
 
   const handleLogout = () => {
     window.location.href = "/api/auth/logout?federated";
     localStorage.setItem("userId", "")
-    localStorage.setItem("activeTab", "");
+    localStorage.setItem("activeTab", "task");
   };
 
   const router = useRouter();
 
+  useEffect(() => {
+    if (user) {
+    setUserPicture(user.picture);
+    }
+  }, [user]);
+
   return (
-    <aside className="w-16 bg-gray-200 p-4 flex flex-col items-center space-y-4">
-      <img
-        src={user?.picture}
-        alt="Profile"
-        className="rounded-circle img-fluid profile-picture mb-3 mb-md-0"
-        decode="async"
-        data-testid="profile-picture"
-      />
+    <aside className="w-[50px] bg-gradient-to-b from-indigo-300 to-pink-200 p-4 flex flex-col items-center justify-between h-full">
+      <div className="flex flex-col items-center space-y-4 flex-grow">
+        {user ? (
+          <img
+          src={userPicture}
+          alt="Profile"
+          className="rounded-md img-fluid profile-picture mb-md-0"
+          decode="async"
+          data-testid="profile-picture"
+        />
+        ) : (
+          <button
+          className={`px-2 py-1 rounded text-white/50 hover:text-white/75`}
+          title={user?.name || "Profile"}
+          onClick={() => {
+            // if (activeMainTab != "task") {
+            //   router.push("/dashboard")
+            //   setActiveMainTab("task")
+            //   localStorage.setItem("activeTab", "task");
+            // }
+          }}
+        >
+          <FaUser size="1.4em"/>
+        </button>
+        )}
       <button
-        className={`p-2 rounded ${
-          activeMainTab === "inbox" ? "bg-blue-500 text-white" : "text-black"
+        className={`px-2 py-1 rounded ${
+          activeMainTab === "task" ? "text-white/100" : "text-white/50 hover:text-white/75"
         }`}
+        title="Task"
         onClick={() => {
-          if (activeMainTab != "inbox") {
+          if (activeMainTab != "task") {
             router.push("/dashboard")
-            setActiveMainTab("inbox")
-            localStorage.setItem("activeTab", "inbox");
+            setActiveMainTab("task")
+            localStorage.setItem("activeTab", "task");
           }
         }}
       >
-        <FaInbox />
+        <IoIosCheckbox size="1.4em"/>
       </button>
       <button
-        className={`p-2 rounded ${
-          activeMainTab === "calendar" ? "bg-blue-500 text-white" : "text-black"
+        className={`px-2 py-1 rounded ${
+          activeMainTab === "calendar" ? "text-white/100" : "text-white/50 hover:text-white/75"
         }`}
+        title="Calendar View"
         onClick={() => {
           if (activeMainTab != "calendar") {
             router.push("/dashboard");
@@ -51,29 +80,45 @@ const Sidebar = ({ activeMainTab, setActiveMainTab, user }) => {
           }
         }}
       >
-        <FaCalendarAlt />
+        <FaCalendarAlt size="1.4em"/>
       </button>
       <button
-        className={`p-2 rounded ${
-          activeMainTab === "search" ? "bg-blue-500 text-white" : "text-black"
+        className={`px-2 py-1 rounded ${
+          activeMainTab === "pomodoro" ? "text-white/100" : "text-white/50 hover:text-white/75"
         }`}
+        title="Pomodoro"
         onClick={() => {
-          if (activeMainTab != "search") {
+          if (activeMainTab != "pomodoro") {
             router.push("/dashboard");
-            setActiveMainTab("search");
-            localStorage.setItem("activeTab", "search");
+            setActiveMainTab("pomodoro");
+            localStorage.setItem("activeTab", "pomodoro");
           }
         }}
       >
-        <FaSearch />
+        <MdTimer size="1.4em"/>
       </button>
-      <button onClick={() => handleLogout()} className="p-2 rounded bg-gray-200 hover:bg-gray-300 text-black">
-        <FaSignOutAlt />
-      </button>
+
       <button
-        className={`p-2 rounded ${
-          activeMainTab === "teams" ? "bg-blue-500 text-white" : "text-black"
+        className={`px-2 py-1 rounded ${
+          activeMainTab === "matrix" ? "text-white/100" : "text-white/50 hover:text-white/75"
         }`}
+        title="Eisenhower Matrix"
+        onClick={() => {
+          if (activeMainTab != "matrix") {
+            router.push("/dashboard");
+            setActiveMainTab("matrix");
+            localStorage.setItem("activeTab", "matrix");
+          }
+        }}
+      >
+        <PiGridFourFill size="1.4em"/>
+      </button>
+      
+      <button
+        className={`px-2 py-1 rounded ${
+          activeMainTab === "teams" ? "text-white/100" : "text-white/50 hover:text-white/75"
+        }`}
+        title="Teams"
         onClick={() => {
           if (activeMainTab != "teams") {
             router.push("/dashboard");
@@ -82,19 +127,34 @@ const Sidebar = ({ activeMainTab, setActiveMainTab, user }) => {
           }
         }}
       >
-        <RiTeamFill />
+        <RiTeamFill size="1.4em"/>
       </button>
+      </div>
+      
+      <div className="flex flex-col items-center space-y-4 mt-auto">
       {/* Notifications Button */}
       <button 
-        className="p-2 rounded text-black"
+        className="px-2 py-1 rounded text-white/50 hover:text-white/75"
+        title="Notifications"
         onClick={() => setShowNotifications(true)}>
-        <IoMdNotifications />
+        <IoMdNotifications size="1.4em"/>
       </button>
+
+      <button 
+        onClick={() => handleLogout()} 
+        className="px-2 py-1 rounded text-white/50 hover:text-white/75"
+        title="Sign Out"
+        >
+        <FaSignOutAlt size="1.4em"/>
+      </button>
+      </div>
 
       {/* Notifications Modal */}
       {showNotifications && <NotificationsModal onClose={() => setShowNotifications(false)} notifications={[]} activities={[]} />}
+
+      
     </aside>
   );
 };
 
-export default Sidebar;
+export default MainSidebar;

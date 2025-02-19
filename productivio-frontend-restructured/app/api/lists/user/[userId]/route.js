@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
-import Task from "../../../../models/Task";
+import List from "../../../../models/List";
 const connectDB = require('../../../../utils/connect');
 
 export async function GET(req, { params }) {
@@ -16,12 +16,12 @@ export async function GET(req, { params }) {
       return NextResponse.json({ success: false, error: "User ID is required" }, { status: 400 });
     }
 
-    const tasks = await Task.find({ assignedTo: userId }).lean();
+    const lists = await List.find({ createdBy: userId }).lean();
 
-    return NextResponse.json({ success: true, tasks }, { status: 200 });
+    return NextResponse.json({ success: true, lists }, { status: 200 });
 
   } catch (error) {
-    console.error("Error fetching tasks for user:", error);
+    console.error("Error fetching lists for user:", error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }

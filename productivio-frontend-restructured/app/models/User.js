@@ -8,6 +8,12 @@ const userSchema = new mongoose.Schema({
     required: true,
     enum: ['auth0', 'google-oauth2'],
   },
+  lists: [
+    { 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'List' 
+    }
+  ],
   tasks: [
     {
       type: mongoose.Schema.Types.ObjectId,
