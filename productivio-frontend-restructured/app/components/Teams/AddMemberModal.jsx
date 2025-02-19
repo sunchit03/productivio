@@ -20,7 +20,7 @@ export default function AddMemberModal({ onClose, onAdd }) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <button className="bg-blue-500 text-white p-2 rounded w-full" onClick={handleSubmit}>Add</button>
+          <button className="bg-red-500 text-black font-bold p-2 rounded w-full" onClick={handleSubmit}>Add</button>
           <button className="mt-2 w-full p-2 border rounded" onClick={onClose}>Cancel</button>
         </div>
       </div>

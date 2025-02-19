@@ -11,6 +11,8 @@ import TeamsPage from "./teams/page"
 import { useRouter } from "next/navigation";
 import TaskPage from "./tasks/page";
 import PomodoroPage from "./pomodoro/page";
+import EisenhowerMatrix from "./eisenhowerMatrix/page";
+import CalendarPage from "./Calendar/page";
 
 function Dashboard() {
   const { user, error, isLoading } = useUser();
@@ -67,7 +69,9 @@ function Dashboard() {
             : 
             /* Calendar Page */
             activeMainTab === "calendar" ? (
-              <main className="flex-grow bg-gray-50"></main>
+              <main className="flex-grow bg-gray-50">
+                <CalendarPage userId={userId}/>
+              </main>
             ) 
             :
             /* Pomodoro Page */
@@ -79,7 +83,9 @@ function Dashboard() {
             :
             /* Eisenhower Matrix Page */
             activeMainTab === "matrix" ? (
-              <main className="flex-grow bg-gray-50"></main>
+              <main className="flex-grow bg-gray-50">
+                <EisenhowerMatrix userId={userId}/>
+              </main>
             )
             :
             /* Teams Page */

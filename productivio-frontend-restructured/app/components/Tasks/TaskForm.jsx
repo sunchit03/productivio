@@ -11,7 +11,7 @@ import 'react-calendar/dist/Calendar.css';
 const TaskForm = ( {todayOrNext = false, listId = null, refresh, userId } ) => {
   const [title, setTitle] = useState("");
   const [datePicker, setDatePicker] = useState(false);
-  const [dueDate, setDueDate] = useState(new Date());
+  const [dueDate, setDueDate] = useState(null);
   const [dueDateSelected, setDueDateSelected] = useState(false);
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
@@ -20,7 +20,7 @@ const TaskForm = ( {todayOrNext = false, listId = null, refresh, userId } ) => {
     if (!title.trim()) return;
 
     if (!dueDateSelected) {
-      setDueDate("")
+      setDueDate(null)
     }
 
     try {
@@ -41,7 +41,7 @@ const TaskForm = ( {todayOrNext = false, listId = null, refresh, userId } ) => {
 
     setDueDateSelected(false);
     setTitle("");
-    setDueDate("");
+    setDueDate(null);
   };
 
   const handleDueDateSelection = (date) => {
@@ -83,7 +83,7 @@ const TaskForm = ( {todayOrNext = false, listId = null, refresh, userId } ) => {
                   </span>
                 </div>
                 { datePicker &&
-                  <GrClear className="ml-2" onClick={() => { setDueDate(""); setDueDateSelected(false); }}/>
+                  <GrClear className="ml-2" onClick={() => { setDueDate(null); setDueDateSelected(false); }}/>
                 }
               </>
               :
