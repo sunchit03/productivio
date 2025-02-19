@@ -16,6 +16,12 @@ export async function POST(req) {
         return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
     }
 
+    // Check if list with provided name already exists
+    const list = await List.findOne({name});
+    if (list) {
+      return NextResponse.json({ success: false, error: `List with name ${name} already exists` }, { status: 400 });
+    }
+
     // Create new list
     const newList = new List({
       name,
