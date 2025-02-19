@@ -61,9 +61,7 @@ const MatrixBlock = ({tasks, title, refresh, userId}) => {
                     )})
                 ) : 
                 (
-                    
-                <span className="text-center text-sm font-thin text-gray-400">No Tasks</span>
-                    
+                    <span className="text-sm font-thin text-gray-400">No Tasks</span>
                 )}
             </div>
         </div>

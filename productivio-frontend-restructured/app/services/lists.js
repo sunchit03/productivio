@@ -27,3 +27,33 @@ export const createList = async (listData) => {
       return { success: false };
     }
   };
+
+// Delete a List
+export const deleteList = async (listId, userId) => {
+    try {
+      const response = await fetch(`/api/lists/${listId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+      return await response.json();
+    } catch (error) {
+      console.error("Error deleting list:", error);
+      return { success: false };
+    }
+  };
+  
+  // Update a List
+  export const updateList = async (listId, userId, updatedData) => {
+    try {
+      const response = await fetch(`/api/lists/${listId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, ...updatedData }),
+      });
+      return await response.json();
+    } catch (error) {
+      console.error("Error updating list:", error);
+      return { success: false };
+    }
+  };
