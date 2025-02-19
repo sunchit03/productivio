@@ -12,8 +12,8 @@ import '@szhsin/react-menu/dist/transitions/zoom.css';
 const SidebarListsDropdown = ({ activeTab, setActiveTab, activeList, setActiveList, userId }) => {
   const [lists, setLists] = useState([]);
   const [isListsDropdownOpen, setIsListsDropdownOpen] = useState(false);
-  const [isListModalOpen, setIsListModalOpen] = useState({isOpen: false, isEdit: false});
-  const [isListDeleteModalOpen, setIsListDeleteModalOpen] = useState(false);
+  const [isListModalOpen, setIsListModalOpen] = useState({isOpen: false, isEdit: false, list: null});
+  const [isListDeleteModalOpen, setIsListDeleteModalOpen] = useState({isOpen: false, list: null});
   const [isHovered, setIsHovered] = useState(false);
   const [newList, setNewList] = useState({ name: "", emoji: "" });
   const [showPicker, setShowPicker] = useState(false);
@@ -39,39 +39,32 @@ const SidebarListsDropdown = ({ activeTab, setActiveTab, activeList, setActiveLi
     }
   }, [userId])
 
-  const openListModal = (isEdit = false, list = {name: "", emoji: ""}) => {
+  const openListModal = (isEdit = false, list = {id: "", name: "", emoji: ""}) => {
     setNewList({ name: list.name, emoji: list.emoji }); 
     setShowPicker(false)
-    setIsListModalOpen({isOpen: true, isEdit});
+    setIsListModalOpen({isOpen: true, isEdit, list});
   };
 
-  const closeListModal = () =>  setIsListModalOpen({isOpen: false});
+  const closeListModal = () =>  setIsListModalOpen({isOpen: false, isEdit: false, list: null});
 
-  const handleEmojiClick = (emojiData, _) => {
-    setNewList({ ...newList, emoji: emojiData.emoji });
-    setShowPicker(false);
-  };
-
-
-  const handleAddEditList = async (e, isEdit = false) => {
+  const handleAddEditList = async (e, isEdit = false, list = null) => {
     e.preventDefault();
     if (!newList.name) return;
 
     try {
       let data;
       if (isEdit) {
-        data = await updateList(activeList.id, userId, {name: newList.name, emoji: newList.emoji || "📁"});
+        data = await updateList(list._id, userId, {name: newList.name, emoji: newList.emoji || "📁"});
       } else {
         data = await createList({name: newList.name, emoji: newList.emoji || "📁", createdBy: userId});
       }
 
       if (data.success) {
         console.log("List is created!");
-        fetchLists();
-
-        if (isEdit) {
+        await fetchLists().then(() => {
+          setActiveTab("Lists");
           setActiveList( {id: data.list._id, emoji: data.list.emoji, name: data.list.name});
-        }
+        });
       }
     } catch (error) {
       console.error("Error creating list:", error);
@@ -81,34 +74,14 @@ const SidebarListsDropdown = ({ activeTab, setActiveTab, activeList, setActiveLi
     closeListModal();
   };
 
-  const handleDeleteList = async (e) => {
-    e.preventDefault();
-
-    try {
-      let data = await deleteList(activeList.id, userId);
-
-      if (data.success) {
-        console.log("List is deleted!");
-        fetchLists();
-
-        setActiveList({});
-        setActiveTab("Inbox");
-      }
-    } catch (error) {
-      console.error("Error deleting list:", error);
-    }
-
-    setIsListDeleteModalOpen(false);
-  }
-
-  const addEditListModal = (isEdit = false) => {
+  const addEditListModal = (isEdit = false, list) => {
     return (
       <div className="fixed inset-0 flex items-start justify-center bg-gray-900 bg-opacity-0 z-50 top-10 drop-shadow-xl">
         <div className="bg-white p-6 rounded-md shadow-lg w-2/5">
           <h2 className="text-xl font-bold mb-4 text-black">
             {isEdit ? "Edit List" : "New List"}
           </h2>
-          <form onSubmit={(e) => handleAddEditList(e, isEdit)}>
+          <form onSubmit={(e) => handleAddEditList(e, isEdit, list)}>
             <label className="block text-black mb-2">
               <div className="relative mt-1">
                 <span 
@@ -157,12 +130,47 @@ const SidebarListsDropdown = ({ activeTab, setActiveTab, activeList, setActiveLi
     )
   }
 
-  const deleteListModal = () => {
+  const handleEmojiClick = (emojiData, _) => {
+    setNewList({ ...newList, emoji: emojiData.emoji });
+    setShowPicker(false);
+  };
+
+  const openDeleteModal = (list) => {
+    setIsListDeleteModalOpen({isOpen: true, list});
+  }
+
+  const closeDeleteModal = () => {
+    setIsListDeleteModalOpen({isOpen: false, list: null});
+  }
+
+  const handleDeleteList = async (e, listId) => {
+    e.preventDefault();
+
+    try {
+      let data = await deleteList(listId, userId);
+
+      if (data.success) {
+        console.log("List is deleted!");
+        fetchLists();
+
+        if (activeList.id == listId) {
+          setActiveList({});
+          setActiveTab("Inbox");
+        }
+      }
+    } catch (error) {
+      console.error("Error deleting list:", error);
+    }
+
+    setIsListDeleteModalOpen(false, null);
+  }
+
+  const deleteListModal = (list = {id: "", emoji: "", name: ""}) => {
     return (
       <div className="fixed inset-0 flex items-start justify-center bg-gray-900 bg-opacity-0 z-50 top-10 drop-shadow-xl">
         <div className="bg-white p-6 rounded-md shadow-lg w-2/5">
-          <h2 className="text-lg font-semibold mb-4 text-black">Delete list "{activeList.emoji} {activeList.name}"</h2>
-          <form onSubmit={handleDeleteList}>
+          <h2 className="text-lg font-semibold mb-4 text-black">Delete list "{list.emoji} {list.name}"?</h2>
+          <form onSubmit={(e) => handleDeleteList(e, list._id)}>
             <label className="block text-black mb-2">
               <div className="mt-1">
                 <span className="text-black">
@@ -173,7 +181,7 @@ const SidebarListsDropdown = ({ activeTab, setActiveTab, activeList, setActiveLi
             <div className="flex justify-between mt-4">
               <div className="flex-1"></div>
               <div className="flex flex-1 justify-stretch">
-                <button type="button" onClick={() => setIsListDeleteModalOpen(false)} className="mr-2 px-4 py-2 flex-1 border border-gray-400 bg-white text-gray-500 rounded hover:bg-gray-100">
+                <button type="button" onClick={closeDeleteModal} className="mr-2 px-4 py-2 flex-1 border border-gray-400 bg-white text-gray-500 rounded hover:bg-gray-100">
                   Cancel
                 </button>
                 <button type="submit" className="px-4 py-2 flex-1 bg-violet-500 text-white rounded hover:bg-violet-500/75">
@@ -224,18 +232,18 @@ const SidebarListsDropdown = ({ activeTab, setActiveTab, activeList, setActiveLi
           <ul>
             {lists.length > 0 ? (
               lists.map((list) => (
-                <li key={list._id} className="group flex relative px-[10px] items-center">
-                  <div  
-                    onClick={() => {
-                      setActiveTab('Lists');
-                      setActiveList({id: list._id, emoji: list.emoji, name: list.name});
-                    }}
-                    className={`w-full text-left px-3 py-2 flex justify-between rounded-md 
+                <li key={list._id} className="group flex items-center cursor-pointer">
+                  <div
+                    className={`relative w-full text-left px-3 py-2 flex justify-between rounded-md 
                       ${activeTab === 'Lists' && activeList.id === list._id ? "bg-indigo-500/15" : "hover:bg-indigo-500/5"}`}
                   >
-                    <div className="flex items-center">
-                      <span className="mr-[8px] w-[18px] h-[18px] flex-none">{list.emoji}</span>
-                      <p className="text-sm font-normal flex-auto">{list.name}</p>
+                    <div className="w-full flex items-center" 
+                      onClick={() => {
+                      setActiveTab('Lists');
+                      setActiveList({id: list._id, emoji: list.emoji, name: list.name});
+                    }}>
+                      <span className="mr-[8px] flex-none self-center">{list.emoji}</span>
+                      <p className="text-sm font-normal flex-auto truncate pr-4">{list.name}</p>
                     </div>
 
                     <div>
@@ -243,7 +251,7 @@ const SidebarListsDropdown = ({ activeTab, setActiveTab, activeList, setActiveLi
                         menuButton=
                           {
                             <MenuButton>
-                              <FiMoreHorizontal className="group-hover:visible invisible text-gray-400 hover:text-gray-900"/>
+                              <FiMoreHorizontal className="absolute right-2 top-3 group-hover:visible invisible text-gray-400 hover:text-gray-900"/>
                             </MenuButton>
                           }
                         key={'bottom'}
@@ -256,7 +264,7 @@ const SidebarListsDropdown = ({ activeTab, setActiveTab, activeList, setActiveLi
                         shift={0}
                       >
                         <MenuItem key={"Edit"} onClick={() => openListModal(true, list)}>{"Edit"}</MenuItem>
-                        <MenuItem key={"Delete"} onClick={() => setIsListDeleteModalOpen(true)}>{"Delete"}</MenuItem>
+                        <MenuItem key={"Delete"} onClick={() => openDeleteModal(list)}>{"Delete"}</MenuItem>
                       </Menu>
                     </div>
 
@@ -271,10 +279,10 @@ const SidebarListsDropdown = ({ activeTab, setActiveTab, activeList, setActiveLi
       )}
 
       {/* Modal for adding / editing a list */}
-      {isListModalOpen.isOpen && addEditListModal(isListModalOpen.isEdit)}
+      {isListModalOpen.isOpen && addEditListModal(isListModalOpen.isEdit, isListModalOpen.list)}
 
       {/* Modal for deleting a list */}
-      {isListDeleteModalOpen && deleteListModal()}
+      {isListDeleteModalOpen.isOpen && deleteListModal(isListDeleteModalOpen.list)}
     </div>
   );
 };
