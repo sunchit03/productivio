@@ -59,11 +59,11 @@ export default function EisenhowerMatrix( {userId} ) {
     const notUrgentUnimportantTasks = tasks.filter(task => !task.isTrash && task.priority === "4");
 
     return (
-      <div className="h-screen flex flex-col items-center bg-gray-100 p-4 overflow-hidden">
+      <div className="h-screen flex flex-col bg-gray-100 p-4 overflow-hidden">
         <div>
           <h1 className="mb-4 text-black text-left text-2xl font-bold" >Eisenhower Matrix</h1>
         </div>
-        <div className="grid grid-cols-2 grid-rows-2 gap-4 w-full max-w-8xl h-[90vh] ">
+        <div className="grid grid-cols-2 grid-rows-2 gap-2 w-full max-w-8xl h-[90vh] ">
           <MatrixBlock
             title = {<><TbCircleNumber1Filled size={20} />Urgent & Important</>}
             tasks={urgentImportantTasks}
