@@ -48,7 +48,6 @@ const MatrixBlock = ({tasks, title, refresh, userId}) => {
                 }
 
             </div>
-            {/* <div className="hover:overflow-y-auto relative"> */}
             <div className={`${tasks.length === 0 ? "p-2 flex flex-1 justify-center items-center" :  "overflow-hidden hover:overflow-y-auto"}`}>
                 {tasks.length > 0 ? (
                     tasks.map(task => { return (
