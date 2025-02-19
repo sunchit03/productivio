@@ -7,7 +7,7 @@ export default function Settings() {
 
     return (
         <div style={{ textAlign: 'left' }}>
-            <label style={{ color: '#3b81f4' }}>Work: </label>
+            <label className="text-indigo-300">Work: </label>
             <input
                 type="number"
                 value={settingsInfo.workMinutes}
@@ -27,7 +27,7 @@ export default function Settings() {
                     borderRadius: '5px'
                 }}
             />
-            <span style={{ color: '#3b81f4' }}> :00</span>
+            <span className="text-indigo-300"> :00</span>
             <br />
             <input
                 type="range"
@@ -40,7 +40,7 @@ export default function Settings() {
 
             <br />
 
-            <label style={{ color: '#3b81f4' }}>Break: </label>
+            <label className="text-indigo-300">Break: </label>
             <input
                 type="number"
                 value={settingsInfo.breakMinutes}
@@ -57,23 +57,24 @@ export default function Settings() {
                     marginLeft: '10px',
                     textAlign: 'center',
                     border: '1px solid #3b81f4',
-                    borderRadius: '5px'
+                    borderRadius: '5px',
                 }}
             />
-            <span style={{ color: '#3b81f4' }}> :00</span>
+            <span className="text-indigo-300"> :00</span>
             <br />
             <input
                 type="range"
-                className="slider green"
+                className="slider"
                 value={settingsInfo.breakMinutes}
                 onChange={(e) => settingsInfo.setBreakMinutes(Number(e.target.value))}
                 min={1}
                 max={120}
+                color={"#a5b4fc"}
             />
 
             <br />
             <div style={{ marginTop: '20px' }}>
-                <BackButton style={{ color: '#3b81f4' }} onClick={() => settingsInfo.setShowSettings(false)} />
+                <BackButton onClick={() => settingsInfo.setShowSettings(false)} />
             </div>
         </div>
     );
