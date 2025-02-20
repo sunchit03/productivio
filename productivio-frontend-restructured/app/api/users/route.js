@@ -20,6 +20,7 @@ export async function POST(req) {
       await user.save();
     }
 
+
     return NextResponse.json({ success: true, user }, { status: 201 });
   } catch (error) {
     console.error("Error adding user:", error);
