@@ -3,7 +3,10 @@
 export async function saveUser(user) {
     const res = await fetch("/api/users", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json" 
+      },
       body: JSON.stringify({
         email: user.email,
         profilePicture: user.picture,

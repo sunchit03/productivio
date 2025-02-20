@@ -1,11 +1,8 @@
 import { NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
 
-const SECRET_KEY = process.env.JWT_SECRET; // Store in .env.local
-
-export function middleware(req) {
+export async function middleware(req) {
   const authHeader = req.headers.get("Authorization");
-  console.log("I am hereeeeeeeee");
+  console.log("Middleware is running...");
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return NextResponse.json({ success: false, error: "Unauthorized: No token provided" }, { status: 401 });
@@ -13,20 +10,24 @@ export function middleware(req) {
 
   const token = authHeader.split(" ")[1]; // Extract JWT
 
-  try {
-    // Verify the JWT token
-    const decoded = jwt.verify(token, SECRET_KEY);
-    console.log("Decoded Token:", decoded);
+  // Call the new API route to verify the token
+  const verifyResponse = await fetch(new URL("/api/auth/verify", req.url), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token }),
+  });
 
-    // Token is valid, allow request
-    return NextResponse.next();
-  } catch (error) {
-    console.error("JWT Verification Error:", error);
+  const verifyData = await verifyResponse.json();
+  if (!verifyData.success) {
     return NextResponse.json({ success: false, error: "Unauthorized: Invalid token" }, { status: 403 });
   }
+
+  // Token is valid, allow request
+  console.log("User Verified:", verifyData.decoded);
+  return NextResponse.next();
 }
-// Apply middleware only to API routes that need protection
+
+// Protect specific API routes
 export const config = {
-  // Protect all routes under /api/lists/, /api/tasks/, /api/teams/, /api/users/
   matcher: ["/api/lists/:path*", "/api/tasks/:path*", "/api/teams/:path*", "/api/users/:path*"],
 };

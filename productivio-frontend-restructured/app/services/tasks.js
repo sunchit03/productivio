@@ -4,7 +4,9 @@
 export const getUserTasks = async (userId) => {
   try {
     if (!userId) return [];
-    const response = await fetch(`/api/tasks/user/${userId}`);
+    const response = await fetch(`/api/tasks/user/${userId}`, {
+      headers: { "Authorization": `Bearer ${localStorage.getItem("token")}`, }
+    });
     const data = await response.json();
     return data.tasks;
   } catch (error) {
@@ -16,7 +18,9 @@ export const getUserTasks = async (userId) => {
 // Get All Tasks for a Team
 export const getTeamTasks = async (teamId) => {
   try {
-    const response = await fetch(`/api/tasks/team/${teamId}`);
+    const response = await fetch(`/api/tasks/team/${teamId}`, {
+      headers: { "Authorization": `Bearer ${localStorage.getItem("token")}`, }
+    });
     const data = await response.json();
     return data.tasks;
   } catch (error) {
@@ -28,7 +32,9 @@ export const getTeamTasks = async (teamId) => {
 // Get a specific task
 export async function getTaskById(taskId) {
     try {
-      const res = await fetch(`/api/tasks/${taskId}`);
+      const res = await fetch(`/api/tasks/${taskId}`, {
+        headers: { "Authorization": `Bearer ${localStorage.getItem("token")}`, }
+      });
       return await res.json();
     } catch (error) {
       console.error("Error fetching task:", error);
@@ -41,7 +47,9 @@ export const createTask = async (taskData) => {
   try {
     const response = await fetch(`/api/tasks`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json" },
       body: JSON.stringify(taskData),
     });
     return await response.json();
@@ -56,7 +64,9 @@ export const deleteTask = async (taskId, userId) => {
   try {
     const response = await fetch(`/api/tasks/${taskId}`, {
       method: "DELETE",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json" },
       body: JSON.stringify({ userId }),
     });
     return await response.json();
@@ -71,7 +81,9 @@ export const updateTask = async (taskId, userId, updatedData) => {
   try {
     const response = await fetch(`/api/tasks/${taskId}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json" },
       body: JSON.stringify({ userId, ...updatedData }),
     });
     return await response.json();
@@ -86,7 +98,9 @@ export const completeTask = async (taskId, userId) => {
   try {
     const response = await fetch(`/api/tasks/${taskId}/complete`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json" },
       body: JSON.stringify({ userId }),
     });
     return await response.json();

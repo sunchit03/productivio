@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import TaskPage from "./tasks/page";
 import EisenhowerMatrix from "./eisenhowerMatrix/page";
 import CalendarPage from "./Calendar/page";
-import { getAccessToken } from "@auth0/nextjs-auth0";
+import { getJWT } from "@/app/utils/auth";
 
 function Dashboard() {
   const { user, error, isLoading } = useUser();
@@ -41,13 +41,14 @@ function Dashboard() {
 
   useEffect(() => {
     async function init() {
-      console.log(user);
-      try {
-        const token = await getAccessToken();
-        console.log(token);
-      } catch (err) {
 
+      const token = await getJWT();
+      if (!token) {
+          console.error("No token available");
+          return;
       }
+      localStorage.setItem("token", token);
+      console.log(user);
       const data = await saveUser(user);
       if (data.success) {
         localStorage.setItem("userId", data.user._id);

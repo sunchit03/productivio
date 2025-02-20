@@ -4,7 +4,9 @@
 export const getUserLists = async (userId) => {
     try {
         if (!userId) return [];
-        const response = await fetch(`/api/lists/user/${userId}`);
+        const response = await fetch(`/api/lists/user/${userId}`, {
+          headers: { "Authorization": `Bearer ${localStorage.getItem("token")}`, }
+        });
         const data = await response.json();
         return data.lists;
     } catch (error) {
@@ -18,7 +20,9 @@ export const createList = async (listData) => {
     try {
       const response = await fetch(`/api/lists`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json" },
         body: JSON.stringify(listData),
       });
       return await response.json();
@@ -33,7 +37,9 @@ export const deleteList = async (listId, userId) => {
     try {
       const response = await fetch(`/api/lists/${listId}`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json" },
         body: JSON.stringify({ userId }),
       });
       return await response.json();
@@ -48,7 +54,9 @@ export const deleteList = async (listId, userId) => {
     try {
       const response = await fetch(`/api/lists/${listId}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json" },
         body: JSON.stringify({ userId, ...updatedData }),
       });
       return await response.json();
