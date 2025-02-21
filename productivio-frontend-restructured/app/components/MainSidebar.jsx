@@ -7,14 +7,21 @@ import { RiTeamFill } from "react-icons/ri";
 import { IoMdNotifications } from "react-icons/io";
 import NotificationsModal from "../components/NotificationsModal";
 import { useRouter } from "next/navigation";
+import { preLogOut } from "../utils/prelogout";
 
 const MainSidebar = ({ activeMainTab, setActiveMainTab, user }) => {
   const [userPicture, setUserPicture] = useState(user?.picture || null);
   const [showNotifications, setShowNotifications] = useState(false);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem("userId");
     localStorage.setItem("activeTab", "task");
+
+    const clearToken = await preLogOut();
+    if (!clearToken) {
+      console.error("Failed to clear tokens on logout");
+    }
+
     window.location.href = "/api/auth/logout?federated";
   };
 
