@@ -13,9 +13,9 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user }) => {
   const [showNotifications, setShowNotifications] = useState(false);
 
   const handleLogout = () => {
-    window.location.href = "/api/auth/logout?federated";
-    localStorage.setItem("userId", "")
+    localStorage.removeItem("userId");
     localStorage.setItem("activeTab", "task");
+    window.location.href = "/api/auth/logout?federated";
   };
 
   const router = useRouter();
@@ -41,13 +41,6 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user }) => {
           <button
           className={`px-2 py-1 rounded text-white/50 hover:text-white/75`}
           title={user?.name || "Profile"}
-          onClick={() => {
-            // if (activeMainTab != "task") {
-            //   router.push("/dashboard")
-            //   setActiveMainTab("task")
-            //   localStorage.setItem("activeTab", "task");
-            // }
-          }}
         >
           <FaUser size="1.4em"/>
         </button>

@@ -47,7 +47,7 @@ function Dashboard() {
           console.error("No token available");
           return;
       }
-      localStorage.setItem("token", token);
+
       console.log(user);
       const data = await saveUser(user);
       if (data.success) {

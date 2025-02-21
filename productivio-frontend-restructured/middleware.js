@@ -1,16 +1,15 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 export async function middleware(req) {
-  const authHeader = req.headers.get("Authorization");
-  console.log("Middleware is running...");
+  
+  const token = await cookies().get("token")?.value;
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  if (!token) {
     return NextResponse.json({ success: false, error: "Unauthorized: No token provided" }, { status: 401 });
   }
 
-  const token = authHeader.split(" ")[1]; // Extract JWT
-
-  // Call the new API route to verify the token
+  // Call the verification API route
   const verifyResponse = await fetch(new URL("/api/auth/verify", req.url), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -22,7 +21,6 @@ export async function middleware(req) {
     return NextResponse.json({ success: false, error: "Unauthorized: Invalid token" }, { status: 403 });
   }
 
-  // Token is valid, allow request
   console.log("User Verified:", verifyData.decoded);
   return NextResponse.next();
 }
