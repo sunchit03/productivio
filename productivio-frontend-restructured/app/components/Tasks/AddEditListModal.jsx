@@ -22,7 +22,7 @@ const AddEditListModal = ( { isEdit = false, list, addEditList, showPicker, setS
         <div className="fixed inset-0 flex items-start justify-center bg-gray-900 bg-opacity-0 z-50 top-10 drop-shadow-xl">
             <div className="bg-white p-6 rounded-md shadow-lg w-2/5">
                 <h2 className="text-xl font-bold mb-4 text-black">
-                {isEdit ? "Edit List" : "New List"}
+                {isEdit ? "Edit List" : "Add List"}
                 </h2>
                 <form onSubmit={(e) => handleAddEditList(e)}>
                 <label className="block text-black mb-2">
