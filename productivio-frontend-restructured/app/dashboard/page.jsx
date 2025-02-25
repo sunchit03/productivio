@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import TaskPage from "./tasks/page";
 import EisenhowerMatrix from "./eisenhowerMatrix/page";
 import CalendarPage from "./Calendar/page";
+import { getJWT } from "@/app/utils/auth";
 
 function Dashboard() {
   const { user, error, isLoading } = useUser();
@@ -40,6 +41,13 @@ function Dashboard() {
 
   useEffect(() => {
     async function init() {
+
+      const token = await getJWT();
+      if (!token) {
+          console.error("No token available");
+          return;
+      }
+
       console.log(user);
       const data = await saveUser(user);
       if (data.success) {

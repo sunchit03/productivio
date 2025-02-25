@@ -1,11 +1,17 @@
 import { NextResponse } from "next/server";
-import Team from "../../models/Team";
-import User from "../../models/User";
+import mongoose from "mongoose";
+import Team from "../../../../models/Team";
+import User from "../../../../models/User";
+const connectDB = require('../../../../utils/connect');
 
-export async function GET(req) {
+export async function GET(req, { params }) {
     try {
-      const { searchParams } = new URL(req.url);
-      const userId = searchParams.get("userId");
+      // Connect to MongoDB if not already connected
+      if (mongoose.connection.readyState === 0) {
+        await connectDB();
+      }
+
+      const { userId } = await params;
   
       if (!userId) {
         return NextResponse.json({ success: false, error: "User ID is required" }, { status: 400 });

@@ -10,15 +10,16 @@ export async function POST(req) {
       await connectDB();
     }
 
-    const { email, connection } = await req.json();
+    const { email, profilePicture, connection } = await req.json();
 
     // Check if the user already exists
     let user = await User.findOne({ email, connection }).lean();
 
     if (!user) {
-      user = new User({ email, connection });
+      user = new User({ email, profilePicture, connection });
       await user.save();
     }
+
 
     return NextResponse.json({ success: true, user }, { status: 201 });
   } catch (error) {

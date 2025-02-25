@@ -7,15 +7,22 @@ import { RiTeamFill } from "react-icons/ri";
 import { IoMdNotifications } from "react-icons/io";
 import NotificationsModal from "../components/NotificationsModal";
 import { useRouter } from "next/navigation";
+import { preLogOut } from "../utils/prelogout";
 
 const MainSidebar = ({ activeMainTab, setActiveMainTab, user }) => {
   const [userPicture, setUserPicture] = useState(user?.picture || null);
   const [showNotifications, setShowNotifications] = useState(false);
 
-  const handleLogout = () => {
-    window.location.href = "/api/auth/logout?federated";
-    localStorage.setItem("userId", "")
+  const handleLogout = async () => {
+    localStorage.removeItem("userId");
     localStorage.setItem("activeTab", "task");
+
+    const clearToken = await preLogOut();
+    if (!clearToken) {
+      console.error("Failed to clear tokens on logout");
+    }
+
+    window.location.href = "/api/auth/logout?federated";
   };
 
   const router = useRouter();
@@ -41,13 +48,6 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user }) => {
           <button
           className={`px-2 py-1 rounded text-white/50 hover:text-white/75`}
           title={user?.name || "Profile"}
-          onClick={() => {
-            // if (activeMainTab != "task") {
-            //   router.push("/dashboard")
-            //   setActiveMainTab("task")
-            //   localStorage.setItem("activeTab", "task");
-            // }
-          }}
         >
           <FaUser size="1.4em"/>
         </button>
