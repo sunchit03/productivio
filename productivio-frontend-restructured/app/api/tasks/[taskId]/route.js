@@ -39,7 +39,7 @@ export async function DELETE(req, { params }) {
 
 export async function PATCH(req, { params }) {
   try {
-    const { taskId } = params;
+    const { taskId } = await params;
     const { userId, ...updateData } = await req.json();
 
     const task = await Task.findById(taskId);
