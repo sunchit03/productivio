@@ -282,7 +282,7 @@ const TasksView = ({
           {tasks.length > 0 ? (
             tasks.map((task) => (
               <div className="group pr-2" key={task._id}>
-                <div className={`px-3 py-2 rounded-md ${ selectedTask == task ? "bg-purple-50 hover:bg-purple-100" : "hover:bg-gray-50"}`} 
+                <div className={`px-3 py-2 rounded-md ${ selectedTask?._id == task?._id ? "bg-purple-50 hover:bg-purple-100" : "hover:bg-gray-50"}`} 
                   onClick={() => {handleTaskSelection(task)}}>
                   <TaskItem task={task} handleCheckBoxCheck={handleCheckBoxCheck} />
                 </div>
