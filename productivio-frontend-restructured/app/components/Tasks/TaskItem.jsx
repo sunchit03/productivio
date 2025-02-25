@@ -1,19 +1,10 @@
 // // app/components/TaskItem.jsx
-import { useState, useEffect } from "react";
 import { MdCheckBoxOutlineBlank, MdCheckBox } from "react-icons/md";
 
-
-const TaskItem = ({task}) => {
+const TaskItem = ({task, handleCheckBoxCheck}) => {
 
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-
-
-  const handleCheckBoxCheck = () => {
-    task.isCompleted = !task.isCompleted;
-    console.log(task.isCompleted);
-  };
 
   const getPriorityColor = () => {
     let color;
@@ -88,22 +79,19 @@ const TaskItem = ({task}) => {
 
     return {dateText: returnString(tempDateVal), color: "text-indigo-500"};
   };
-  
+
 
   return (
     <div className={`flex items-center justify-between relative`}>
       {/* Task Name */}
-      <span className={`text-black text-base flex items-center ${task?.isCompleted ? "line-through text-gray-500" : ""}`}>
+      <span className={"text-black text-base flex items-center"}>
         {task.isCompleted ? 
-          <MdCheckBox className={`mr-2 cursor-pointer ${getPriorityColor()}`} onClick={handleCheckBoxCheck}/> 
+          <MdCheckBox className={`mr-2 cursor-pointer ${getPriorityColor()}`} onClick={(e)=>handleCheckBoxCheck(e, task._id, false)}/> 
         :
-          <MdCheckBoxOutlineBlank className={`mr-2 cursor-pointer ${getPriorityColor()}`} onClick={handleCheckBoxCheck}/> 
+          <MdCheckBoxOutlineBlank className={`mr-2 cursor-pointer ${getPriorityColor()}`} onClick={(e)=>handleCheckBoxCheck(e, task._id, true)}/> 
         }
-        
         {task?.title || "Untitled Task"} {/* Ensures task title is displayed */}
       </span>
-
-      {/* <div className="flex items-center"> */}
         {task.dueDate &&
           <span className={`${formatDate().color} text-xs font-thin`}>{formatDate().dateText}</span>
         }

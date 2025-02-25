@@ -9,7 +9,6 @@ import MatrixBlock from "../../components/EisenhowerMatrix/MatrixBlock"
 export default function EisenhowerMatrix( {userId} ) {
 
     const [tasks, setTasks] = useState([]);
-    const [selectedTask, setSelectedTask] = useState(null); // Track the task being edited
 
     const fetchTasks = async() => {
         try {
@@ -27,32 +26,6 @@ export default function EisenhowerMatrix( {userId} ) {
       }
     }, [userId]);
 
-    async function deleteTask(taskId) {
-        try{
-            const res = await fetch(`/api/user/tasks/${taskId}`, {
-            method: "DELETE",
-            headers: {"content-type":"application.json"},
-            body: JSON.stringify({userId}),
-        });
-            const data = await res.json();
-            if(data.success){
-                console.log(data.tasks);
-                fetchTasks();
-            }
-            else{
-                console.log("Tasks not deleted: ", data.error);
-            }
-        }
-        catch(error){
-            console.error("Error fetching tasks after deleting: ", error.message);
-        }
-    }
-
-    const handleTaskEdit = (task) => {
-      setSelectedTask(task);
-      setShowModal(true);
-    }
-
     const urgentImportantTasks = tasks.filter(task => !task.isTrash && task.priority === "1");
     const notUrgentImportantTasks = tasks.filter(task => !task.isTrash && task.priority === "2");
     const urgentUnimportantTasks = tasks.filter(task => !task.isTrash && task.priority === "3");
@@ -69,24 +42,28 @@ export default function EisenhowerMatrix( {userId} ) {
             tasks={urgentImportantTasks}
             refresh={fetchTasks}
             userId={userId}
+            setTasks={setTasks}
           />
           <MatrixBlock
             title = {<><TbCircleNumber2Filled size={20} />Not Urgent & Important</>}
             tasks={notUrgentImportantTasks}
             refresh={fetchTasks}
             userId={userId}
+            setTasks={setTasks}
           />
           <MatrixBlock
             title = {<><TbCircleNumber3Filled size={20}/>Urgent & Unimportant</>}
             tasks={urgentUnimportantTasks}
             refresh={fetchTasks}
             userId={userId}
+            setTasks={setTasks}
           />
           <MatrixBlock
             title = {<><TbCircleNumber4Filled size={20}/>Not Urgent & Unimportant</>}
             tasks={notUrgentUnimportantTasks}
             refresh={fetchTasks}
             userId={userId}
+            setTasks={setTasks}
           />
          </div> 
       </div>

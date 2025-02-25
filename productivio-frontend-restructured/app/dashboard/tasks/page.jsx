@@ -10,9 +10,9 @@ export default function TaskPage( {taskBarCollapse, setTaskBarCollapse, userId} 
   const renderView = () => {
     switch (selectedTab) {
       case "Lists": 
-        return <TasksView title={ selectedList.emoji + " " + selectedList.name } userId={userId} listId={selectedList.id} taskBarCollapse={taskBarCollapse} setTaskBarCollapse={setTaskBarCollapse}/>
+        return <TasksView title={ selectedList.emoji + " " + selectedList.name } userId={userId} listId={selectedList.id} taskBarCollapse={taskBarCollapse} setTaskBarCollapse={setTaskBarCollapse} switchTab={selectedTab}/>
       default:
-        return <TasksView title={selectedTab} userId={userId} taskBarCollapse={taskBarCollapse} setTaskBarCollapse={setTaskBarCollapse}/>
+        return <TasksView title={selectedTab} userId={userId} taskBarCollapse={taskBarCollapse} setTaskBarCollapse={setTaskBarCollapse} switchTab={selectedTab}/>
     }
   };
 
