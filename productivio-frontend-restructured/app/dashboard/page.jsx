@@ -34,7 +34,7 @@ function Dashboard() {
     if (typeof window !== undefined && window.innerWidth < 639) {
       setTaskBarCollapse(true);
     }
-  }, [isLoading, user, window]);
+  }, [isLoading, user]);
 
   useEffect(() => {
     if (localStorage.getItem("activeTab") == "") {
