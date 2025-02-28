@@ -126,7 +126,7 @@ const TasksView = ({
     }
 
     // Collapse sidebar on smaller screens
-    if (typeof window !== undefined && window.innerWidth < 639) {
+    if (typeof window !== "undefined" && window.innerWidth < 639) {
       setTaskBarCollapse(true);
     }
   }
@@ -136,7 +136,7 @@ const TasksView = ({
     setTaskBarCollapse(!taskBarCollapse);
 
     // Collapse detailed task view on smaller screens
-    if (typeof window !== undefined && window.innerWidth < 639) {
+    if (typeof window !== "undefined" && window.innerWidth < 639) {
       setSelectedTask(null);
     }
   }
@@ -265,7 +265,7 @@ const TasksView = ({
 
   const handleTaskBarDismissal = () => {
     // Collapse task sidebar on smaller screens
-    if (typeof window !== undefined && window.innerWidth < 639) {
+    if (typeof window !== "undefined" && window.innerWidth < 639) {
       setTaskBarCollapse(true);
     }
   }
@@ -302,7 +302,7 @@ const TasksView = ({
               <div className="group pr-2" key={task._id}>
                 <div className={`px-3 py-2 rounded-md ${ selectedTask?._id == task?._id ? "bg-purple-50 hover:bg-purple-100" : "hover:bg-gray-50"}`} 
                   onClick={(e) => {
-                    if (typeof window !== undefined && window.innerWidth < 639) {
+                    if (typeof window !== "undefined" && window.innerWidth < 639) {
                       if (!taskBarCollapse) {
                         setTaskBarCollapse(true);
                       }
@@ -316,7 +316,7 @@ const TasksView = ({
                 }>
                   <TaskItem task={task} handleCheckBoxCheck={handleCheckBoxCheck} />
                 </div>
-                <div className={`h-[1px] bottom-0 group-hover:invisible z-10 ${typeof window !== undefined && window.innerWidth < 639 && !taskBarCollapse ? "bg-gray-300/90" : "bg-purple-50"}`}></div>
+                <div className={`h-[1px] bottom-0 group-hover:invisible z-10 ${typeof window !== "undefined" && window.innerWidth < 639 && !taskBarCollapse ? "bg-gray-300/90" : "bg-purple-50"}`}></div>
               </div> 
             )))
           : (

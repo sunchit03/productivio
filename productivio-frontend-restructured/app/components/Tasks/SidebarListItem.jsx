@@ -24,7 +24,7 @@ const SidebarListItem = ({ list, activeTab, setActiveTab, activeList, setActiveL
       setActiveList({id: list._id, emoji: list.emoji, name: list.name});
   
       // Collapse sidebar on smaller screens
-      if (typeof window !== undefined && window.innerWidth <= 632) {
+      if (typeof window !== "undefined" && window.innerWidth <= 632) {
         setTaskBarCollapse(true);
       }
     };

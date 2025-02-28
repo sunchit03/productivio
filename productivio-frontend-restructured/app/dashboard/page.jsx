@@ -31,7 +31,7 @@ function Dashboard() {
       router.push("/api/auth/login");
     }
 
-    if (typeof window !== undefined && window.innerWidth < 639) {
+    if (typeof window !== "undefined" && window.innerWidth < 639) {
       setTaskBarCollapse(true);
     }
   }, [isLoading, user]);

@@ -65,7 +65,7 @@ const TaskForm = ( {todayOrNext = false, listId = null, refresh, userId, taskBar
               handleSubmit;
           }}
           onClick={() => setDatePicker(false)}
-          className={`py-2 px-3 pr-25 w-full text-base rounded font-weight:bold text-black ${typeof window !== undefined && window.innerWidth < 639 && !taskBarCollapse ? "bg-gray-300/90" : "bg-gray-50"} placeholder-gray-300 focus:outline-none focus:bg-white focus:ring-1 focus:ring-violet-500`}
+          className={`py-2 px-3 pr-25 w-full text-base rounded font-weight:bold text-black ${typeof window !== "undefined" && window.innerWidth < 639 && !taskBarCollapse ? "bg-gray-300/90" : "bg-gray-50"} placeholder-gray-300 focus:outline-none focus:bg-white focus:ring-1 focus:ring-violet-500`}
         />
         <span 
           className="absolute inset-y-0 right-0 pr-2 flex items-center cursor-pointer text-base text-black"

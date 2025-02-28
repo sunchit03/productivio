@@ -48,7 +48,7 @@ const TasksSidebar = ({ activeTab, setActiveTab, activeList, setActiveList = nul
     setActiveTab(tab);
 
     // Collapse sidebar on smaller screens
-    if (typeof window !== undefined && window.innerWidth < 639) {
+    if (typeof window !== "undefined" && window.innerWidth < 639) {
       setTaskBarCollapse(true);
     }
   };

@@ -19,7 +19,7 @@ export default function TaskPage( {taskBarCollapse, setTaskBarCollapse, user, us
   return (
     <div className={"sm:relative w-full flex h-full"}>
         <TasksSidebar activeTab={selectedTab} setActiveTab={setSelectedTab} activeList={selectedList} setActiveList={setSelectedList} taskBarCollapse={taskBarCollapse} setTaskBarCollapse={setTaskBarCollapse} user={user} userId={userId}/>
-        <div className={`flex-grow h-full sm:w-full overflow-auto ${typeof window !== undefined && window.innerWidth < 639 && !taskBarCollapse ? "bg-black/10" : "bg-white"}`}>{renderView()}</div>
+        <div className={`flex-grow h-full sm:w-full overflow-auto ${typeof window !== "undefined" && window.innerWidth < 639 && !taskBarCollapse ? "bg-black/10" : "bg-white"}`}>{renderView()}</div>
     </div>
   );
 }
