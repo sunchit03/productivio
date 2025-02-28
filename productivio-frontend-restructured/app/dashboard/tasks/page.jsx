@@ -3,7 +3,7 @@ import { useState } from "react";
 import TasksSidebar from "../../components/Tasks/TasksSidebar";
 import TasksView from "./views/TasksView";
 
-export default function TaskPage( {taskBarCollapse, setTaskBarCollapse, userId} ) {
+export default function TaskPage( {taskBarCollapse, setTaskBarCollapse, user, userId} ) {
   const [selectedTab, setSelectedTab] = useState("Inbox");
   const [selectedList, setSelectedList] = useState({id: "", emoji: "", name: ""});
 
@@ -17,9 +17,9 @@ export default function TaskPage( {taskBarCollapse, setTaskBarCollapse, userId} 
   };
 
   return (
-    <>
-        <TasksSidebar activeTab={selectedTab} setActiveTab={setSelectedTab} activeList={selectedList} setActiveList={setSelectedList} taskBarCollapse={taskBarCollapse} userId={userId}/>
-        <div className="flex-grow bg-white overflow-auto">{renderView()}</div>
-    </>
+    <div className={"sm:relative w-full flex h-full"}>
+        <TasksSidebar activeTab={selectedTab} setActiveTab={setSelectedTab} activeList={selectedList} setActiveList={setSelectedList} taskBarCollapse={taskBarCollapse} setTaskBarCollapse={setTaskBarCollapse} user={user} userId={userId}/>
+        <div className={`flex-grow h-full sm:w-full overflow-auto ${window.innerWidth < 639 && !taskBarCollapse ? "bg-black/10" : "bg-white"}`}>{renderView()}</div>
+    </div>
   );
 }

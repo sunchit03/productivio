@@ -3,16 +3,15 @@ import { IoIosFlag } from "react-icons/io";
 import { Menu, MenuItem, MenuButton } from '@szhsin/react-menu';
 import '@szhsin/react-menu/dist/index.css';
 import { MdCheckBoxOutlineBlank, MdCheckBox } from "react-icons/md";
-import {createTask, updateTask} from "@/app/services/tasks"
 import Calendar from 'react-calendar';
 import { BsCalendar2Date } from "react-icons/bs";
-import { IoCalendarOutline } from "react-icons/io5";
+import { IoCalendarOutline, IoClose } from "react-icons/io5";
 import { GrClear } from "react-icons/gr";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import toast from 'react-hot-toast';
 
 const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, handleTrashOrRestore, handleTaskPriorityChange, 
-    handleDueDateUpdate, handleDeleteTask, defaultPriority, handleMatrixAddNewTask, matrixEditTask} ) => {
+    handleDueDateUpdate, handleDeleteTask, defaultPriority, handleMatrixAddNewTask, matrixEditTask, setSelectedTask} ) => {
 
     const [completion, setCompletion] = useState(task?.isCompleted || matrixEditTask?.isCompleted || false);
     const [datePicker, setDatePicker] = useState(false);
@@ -159,11 +158,18 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
     }
 
     return ( 
-        <div className={task ? `relative w-full h-full pl-2 pt-2 flex flex-col justify-between` : `p-2 shadow-xl rounded-md bg-gray-50 w-3/12 h-3/6 flex flex-col justify-between z-50`} onClick={(e) => e.stopPropagation()}>
+        <div className={`${task ? `relative w-full h-full pl-2 pt-2 flex flex-col justify-between` : `p-2 shadow-xl rounded-md bg-gray-50 w-3/12 h-3/6 flex flex-col justify-between z-50`}`} 
+            onClick={(e) => e.stopPropagation()}
+        >
             <div>
             {/* topmost row of detailtask view - contains checkbox if task exists, calendar, date if task date exists, flag for priority */}
                 <div className="flex items-center justify-between p-2 w-full">
                     <div className="flex items-center gx-2">
+                        {task && 
+                            <span className="cursor-pointer hidden mdlg:inline">
+                                <IoClose size={"1.5em"} className="text-slate-400" onClick={() => setSelectedTask(null)}/>
+                            </span>
+                        }
                         {/* Checkbox */}
                         {(task || matrixEditTask) && (
                         (task?.isCompleted || matrixEditTask?.isCompleted) ? (
@@ -296,7 +302,7 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
             </div>
             {editModelVisible && (
                 <div className="fixed inset-0 flex items-start justify-center bg-gray-900 bg-opacity-0 z-50 top-10 drop-shadow-xl">
-                    <div className="bg-white p-6 rounded-md shadow-lg w-2/5">
+                    <div className="xs:w-5/6 xssm:w-4/5 mdlg:w-3/5 bg-white p-6 rounded-md shadow-lg w-2/5">
                         <h2 className="text-lg font-semibold mb-4 text-black">{!task?.isTrash ? `Are you sure that you want to move task "${initTaskTitle}" to trash?` : `Are you sure you want to delete the task "${initTaskTitle}" permanently?`}</h2>           
                         <div className="flex justify-between mt-8">
                             <div className="flex-1"></div>

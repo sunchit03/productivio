@@ -20,7 +20,7 @@ const AddEditListModal = ( { isEdit = false, list, addEditList, showPicker, setS
 
     return (
         <div className="fixed inset-0 flex items-start justify-center bg-gray-900 bg-opacity-0 z-50 top-10 drop-shadow-xl">
-            <div className="bg-white p-6 rounded-md shadow-lg w-2/5">
+            <div className="xs:w-5/6 xssm:w-4/5 mdlg:w-3/5 bg-white p-6 rounded-md shadow-lg w-2/5">
                 <h2 className="text-xl font-bold mb-4 text-black">
                 {isEdit ? "Edit List" : "Add List"}
                 </h2>
@@ -38,7 +38,7 @@ const AddEditListModal = ( { isEdit = false, list, addEditList, showPicker, setS
                         value={newList.name}
                         onChange={(e) => setNewList({ ...newList, name: e.target.value })}
                         placeholder="Name"
-                        className="w-full border rounded p-2 pl-10 text-black"
+                        className="w-full border rounded p-2 pl-10 text-black focus:outline-none focus:ring-1 focus:ring-violet-500"
                         autoFocus
                         onKeyDown={(e) => {
                         if (e.key === "Enter")
