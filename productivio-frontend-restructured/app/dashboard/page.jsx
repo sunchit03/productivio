@@ -31,10 +31,10 @@ function Dashboard() {
       router.push("/api/auth/login");
     }
 
-    if (window.innerWidth < 639) {
+    if (typeof window !== undefined && window.innerWidth < 639) {
       setTaskBarCollapse(true);
     }
-  }, [isLoading, user]);
+  }, [isLoading, user, window]);
 
   useEffect(() => {
     if (localStorage.getItem("activeTab") == "") {
