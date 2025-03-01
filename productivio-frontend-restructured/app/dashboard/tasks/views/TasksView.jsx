@@ -357,17 +357,20 @@ const TasksView = ({
       <div className={`relative ml-5 w-2/5 h-full xs:w-full sm:w-[80%] md:w-[75%] mdlg:w-[75%] mdlg:absolute mdlg:right-0 mdlg:bg-white mdlg:shadow-lg mdlg:rounded-lg  mdlg:z-10 ${selectedTask != null ? "mdlg:visible" : "mdlg:collapse" }`}>
       <div className="absolute w-[1px] h-dvh left-0 z-10 bg-purple-100 visible mdlg:invisible"></div>
         {selectedTask && 
-          <DetailTaskView 
-          task={selectedTask} 
-          userId={userId} 
-          handleCheckBoxCheck={handleCheckBoxCheck} 
-          handleEditTask={handleEditTask} 
-          handleTrashOrRestore={handleTrashOrRestore} 
-          handleTaskPriorityChange={handleTaskPriorityChange} 
-          handleDueDateUpdate={handleDueDateUpdate} 
-          handleDeleteTask={handleDeleteTask}
-          setSelectedTask={setSelectedTask}
-          />
+          <div className="relative w-full h-full pl-2 pt-2 flex flex-col justify-between"
+            onClick={(e) => e.stopPropagation()}>
+            <DetailTaskView 
+            task={selectedTask} 
+            userId={userId} 
+            handleCheckBoxCheck={handleCheckBoxCheck} 
+            handleEditTask={handleEditTask} 
+            handleTrashOrRestore={handleTrashOrRestore} 
+            handleTaskPriorityChange={handleTaskPriorityChange} 
+            handleDueDateUpdate={handleDueDateUpdate} 
+            handleDeleteTask={handleDeleteTask}
+            setSelectedTask={setSelectedTask}
+            />
+          </div>
         }
       </div>
     </div>

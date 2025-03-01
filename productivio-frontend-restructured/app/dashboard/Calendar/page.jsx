@@ -5,9 +5,8 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
-
-
-import { getUserTasks, updateTask } from "@/app/services/tasks";
+import DetailTaskView from "@/app/components/Tasks/DetailTaskView";
+import { getUserTasks, updateTask} from "@/app/services/tasks";
 
 // Importing calendar icon
 
@@ -17,6 +16,7 @@ function CalendarPage({ userId }) {
   const [tasks, setTasks] = useState([]);
   const [events, setEvents] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [calendarTaskEditModal, setCalendarTaskEditModal] = useState(false);
 
   const fetchTasks = async() => {
     try {
@@ -84,9 +84,47 @@ function CalendarPage({ userId }) {
     const task = tasks.find(task => task._id === event.extendedProps.id);
     if (selectedTask !== task) {
       setSelectedTask(task);
+      setCalendarTaskEditModal(true);
+      console.log("true");
     }
-    alert(task.dueDate);
   };
+
+  const handleTrashOrRestore = async(taskId, restore) => {
+    try{
+      console.log(taskId);
+      const data = await updateTask(taskId, userId, {isTrash: restore})
+      if(data){
+        setCalendarTaskEditModal(false);
+        setTasks(prevTasks => prevTasks.filter(task => task._id != taskId));
+        setEvents(prevEvents => prevEvents.filter(event => event.extendedProps.id != taskId));
+      if(selectedTask?._id === taskId){
+        setSelectedTask(null);
+      }
+    }
+    else{
+      console.log("Error while moving task to trash: ", data.error)}
+    }catch(error){
+      console.log("Error updating task: ", error.message);
+      }
+    }
+
+const handleEditTask = async(taskId, title, description) => {
+  setCalendarTaskEditModal(false);
+  try{
+      const data = await updateTask(taskId, userId, {title: title, description: (description === "" ? null : description)})
+      if(data){
+      setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, title: title, description: (description === "" ? null : description)} : task));
+      setEvents(prevEvents=>prevEvents.map(event => event.extendedProps.id === taskId ? {...event, title: title, description: (description === "" ? null : description)} : event))
+      if(selectedTask?._id === taskId){
+      setSelectedTask(prevTask=>({...prevTask, title: title, description: description}));
+      }
+  }
+  else{
+      console.log("Error updating task with title and description: ", data.error)}
+  }catch(error){
+      console.log("Error updating task: ", error.message);
+      }
+  }
 
   const handleEventDrag = async (info) => {
     const task = tasks.find(task => task._id === info.event.extendedProps.id);
@@ -120,6 +158,15 @@ function CalendarPage({ userId }) {
         eventClassNames="rounded-lg p-2 text-sm font-medium shadow-sm" // Styling improvement
         //titleClassNames="text-black font-bold text-lg"
       />
+      {calendarTaskEditModal && 
+      <div className="fixed inset-0 bg-opacity-5 flex flex-col justify-center items-center z-50" onClick={()=>{setCalendarTaskEditModal(false); setSelectedTask(null)} }> 
+      <div className="p-2 shadow-xl rounded-md bg-gray-50 w-3/12 h-3/6 flex flex-col justify-between z-50" onClick={(e) => e.stopPropagation()}>
+      <DetailTaskView 
+        task={selectedTask}
+        handleTrashOrRestore={handleTrashOrRestore}
+        handleEditTask={handleEditTask}/>
+        </div>
+      </div>}
     </div>
   );
 }
