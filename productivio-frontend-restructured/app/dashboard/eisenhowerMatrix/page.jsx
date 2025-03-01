@@ -32,7 +32,7 @@ export default function EisenhowerMatrix( {userId} ) {
     const notUrgentUnimportantTasks = tasks.filter(task => !task.isTrash && task.priority === "4");
 
     return (
-      <div className="h-screen flex flex-col bg-gray-100 p-4 overflow-hidden">
+      <div className="h-screen bg-gradient-to-b from-indigo-100 to-pink-50 flex flex-col bg-gray-100 p-4 overflow-hidden">
         <div>
           <h1 className="ml-1 text-xl text-black font-semibold mb-4" >Eisenhower Matrix</h1>
         </div>
