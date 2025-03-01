@@ -22,16 +22,42 @@ export async function getOneTeam(teamId, userId) {
     }
 }
 
-export async function createTeam(userId, title, description) {
-    let res;
+export async function createTeam(admin, title, description) {
     try {
-         res = await fetch("/api/teams", {
+         const res = await fetch("/api/teams", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId, title, description }),
+            body: JSON.stringify({ admin, title, description }),
         });
+        return await res.json();
     } catch (error) {
         console.error("Error creating team:", error);
+        return { success: false };
     }
-    return res;
+}
+
+export async function deleteTeam(teamId, userId) {
+    try{
+        const res = await fetch(`/api/teams/${teamId}`,{
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId }),
+        });
+        return await res.json();
+    }catch(error){
+        console.log("Error deleting the team: ", error);
+    }
+}
+
+export async function updateTeam(teamId, userId, updatedTeam) {
+    try{
+        const res = await fetch(`/api/teams/${teamId}`,{
+        method: "PATCH",
+        headers: {"Content-type":"application/json"},
+        body: JSON.stringify({userId, ...updatedTeam}),
+        });
+        return await res.json();
+    }catch(error){
+        console.log("Error while updating team: ", error)
+    }
 }

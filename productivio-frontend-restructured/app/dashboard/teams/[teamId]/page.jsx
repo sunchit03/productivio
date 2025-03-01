@@ -4,8 +4,6 @@ import { useState, useEffect } from "react";
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0/client";
 import { useParams } from "next/navigation";
 import Sidebar from "@/app/components/MainSidebar";
-import CreateTeamTask from "@/app/components/Teams/CreateTeamTask";
-import TeamTaskCard from "@/app/components/Teams/TeamTaskCard"
 import MembersSection from "@/app/components/Teams/MembersSection";
 import Loading from "@/app/components/Loading";
 

@@ -100,7 +100,7 @@ function Dashboard() {
             /* Teams Page */
             activeMainTab === "teams" ? (
               <main className="flex-grow bg-gray-50">
-              <TeamsPage/>
+              <TeamsPage userId={userId}/>
               </main>
             )
             :

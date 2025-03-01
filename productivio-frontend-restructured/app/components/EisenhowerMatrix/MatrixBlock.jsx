@@ -155,12 +155,9 @@ return(
     <div className= "group border rounded-md p-2 bg-white shadow-md h-[43vh] flex flex-col">
         <div className={`text-sm p-2 font-bold flex w-full justify-between items-center`}>
             <div className={`flex items-center gap-2  ${textColor}`}>{title} </div>
-            <div className="invisible group-hover:visible flex items-center gap-2">
+            <div className="invisible group-hover:visible flex items-center">
                 <button className={`hover:bg-gray-300 rounded-sm ${textColor}`} onClick={()=>{setAddEditTaskModal(true)}}>
                     <HiOutlinePlusSm size={20} />
-                </button>
-                <button className={`hover:bg-gray-300 rounded-sm ${textColor}`} onClick={()=>{}}>
-                    <RxDotsHorizontal size={20} />
                 </button>
             </div>
 
@@ -187,7 +184,7 @@ return(
             {tasks.length > 0 ? (
                 tasks.map(task => { return (
                 <div className="group-task pr-2" key={task._id}>
-                    <div className={`px-3 py-2 rounded-md ${selectedTask == task ? "bg-purple-100 hover:bg-purple-200" : "hover:bg-gray-50"}`} 
+                    <div className={`px-3 py-2 rounded-md ${selectedTask == task ? "bg-purple-100 hover:bg-purple-200" : "hover:bg-purple-50"}`} 
                     onClick={() => {handleTaskSelection(task); setAddEditTaskModal(true);}}>
                     <TaskItem handleCheckBoxCheck={handleCheckBoxCheck} task={task} />
                     </div>
