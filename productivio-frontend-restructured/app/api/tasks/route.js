@@ -2,10 +2,11 @@ import { NextResponse } from "next/server";
 import Task from "../../models/Task";
 import User from "../../models/User";
 import List from "../../models/List";
+import Team from "../../models/Team"
 
 export async function POST(req) {
   try {
-    const { title, description, assignedTo, createdBy, listId, team, priority, dueDate } = await req.json();
+    const { title, description, assignedTo, createdBy, listId, teamId, priority, dueDate } = await req.json();
 
     if (!title || !createdBy) {
       return NextResponse.json({ success: false, error: "Title and CreatedBy are required" }, { status: 400 });
@@ -23,6 +24,15 @@ export async function POST(req) {
 
       if (!list) {
         return NextResponse.json({ success: false, error: "List not found" }, { status: 404 });
+      }
+    }
+
+    let team;
+    if (teamId) {
+      team = await Team.findById(teamId);
+
+      if (!team) {
+        return NextResponse.json({ success: false, error: "Team not found" }, { status: 404 });
       }
     }
 
@@ -46,6 +56,11 @@ export async function POST(req) {
     if (listId) {
       list.tasks.push(newTask._id);
       await list.save();
+    }
+
+    if (teamId) {
+      team.tasks.push(newTask._id);
+      await team.save();
     }
 
     return NextResponse.json({ success: true, task: newTask }, { status: 201 });
