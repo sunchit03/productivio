@@ -1,10 +1,10 @@
 // app/services/tasks.js
 
 // Get All Tasks for a User
-export const getUserTasks = async (userId) => {
+export const getUserTasks = async (userId, list = false) => {
   try {
     if (!userId) return [];
-    const response = await fetch(`/api/tasks/user/${userId}`);
+    const response = await fetch(`/api/tasks/user/${userId}?list=${list}`);
     const data = await response.json();
     return data.tasks;
   } catch (error) {

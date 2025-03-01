@@ -91,6 +91,21 @@ try {
     console.error("Error updating task state:", error.message);}
 };
 
+const handleTrashOrRestore = async(taskId, restore) => {
+    try{
+      const data = await updateTask(taskId, userId, {isTrash: restore})
+      if(data){
+        setTasks(prevTasks => prevTasks.filter(task => task._id != taskId));
+        setAddEditTaskModal(false);
+        setSelectedTask(null);
+    }
+    else{
+      console.log("Error while moving task to trash: ", data.error)}
+    }catch(error){
+      console.log("Error updating task: ", error.message);
+      }
+    }
+
 const handleTaskPriorityChange = async(taskId, setPriority) => {
     try{
       const data = await updateTask(taskId, userId, {priority: setPriority})
@@ -149,18 +164,21 @@ return(
                 </button>
             </div>
 
-            {addEditTaskModal && 
+            {addEditTaskModal &&
             <div className="fixed inset-0 bg-opacity-5 flex flex-col justify-center items-center z-50" onClick={()=>{setAddEditTaskModal(false); setSelectedTask(null)} }> 
+                <div className="relative p-2 shadow-xl rounded-md bg-gray-50 w-3/12 h-3/6 flex flex-col justify-between z-50" onClick={(e) => e.stopPropagation()}>
                 <DetailTaskView
+                handleTrashOrRestore={handleTrashOrRestore}
                 handleCheckBoxCheck={handleCheckBoxCheck}
                 handleEditTask={handleEditTask}
-                matrixEditTask={selectedTask}
+                task={selectedTask}
                 handleMatrixAddNewTask={handleMatrixAddNewTask}
                 handleDueDateUpdate={handleDueDateUpdate}
                 handleTaskPriorityChange={handleTaskPriorityChange}
-                defaultPriority={handleDefaultMatrixPriority}
+                matrixBlockPriority={handleDefaultMatrixPriority}
                 setAddEditTaskModal={setAddEditTaskModal}
                 userId={userId}/>
+                </div>
             </div>
             }
 
@@ -169,7 +187,7 @@ return(
             {tasks.length > 0 ? (
                 tasks.map(task => { return (
                 <div className="group-task pr-2" key={task._id}>
-                    <div className={`px-3 py-2 rounded-md ${selectedTask == task ? "bg-purple-50 hover:bg-purple-50" : "hover:bg-gray-50"}`} 
+                    <div className={`px-3 py-2 rounded-md ${selectedTask == task ? "bg-purple-100 hover:bg-purple-200" : "hover:bg-gray-50"}`} 
                     onClick={() => {handleTaskSelection(task); setAddEditTaskModal(true);}}>
                     <TaskItem handleCheckBoxCheck={handleCheckBoxCheck} task={task} />
                     </div>

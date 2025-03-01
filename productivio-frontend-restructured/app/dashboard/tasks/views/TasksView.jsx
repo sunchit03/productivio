@@ -284,7 +284,7 @@ const TasksView = ({
               <div className="group pr-2" key={task._id}>
                 <div className={`px-3 py-2 rounded-md ${ selectedTask?._id == task?._id ? "bg-purple-50 hover:bg-purple-100" : "hover:bg-gray-50"}`} 
                   onClick={() => {handleTaskSelection(task)}}>
-                  <TaskItem task={task} handleCheckBoxCheck={handleCheckBoxCheck} />
+                  <TaskItem task={task} handleCheckBoxCheck={handleCheckBoxCheck} pageTitle={title}/>
                 </div>
                 <div className="h-[1px] bottom-0 bg-purple-50 group-hover:invisible z-10"></div>
               </div> 
@@ -325,7 +325,13 @@ const TasksView = ({
       </div>
       <div className="relative ml-5 w-2/5">
       <div className="absolute w-[1px] h-dvh left-0 z-10 bg-purple-100"></div>
-        {selectedTask && <DetailTaskView task={selectedTask} userId={userId} handleCheckBoxCheck={handleCheckBoxCheck} handleEditTask={handleEditTask} handleTrashOrRestore={handleTrashOrRestore} handleTaskPriorityChange={handleTaskPriorityChange} handleDueDateUpdate={handleDueDateUpdate} handleDeleteTask={handleDeleteTask}/>}
+        {selectedTask &&
+        <div className="relative w-full h-full pl-2 pt-2 flex flex-col justify-between">
+        <DetailTaskView 
+        task={selectedTask} userId={userId} handleCheckBoxCheck={handleCheckBoxCheck} handleEditTask={handleEditTask} handleTrashOrRestore={handleTrashOrRestore} 
+        handleTaskPriorityChange={handleTaskPriorityChange} handleDueDateUpdate={handleDueDateUpdate} handleDeleteTask={handleDeleteTask} pageTitle={title}
+        />
+        </div>}
       </div>
     </div>
   );

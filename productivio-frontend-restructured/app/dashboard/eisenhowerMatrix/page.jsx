@@ -12,7 +12,7 @@ export default function EisenhowerMatrix( {userId} ) {
 
     const fetchTasks = async() => {
         try {
-          const data = await getUserTasks(userId);
+          const data = await getUserTasks(userId, true);
           setTasks(data);
           console.log(data);
         } catch (error) {
