@@ -17,7 +17,32 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      transitionProperty : {
+        'width': 'width'
+      },
     },
+    screens: {
+			xl: { max: "1279px" },
+			// => @media (max-width: 1279px) { ... }
+
+			lg: { max: "1023px" },
+			// => @media (max-width: 1023px) { ... }
+
+      mdlg: { max: "952px" },
+			// => @media (max-width: 952px) { ... }
+
+			md: { max: "767px" },
+			// => @media (max-width: 767px) { ... }
+
+			sm: { max: "639px" },
+			// => @media (max-width: 639px) { ... }
+
+      xssm: { max: "550px" },
+      // => @media (max-width: 550px) { ... }
+
+      xs: { max: "499px" },
+      // => @media (max-width: 499px) { ... }
+		},
   },
   plugins: [],
 };

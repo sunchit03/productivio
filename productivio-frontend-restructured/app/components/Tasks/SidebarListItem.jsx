@@ -7,7 +7,7 @@ import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/zoom.css';
 
 
-const SidebarListItem = ({ list, activeTab, setActiveTab, activeList, setActiveList, openListModal, removeList }) => {
+const SidebarListItem = ({ list, activeTab, setActiveTab, activeList, setActiveList, openListModal, removeList, setTaskBarCollapse }) => {
 
     const [isListDeleteModalOpen, setIsListDeleteModalOpen] = useState(false);
 
@@ -19,11 +19,21 @@ const SidebarListItem = ({ list, activeTab, setActiveTab, activeList, setActiveL
         setIsListDeleteModalOpen(false);
       }
 
+    const handleListClick = (list) => {
+      setActiveTab('Lists');
+      setActiveList({id: list._id, emoji: list.emoji, name: list.name});
+  
+      // Collapse sidebar on smaller screens
+      if (typeof window !== "undefined" && window.innerWidth <= 632) {
+        setTaskBarCollapse(true);
+      }
+    };
+
 
     const deleteListModal = () => {
         return (
           <div className="fixed inset-0 flex items-start justify-center bg-gray-900 bg-opacity-0 z-50 top-10 drop-shadow-xl">
-            <div className="bg-white p-6 rounded-md shadow-lg w-2/5">
+            <div className="xs:w-5/6 xssm:w-4/5 mdlg:w-3/5 bg-white p-6 rounded-md shadow-lg w-2/5">
               <h2 className="text-lg font-semibold mb-4 text-black">Delete list "{list.emoji} {list.name}"?</h2>
               <form onSubmit={(e) => handleDeleteList(e)}>
                 <label className="block text-black mb-2">
@@ -61,9 +71,8 @@ const SidebarListItem = ({ list, activeTab, setActiveTab, activeList, setActiveL
                 >
                     <div className="w-full flex items-center" 
                         onClick={() => {
-                        setActiveTab('Lists');
-                        setActiveList({id: list._id, emoji: list.emoji, name: list.name});
-                    }}>
+                          handleListClick(list)
+                        }}>
                         <span className="mr-[8px] flex-none self-center">{list.emoji}</span>
                         <p className="text-sm font-normal flex-auto truncate pr-4">{list.name}</p>
                     </div>

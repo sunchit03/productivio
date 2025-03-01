@@ -4,7 +4,7 @@ import { createList, deleteList, getUserLists, updateList } from "@/app/services
 import SidebarListItem from "./SidebarListItem";
 import AddEditListModal from "./AddEditListModal";
 
-const SidebarListsDropdown = ({ activeTab, setActiveTab, activeList, setActiveList, userId }) => {
+const SidebarListsDropdown = ({ activeTab, setActiveTab, activeList, setActiveList, setTaskBarCollapse, userId }) => {
   const [lists, setLists] = useState([]);
   const [isListsDropdownOpen, setIsListsDropdownOpen] = useState(false);
   const [isListModalOpen, setIsListModalOpen] = useState({isOpen: false, isEdit: false, list: null});
@@ -130,6 +130,7 @@ const SidebarListsDropdown = ({ activeTab, setActiveTab, activeList, setActiveLi
                   setActiveList={setActiveList}
                   openListModal={openListModal}
                   removeList={removeList}
+                  setTaskBarCollapse={setTaskBarCollapse}
                 />
               ))
             ) : (

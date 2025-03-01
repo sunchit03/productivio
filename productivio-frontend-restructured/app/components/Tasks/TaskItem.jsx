@@ -1,7 +1,7 @@
 // // app/components/TaskItem.jsx
 import { MdCheckBoxOutlineBlank, MdCheckBox } from "react-icons/md";
 
-const TaskItem = ({task, handleCheckBoxCheck, pageTitle}) => {
+const TaskItem = ({ task, handleCheckBoxCheck, pageTitle = "" }) => {
 
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -97,11 +97,13 @@ const TaskItem = ({task, handleCheckBoxCheck, pageTitle}) => {
         {task?.title || "Untitled Task"} {/* Ensures task title is displayed */}
       </span>
       <div className="text-black text-xs font-thin flex items-center">
-        {!pageTitle && task.list !== null(
+        {pageTitle == "" && task.list && (
           <>
             <span className="mr-1">{task.list.emoji}</span>
             <span className="mr-1">{task.list.name}</span>
-            <span className="mr-1">|</span>
+            {task.dueDate &&
+              <span className="mr-1 text-purple-200">|</span>
+            }
           </>
         )
         }

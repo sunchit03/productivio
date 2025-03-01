@@ -30,6 +30,10 @@ function Dashboard() {
       localStorage.setItem("", data.user._id);
       router.push("/api/auth/login");
     }
+
+    if (typeof window !== "undefined" && window.innerWidth < 639) {
+      setTaskBarCollapse(true);
+    }
   }, [isLoading, user]);
 
   useEffect(() => {
@@ -71,7 +75,7 @@ function Dashboard() {
 
             {/* Tasks Page */}
             {activeMainTab === "task" ? (
-              <TaskPage taskBarCollapse={taskBarCollapse} setTaskBarCollapse={setTaskBarCollapse} userId={userId}/>       
+              <TaskPage taskBarCollapse={taskBarCollapse} setTaskBarCollapse={setTaskBarCollapse} user={user} userId={userId}/>       
             ) 
             : 
             /* Calendar Page */

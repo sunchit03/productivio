@@ -12,18 +12,22 @@ export async function GET(req, { params }) {
 
     const { userId } = await params;
 
+    const list = req.nextUrl.searchParams.get('list');
+
     if (!userId) {
       return NextResponse.json({ success: false, error: "User ID is required" }, { status: 400 });
     }
 
-    let list = req.nextUrl.searchParams.get("list");
     let tasks;
-    if(list === "true"){
-      tasks = await Task.find({ assignedTo: userId }).populate("list");
+    if (list === "true") {
+      tasks = await Task.find({ assignedTo: userId }).populate({
+        path: "list",
+        select: "name emoji"
+      });
+    } else {
+      tasks = await Task.find({ assignedTo: userId }).lean();
     }
-    else{
-      tasks = await Task.find({ assignedTo: userId });
-    }
+
     return NextResponse.json({ success: true, tasks }, { status: 200 });
 
   } catch (error) {

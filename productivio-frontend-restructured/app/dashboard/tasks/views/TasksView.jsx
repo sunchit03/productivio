@@ -3,12 +3,12 @@
 import TaskItem from "../../../components/Tasks/TaskItem";
 import TaskForm from "../../../components/Tasks/TaskForm";
 import { useEffect, useState } from "react";
-import { TbLayoutSidebarLeftCollapse, TbLayoutSidebarRightCollapse } from "react-icons/tb";
 import { RiProgress5Line } from "react-icons/ri";
 import { BsTrash2 } from "react-icons/bs";
 import {updateTask} from "@/app/services/tasks"
 import { GiPapers } from "react-icons/gi";
 import { FaPencilAlt } from "react-icons/fa";
+import { GoSidebarCollapse, GoSidebarExpand  } from "react-icons/go";
 import { getUserTasks } from "@/app/services/tasks";
 import DetailTaskView from "@/app/components/Tasks/DetailTaskView";
 import {deleteTask} from "@/app/services/tasks"
@@ -124,10 +124,21 @@ const TasksView = ({
     if (selectedTask !== task) {
       setSelectedTask(task);
     }
+
+    // Collapse sidebar on smaller screens
+    if (typeof window !== "undefined" && window.innerWidth < 639) {
+      setTaskBarCollapse(true);
+    }
   }
 
-  const toggleTaskBarCollapse = () => {
+  const toggleTaskBarCollapse = (e) => {
+    e.stopPropagation();
     setTaskBarCollapse(!taskBarCollapse);
+
+    // Collapse detailed task view on smaller screens
+    if (typeof window !== "undefined" && window.innerWidth < 639) {
+      setSelectedTask(null);
+    }
   }
 
   const handleCheckBoxCheck = async (e, taskId, updatedCompletion) => {
@@ -251,9 +262,16 @@ const TasksView = ({
     console.log("Error deleting task: ", error.message);
     }
   }
+
+  const handleTaskBarDismissal = () => {
+    // Collapse task sidebar on smaller screens
+    if (typeof window !== "undefined" && window.innerWidth < 639) {
+      setTaskBarCollapse(true);
+    }
+  }
   
   return (
-    <div className="w-full flex h-full px-5">
+    <div className={`relative w-full flex h-full px-5`} onClick={handleTaskBarDismissal}>
       <Toaster
           toastOptions={{
           removeDelay: 500,
@@ -266,27 +284,39 @@ const TasksView = ({
           },
           }}
       />
-      <div className="w-3/5">
+      <div className="w-3/5 h-full mdlg:w-full">
         <div className="flex flex-row items-center">
           {!taskBarCollapse ?
-            <TbLayoutSidebarLeftCollapse size={"1.5em"} className="text-gray-500 cursor-pointer font-thin" onClick={toggleTaskBarCollapse}/>
+            <GoSidebarExpand size={"1.3em"} className="text-gray-500 cursor-pointer font-thin" onClick={(e) => toggleTaskBarCollapse(e)}/>
             :
-            <TbLayoutSidebarRightCollapse  size={"1.5em"} className="text-gray-500 cursor-pointer font-thin" onClick={toggleTaskBarCollapse}/>
+            <GoSidebarCollapse size={"1.3em"} className="text-gray-500 cursor-pointer font-thin" onClick={(e) => toggleTaskBarCollapse(e)}/>
           }
           <h2 className="ml-1 text-xl text-black font-semibold my-4">{title}</h2>
         </div>
         {!completedOrTrash && (
-          <TaskForm todayOrNext={todayOrNext} listId={listId} refresh={fetchTasks} userId={userId}/>
+          <TaskForm todayOrNext={todayOrNext} listId={listId} refresh={fetchTasks} userId={userId} taskBarCollapse={taskBarCollapse}/>
         )}
-        <div className="mt-4 h-[calc(100vh-150px)] overflow-hidden hover:overflow-y-auto relative">
+        <div className="mt-4 h-[calc(100vh-150px)] mdlg:w-[100%] overflow-hidden hover:overflow-y-auto relative">
           {tasks.length > 0 ? (
             tasks.map((task) => (
               <div className="group pr-2" key={task._id}>
                 <div className={`px-3 py-2 rounded-md ${ selectedTask?._id == task?._id ? "bg-purple-50 hover:bg-purple-100" : "hover:bg-gray-50"}`} 
-                  onClick={() => {handleTaskSelection(task)}}>
+                  onClick={(e) => {
+                    if (typeof window !== "undefined" && window.innerWidth < 639) {
+                      if (!taskBarCollapse) {
+                        setTaskBarCollapse(true);
+                      }
+                      else {
+                        handleTaskSelection(task)
+                      }
+                    } else {
+                      handleTaskSelection(task)
+                    }
+                  }
+                }>
                   <TaskItem task={task} handleCheckBoxCheck={handleCheckBoxCheck} pageTitle={title}/>
                 </div>
-                <div className="h-[1px] bottom-0 bg-purple-50 group-hover:invisible z-10"></div>
+                <div className={`h-[1px] bottom-0 group-hover:invisible z-10 ${typeof window !== "undefined" && window.innerWidth < 639 && !taskBarCollapse ? "bg-gray-300/90" : "bg-purple-50"}`}></div>
               </div> 
             )))
           : (
@@ -323,15 +353,25 @@ const TasksView = ({
           )}
         </div>
       </div>
-      <div className="relative ml-5 w-2/5">
-      <div className="absolute w-[1px] h-dvh left-0 z-10 bg-purple-100"></div>
-        {selectedTask &&
-        <div className="relative w-full h-full pl-2 pt-2 flex flex-col justify-between">
-        <DetailTaskView 
-        task={selectedTask} userId={userId} handleCheckBoxCheck={handleCheckBoxCheck} handleEditTask={handleEditTask} handleTrashOrRestore={handleTrashOrRestore} 
-        handleTaskPriorityChange={handleTaskPriorityChange} handleDueDateUpdate={handleDueDateUpdate} handleDeleteTask={handleDeleteTask} pageTitle={title}
-        />
-        </div>}
+
+      <div className={`relative ml-5 w-2/5 h-full xs:w-full sm:w-[80%] md:w-[75%] mdlg:w-[75%] mdlg:absolute mdlg:right-0 mdlg:bg-white mdlg:shadow-lg mdlg:rounded-lg  mdlg:z-10 ${selectedTask != null ? "mdlg:visible" : "mdlg:collapse" }`}>
+      <div className="absolute w-[1px] h-dvh left-0 z-10 bg-purple-100 visible mdlg:invisible"></div>
+        {selectedTask && 
+          <div className="relative w-full h-full pl-2 pt-2 flex flex-col justify-between"
+            onClick={(e) => e.stopPropagation()}>
+            <DetailTaskView 
+            task={selectedTask} 
+            userId={userId} 
+            handleCheckBoxCheck={handleCheckBoxCheck} 
+            handleEditTask={handleEditTask} 
+            handleTrashOrRestore={handleTrashOrRestore} 
+            handleTaskPriorityChange={handleTaskPriorityChange} 
+            handleDueDateUpdate={handleDueDateUpdate} 
+            handleDeleteTask={handleDeleteTask}
+            setSelectedTask={setSelectedTask}
+            />
+          </div>
+        }
       </div>
     </div>
   );
