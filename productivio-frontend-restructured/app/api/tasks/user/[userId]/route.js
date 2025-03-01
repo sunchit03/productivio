@@ -12,11 +12,21 @@ export async function GET(req, { params }) {
 
     const { userId } = await params;
 
+    const list = req.nextUrl.searchParams.get('list');
+
     if (!userId) {
       return NextResponse.json({ success: false, error: "User ID is required" }, { status: 400 });
     }
 
-    const tasks = await Task.find({ assignedTo: userId }).lean();
+    let tasks;
+    if (list === "true") {
+      tasks = await Task.find({ assignedTo: userId }).populate({
+        path: "list",
+        select: "name emoji"
+      });
+    } else {
+      tasks = await Task.find({ assignedTo: userId }).lean();
+    }
 
     return NextResponse.json({ success: true, tasks }, { status: 200 });
 

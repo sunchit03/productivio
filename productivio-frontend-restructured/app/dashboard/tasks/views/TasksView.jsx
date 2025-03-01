@@ -314,7 +314,7 @@ const TasksView = ({
                     }
                   }
                 }>
-                  <TaskItem task={task} handleCheckBoxCheck={handleCheckBoxCheck} />
+                  <TaskItem task={task} handleCheckBoxCheck={handleCheckBoxCheck} pageTitle={title}/>
                 </div>
                 <div className={`h-[1px] bottom-0 group-hover:invisible z-10 ${typeof window !== "undefined" && window.innerWidth < 639 && !taskBarCollapse ? "bg-gray-300/90" : "bg-purple-50"}`}></div>
               </div> 

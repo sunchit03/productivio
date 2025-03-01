@@ -1,7 +1,7 @@
 // // app/components/TaskItem.jsx
 import { MdCheckBoxOutlineBlank, MdCheckBox } from "react-icons/md";
 
-const TaskItem = ({task, handleCheckBoxCheck}) => {
+const TaskItem = ({ task, handleCheckBoxCheck, pageTitle = "" }) => {
 
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -86,15 +86,31 @@ const TaskItem = ({task, handleCheckBoxCheck}) => {
       {/* Task Name */}
       <span className={"text-black text-base flex items-center"}>
         {task.isCompleted ? 
-          <MdCheckBox className={`mr-2 cursor-pointer ${getPriorityColor()}`} onClick={(e)=>handleCheckBoxCheck(e, task._id, false)}/> 
-        :
-          <MdCheckBoxOutlineBlank className={`mr-2 cursor-pointer ${getPriorityColor()}`} onClick={(e)=>handleCheckBoxCheck(e, task._id, true)}/> 
+          <MdCheckBox 
+            className={pageTitle === "Trash" ? `cursor-not-allowed mr-2 ${getPriorityColor()}` : `mr-2 cursor-pointer ${getPriorityColor()}`} 
+            onClick={pageTitle !== "Trash" ? (e)=>handleCheckBoxCheck(e, task._id, false) : undefined}
+          /> :
+          <MdCheckBoxOutlineBlank 
+          className={pageTitle === "Trash" ? `cursor-not-allowed mr-2 ${getPriorityColor()}` : `mr-2 cursor-pointer ${getPriorityColor()}`} 
+          onClick={pageTitle !== "Trash" ? (e)=>handleCheckBoxCheck(e, task._id, true) : undefined}/> 
         }
         {task?.title || "Untitled Task"} {/* Ensures task title is displayed */}
       </span>
-        {task.dueDate &&
-          <span className={`${formatDate().color} text-xs font-thin`}>{formatDate().dateText}</span>
+      <div className="text-black text-xs font-thin flex items-center">
+        {pageTitle == "" && task.list && (
+          <>
+            <span className="mr-1">{task.list.emoji}</span>
+            <span className="mr-1">{task.list.name}</span>
+            {task.dueDate &&
+              <span className="mr-1 text-purple-200">|</span>
+            }
+          </>
+        )
         }
+        {task.dueDate &&
+          <span className={formatDate().color}>{formatDate().dateText}</span>
+        }
+      </div>
     </div>
   );
 };
