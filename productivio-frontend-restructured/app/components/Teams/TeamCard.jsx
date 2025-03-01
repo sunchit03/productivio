@@ -1,7 +1,4 @@
-import { useRouter } from "next/navigation";
-
-export default function TeamCard({ team }) {
-  const router = useRouter();
+export default function TeamCard({ team, setSelectedTeam }) {
 
   // Function to extract the initials from the title
   const getInitials = (title) => {
@@ -31,7 +28,7 @@ export default function TeamCard({ team }) {
   return (
     <div
       className="bg-white shadow-md rounded-lg p-4 cursor-pointer hover:shadow-lg transition"
-      onClick={() => router.push(`/dashboard/teams/${team._id}`)}
+      onClick={() => setSelectedTeam(team)}
     >
       <div className="flex items-center space-x-4">
         {/* Circular image with initials */}

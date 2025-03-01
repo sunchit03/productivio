@@ -6,30 +6,32 @@ import TeamCard from "@/app/components/Teams/TeamCard";
 import CreateTeam from "@/app/components/Teams/CreateTeam";
 import { getUserTeams } from "@/app/services/teams";
 
-export default function TeamsPage() {
+export default function TeamsPage({ userId, setSelectedTeam }) {
 
     const [teams, setTeams] = useState([]);
     const [showModal, setShowModal] = useState(false);
-    const userId = typeof window !== "undefined" ? localStorage.getItem("userId") : null;
 
     useEffect(() => {
+        setSelectedTeam(null);
         fetchTeams()
-    }, [])
+    }, [userId])
 
     async function fetchTeams() {
-      const fetchedTeams = await getUserTeams(userId);
-      setTeams(fetchedTeams);
+      const data = await getUserTeams(userId);
+      if (data) {
+        setTeams(data);
+      }
     }
 
     return (
-        <div className="p-8">
-          <h1 className="text-2xl font-bold mb-4 text-black">My Teams</h1>
+        <div className="h-screen flex flex-col bg-gray-100 p-4 overflow-hidden">
+          <h1 className="ml-1 text-xl text-black font-semibold mb-4">My Teams</h1>
           {teams.length === 0 ? (
             <p className="text-gray-600">You have no teams. Start by creating one!</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {teams.map((team) => (
-                <TeamCard key={team._id} team={team} />
+                <TeamCard key={team._id} team={team} setSelectedTeam={setSelectedTeam}/>
               ))}
             </div>
           )}
