@@ -1,5 +1,5 @@
 // app/components/TaskForm.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Calendar from 'react-calendar';
 import { BsCalendar2Date } from "react-icons/bs";
 import { IoCalendarOutline } from "react-icons/io5";
@@ -14,6 +14,17 @@ const TaskForm = ( {todayOrNext = false, listId = null, refresh, userId } ) => {
   const [dueDate, setDueDate] = useState(null);
   const [dueDateSelected, setDueDateSelected] = useState(false);
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+  useEffect(() => {
+    if (todayOrNext) {
+
+      const today = new Date();
+      today.setHours(23, 59, 59, 999);
+
+      setDueDate(today);
+      setDueDateSelected(true);
+    }
+  }, [todayOrNext]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

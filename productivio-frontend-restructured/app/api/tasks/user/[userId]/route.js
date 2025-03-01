@@ -16,8 +16,14 @@ export async function GET(req, { params }) {
       return NextResponse.json({ success: false, error: "User ID is required" }, { status: 400 });
     }
 
-    const tasks = await Task.find({ assignedTo: userId }).lean();
-
+    let list = req.nextUrl.searchParams.get("list");
+    let tasks;
+    if(list === "true"){
+      tasks = await Task.find({ assignedTo: userId }).populate("list");
+    }
+    else{
+      tasks = await Task.find({ assignedTo: userId });
+    }
     return NextResponse.json({ success: true, tasks }, { status: 200 });
 
   } catch (error) {
