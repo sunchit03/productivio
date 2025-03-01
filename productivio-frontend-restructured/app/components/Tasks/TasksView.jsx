@@ -8,7 +8,7 @@ import { BsTrash2 } from "react-icons/bs";
 import { GiPapers } from "react-icons/gi";
 import { FaPencilAlt } from "react-icons/fa";
 import { GoSidebarCollapse, GoSidebarExpand  } from "react-icons/go";
-import { getUserTasks } from "@/app/services/tasks";
+import { getTeamTasks, getUserTasks } from "@/app/services/tasks";
 import DetailTaskView from "./DetailTaskView";
 import { updateTask, deleteTask} from "@/app/services/tasks"
 import toast, { Toaster } from 'react-hot-toast';
@@ -17,9 +17,12 @@ import toast, { Toaster } from 'react-hot-toast';
 const TasksView = ({
   title,
   listId = null,
+  teamId = null,
   userId,
   taskBarCollapse,
-  setTaskBarCollapse
+  setTaskBarCollapse,
+  membersSectionCollapse,
+  setMembersSectionCollapse
 }) => {
   const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState({});
@@ -45,48 +48,72 @@ const TasksView = ({
       next7Days.setDate(now.getDate() + 7);
       next7Days.setHours(0, 0, 0, 0);
 
-      switch (title) {
-        case "Today": 
-          filteredTasks = data.filter(task => {
-            const dueDate = new Date(task.dueDate);
-            return !task.isTrash && dueDate >= now && dueDate <= todayEnd;
-          });
-          break;
+      if (teamId) {
+        filteredTasks = data.filter(task => !task.isTrash && task.team === teamId);
+      }
+      else {
+        switch (title) {
+          case "Today": 
+            filteredTasks = data.filter(task => {
+              const dueDate = new Date(task.dueDate);
+              return !task.isTrash && dueDate >= now && dueDate <= todayEnd;
+            });
+            break;
 
-        case "Next 7 Days": 
-          filteredTasks = data.filter(task => {
-            const dueDate = new Date(task.dueDate);
-            return !task.isTrash && dueDate >= now && dueDate <= next7Days;
-          });
-          break;
+          case "Next 7 Days": 
+            filteredTasks = data.filter(task => {
+              const dueDate = new Date(task.dueDate);
+              return !task.isTrash && dueDate >= now && dueDate <= next7Days;
+            });
+            break;
 
-        case "Inbox": 
-          filteredTasks = data.filter(task => !task.isTrash && !task.list);
-          break;
+          case "Inbox": 
+            filteredTasks = data.filter(task => !task.isTrash && !task.list);
+            break;
 
-        case "Completed": 
-          filteredTasks = data.filter(task => !task.isTrash && task.isCompleted);
-          break;
+          case "Completed": 
+            filteredTasks = data.filter(task => !task.isTrash && task.isCompleted);
+            break;
 
-        case "Trash": 
-          filteredTasks = data.filter(task => task.isTrash);
-          break;
+          case "Trash": 
+            filteredTasks = data.filter(task => task.isTrash);
+            break;
 
-        default:
-          filteredTasks = data.filter(task => !task.isTrash && task.list === listId);
-          break;
+          default:
+            filteredTasks = data.filter(task => !task.isTrash && task.list === listId);
+            break;
+        }
       }
 
       setTasks(filteredTasks);
-      // setCompletedTasks(completedFilteredTasks || []);
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
   };
 
+  const fetchTeamTasks = async() => {
+    try {
+      const data = await getTeamTasks(teamId);
+
+      if (!data) {
+        setTasks([]);
+        return;
+      }
+
+      let filteredTasks = data.filter(task => !task.isTrash && !task.list);
+      setTasks(filteredTasks);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
+  }
+
   useEffect(() => {
     todayOrNext = title == "Today" || title == "Next 7 Days";
     completedOrTrash = title == "Completed" || title == "Trash";
+
+    if (teamId) {
+      fetchTeamTasks();
+    }
 
     if (userId) {
       fetchTasks();
@@ -101,13 +128,13 @@ const TasksView = ({
 
     // Collapse sidebar on smaller screens
     if (typeof window !== "undefined" && window.innerWidth < 639) {
-      setTaskBarCollapse(true);
+      teamId ? setMembersSectionCollapse(true) : setTaskBarCollapse(true);
     }
   }
 
   const toggleTaskBarCollapse = (e) => {
     e.stopPropagation();
-    setTaskBarCollapse(!taskBarCollapse);
+    teamId ? setMembersSectionCollapse(!membersSectionCollapse) : setTaskBarCollapse(!taskBarCollapse);
 
     // Collapse detailed task view on smaller screens
     if (typeof window !== "undefined" && window.innerWidth < 639) {
@@ -226,7 +253,7 @@ const TasksView = ({
   const handleTaskBarDismissal = () => {
     // Collapse task sidebar on smaller screens
     if (typeof window !== "undefined" && window.innerWidth < 639) {
-      setTaskBarCollapse(true);
+      teamId ? setMembersSectionCollapse(true) : setTaskBarCollapse(true);
     }
   }
   
@@ -234,19 +261,19 @@ const TasksView = ({
     <div className={`relative w-full flex h-full px-5`} onClick={handleTaskBarDismissal}>
       <Toaster
           toastOptions={{
-          removeDelay: 500,
-          position: 'bottom-center',
-          style: {
-          backgroundColor: "#E6E6FA",
-          padding: '16px',
-          color: '#6A0DAD',
-          textAlign: "center",
-          },
+            removeDelay: 500,
+            position: 'bottom-center',
+            style: {
+              backgroundColor: "#E6E6FA",
+              padding: '16px',
+              color: '#6A0DAD',
+              textAlign: "center",
+            },
           }}
       />
       <div className="w-3/5 h-full mdlg:w-full">
         <div className="flex flex-row items-center">
-          {!taskBarCollapse ?
+          {(teamId ? !membersSectionCollapse : !taskBarCollapse) ?
             <GoSidebarExpand size={"1.3em"} className="text-gray-500 cursor-pointer font-thin" onClick={(e) => toggleTaskBarCollapse(e)}/>
             :
             <GoSidebarCollapse size={"1.3em"} className="text-gray-500 cursor-pointer font-thin" onClick={(e) => toggleTaskBarCollapse(e)}/>
@@ -254,7 +281,15 @@ const TasksView = ({
           <h2 className="ml-1 text-xl text-black font-semibold my-4">{title}</h2>
         </div>
         {!completedOrTrash && (
-          <TaskForm todayOrNext={todayOrNext} listId={listId} refresh={fetchTasks} userId={userId} taskBarCollapse={taskBarCollapse}/>
+          <TaskForm 
+            todayOrNext={todayOrNext} 
+            listId={listId} 
+            teamId={teamId} 
+            refresh={fetchTasks} 
+            userId={userId} 
+            taskBarCollapse={taskBarCollapse}
+            membersSectionCollapse={membersSectionCollapse}
+          />
         )}
         <div className="mt-4 h-[calc(100vh-150px)] mdlg:w-[100%] overflow-hidden hover:overflow-y-auto relative">
           {tasks.length > 0 ? (
@@ -263,8 +298,8 @@ const TasksView = ({
                 <div className={`px-3 py-2 rounded-md ${ selectedTask?._id == task?._id ? "bg-purple-50 hover:bg-purple-100" : "hover:bg-gray-50"}`} 
                   onClick={(e) => {
                     if (typeof window !== "undefined" && window.innerWidth < 639) {
-                      if (!taskBarCollapse) {
-                        setTaskBarCollapse(true);
+                      if (!taskBarCollapse || !membersSectionCollapse) {
+                        teamId ? setMembersSectionCollapse(true) : setTaskBarCollapse(true);
                       }
                       else {
                         handleTaskSelection(task)
@@ -276,7 +311,7 @@ const TasksView = ({
                 }>
                   <TaskItem task={task} handleCheckBoxCheck={handleCheckBoxCheck} pageTitle={title}/>
                 </div>
-                <div className={`h-[1px] bottom-0 group-hover:invisible z-10 ${typeof window !== "undefined" && window.innerWidth < 639 && !taskBarCollapse ? "bg-gray-300/90" : "bg-purple-50"}`}></div>
+                <div className={`h-[1px] bottom-0 group-hover:invisible z-10 ${typeof window !== "undefined" && window.innerWidth < 639 && (teamId ? !membersSectionCollapse : !taskBarCollapse) ? "bg-gray-300/90" : "bg-purple-50"}`}></div>
               </div> 
             )))
           : (
