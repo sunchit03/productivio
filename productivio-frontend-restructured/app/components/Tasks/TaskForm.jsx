@@ -23,6 +23,9 @@ const TaskForm = ( {todayOrNext = false, listId = null, refresh, userId, taskBar
 
       setDueDate(today);
       setDueDateSelected(true);
+    } else {
+      setDueDate(null);
+      setDueDateSelected(false);
     }
   }, [todayOrNext]);
 

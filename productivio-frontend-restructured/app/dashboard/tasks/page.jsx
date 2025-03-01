@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import TasksSidebar from "../../components/Tasks/TasksSidebar";
-import TasksView from "./views/TasksView";
+import TasksView from "../../components/Tasks/TasksView";
 
 export default function TaskPage( {taskBarCollapse, setTaskBarCollapse, user, userId} ) {
   const [selectedTab, setSelectedTab] = useState("Inbox");
