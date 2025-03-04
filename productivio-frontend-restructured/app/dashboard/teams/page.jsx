@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import TeamCard from "@/app/components/Teams/TeamCard";
 import CreateOrEditTeam from "@/app/components/Teams/CreateOrEditTeam";
 import { getUserTeams, updateTeam } from "@/app/services/teams";
-export default function TeamsPage({userId}) {
+export default function TeamsPage({ userId, setSelectedTeam }) {
 
     const [teams, setTeams] = useState([]);
     const [addEditTeamModal, setAddEditTeamModal] = useState(false);
