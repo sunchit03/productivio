@@ -41,9 +41,9 @@ export default function TeamPage({ selectedTeam, setSelectedTeam, userId, member
             />
         <div className={`flex-grow h-full sm:w-full overflow-auto ${typeof window !== "undefined" && window.innerWidth < 639 && !membersSectionCollapse ? "bg-black/10" : "bg-white"}`}>
             <TasksView 
-                title={selectedTeam.title} 
+                title={selectedTeam?.title} 
                 userId={userId} 
-                teamId={selectedTeam._id} 
+                teamId={selectedTeam?._id} 
                 setSelectedTeam={setSelectedTeam}
                 membersSectionCollapse={membersSectionCollapse}
                 setMembersSectionCollapse={setMembersSectionCollapse}
