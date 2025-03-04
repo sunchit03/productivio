@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
-import List from "../../../../models/List";
 const connectDB = require('../../../../utils/connect');
+import List from "../../../../models/List";
 
 export async function GET(req, { params }) {
   try {
