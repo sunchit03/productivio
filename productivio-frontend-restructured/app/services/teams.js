@@ -11,13 +11,13 @@ export async function getUserTeams(userId) {
     }
 }
 
-export async function getOneTeam(teamId, userId) {
+export async function getTeamData(teamId, userId) {
     try {
         const res = await fetch(`/api/teams/${teamId}?userId=${userId}`);
         const data = await res.json();
         return data.team;
     } catch (error) {
-        console.error("Error fetching team:", error);
+        console.error("Error fetching team data:", error);
         return {};
     }
 }

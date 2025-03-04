@@ -9,7 +9,7 @@ import NotificationsModal from "../components/NotificationsModal";
 import { useRouter } from "next/navigation";
 import { preLogOut } from "../utils/prelogout";
 
-const MainSidebar = ({ activeMainTab, setActiveMainTab, user }) => {
+const MainSidebar = ({ activeMainTab, setActiveMainTab, user, selectedTeam, setSelectedTeam }) => {
   const [userPicture, setUserPicture] = useState(user?.picture || null);
   const [showNotifications, setShowNotifications] = useState(false);
 
@@ -120,9 +120,10 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user }) => {
           }`}
           title="Teams"
           onClick={() => {
-            if (activeMainTab != "teams") {
+            if (activeMainTab != "teams" || selectedTeam) {
               router.push("/dashboard");
               setActiveMainTab("teams");
+              setSelectedTeam(null);
               localStorage.setItem("activeTab", "teams");
             }
           }}

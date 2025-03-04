@@ -3,13 +3,14 @@ import { useState, useEffect } from "react";
 import TeamCard from "@/app/components/Teams/TeamCard";
 import CreateOrEditTeam from "@/app/components/Teams/CreateOrEditTeam";
 import { getUserTeams, updateTeam } from "@/app/services/teams";
-export default function TeamsPage({userId}) {
+export default function TeamsPage({ userId, setSelectedTeam }) {
 
     const [teams, setTeams] = useState([]);
     const [addEditTeamModal, setAddEditTeamModal] = useState(false);
 
     useEffect(() => {
       if(userId){
+        setSelectedTeam(null);
         fetchTeams()
       }
     }, [userId])
@@ -49,10 +50,10 @@ export default function TeamsPage({userId}) {
 
     return (
         <>
-        <div className="p-6 bg-gradient-to-b from-indigo-100 to-pink-50 h-screen overflow-y-auto"
+        <div className="p-6 bg-gradient-to-b from-indigo-100 to-pink-50 h-screen overflow-hidden"
           onClick={()=>{setAddEditTeamModal(false)}}>
           <div className="p-2 w-full flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-black">My Teams</h1>
+            <h1 className="ml-1 text-xl text-black font-semibold mb-4">My Teams</h1>
             <button
               className="bg-purple-700 p-4 text-lg text-white rounded-md shadow-lg hover:bg-purple-800"
               onClick={(e) => {e.stopPropagation(); setAddEditTeamModal(true);}}
@@ -67,7 +68,7 @@ export default function TeamsPage({userId}) {
           ) : (
             <div className="grid grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
               {teams.map((team) => (
-                <TeamCard key={team._id} team={team} userId={userId} editTeam={editTeam}/>
+                <TeamCard key={team._id} team={team} userId={userId} editTeam={editTeam} setSelectedTeam={setSelectedTeam}/>
               ))}
             </div>
           )}

@@ -8,6 +8,7 @@ import MainSidebar from "../components/MainSidebar";
 import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage"
 import TeamsPage from "./teams/page"
+import TeamPage from "./teams/team/page"
 import { useRouter } from "next/navigation";
 import TaskPage from "./tasks/page";
 import EisenhowerMatrix from "./eisenhowerMatrix/page";
@@ -20,7 +21,9 @@ function Dashboard() {
   // State Variables
   const [userId, setUserId] = useState(null);
   const [activeMainTab, setActiveMainTab] = useState(localStorage.getItem("activeTab")); // Main Sidebar Tabs
+  const [selectedTeam, setSelectedTeam] = useState(null);
   const [taskBarCollapse, setTaskBarCollapse] = useState(false)
+  const [membersSectionCollapse, setMembersSectionCollapse] = useState(false);
 
   const router = useRouter();
 
@@ -33,6 +36,7 @@ function Dashboard() {
 
     if (typeof window !== "undefined" && window.innerWidth < 639) {
       setTaskBarCollapse(true);
+      setMembersSectionCollapse(true);
     }
   }, [isLoading, user]);
 
@@ -71,11 +75,22 @@ function Dashboard() {
       {user && (
         <>
           <div className="flex h-screen bg-gray-100">
-          <MainSidebar activeMainTab={activeMainTab} setActiveMainTab={setActiveMainTab} user={user} />
+          <MainSidebar 
+            activeMainTab={activeMainTab} 
+            setActiveMainTab={setActiveMainTab} 
+            user={user} 
+            selectedTeam={selectedTeam} 
+            setSelectedTeam={setSelectedTeam}
+          />
 
             {/* Tasks Page */}
             {activeMainTab === "task" ? (
-              <TaskPage taskBarCollapse={taskBarCollapse} setTaskBarCollapse={setTaskBarCollapse} user={user} userId={userId}/>       
+              <TaskPage 
+                taskBarCollapse={taskBarCollapse} 
+                setTaskBarCollapse={setTaskBarCollapse} 
+                user={user} 
+                userId={userId}
+              />       
             ) 
             : 
             /* Calendar Page */
@@ -98,9 +113,21 @@ function Dashboard() {
             )
             :
             /* Teams Page */
-            activeMainTab === "teams" ? (
+            activeMainTab === "teams" && !selectedTeam ? (
               <main className="flex-grow bg-gray-50">
-              <TeamsPage userId={userId}/>
+              <TeamsPage userId={userId} setSelectedTeam={setSelectedTeam}/>
+              </main>
+            )
+            :
+            activeMainTab === "teams" && selectedTeam ? (
+              <main className="flex-grow bg-gray-50">
+                <TeamPage 
+                  selectedTeam={selectedTeam} 
+                  setSelectedTeam={setSelectedTeam}
+                  userId={userId}
+                  membersSectionCollapse={membersSectionCollapse}
+                  setMembersSectionCollapse={setMembersSectionCollapse}  
+                />
               </main>
             )
             :
