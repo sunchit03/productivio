@@ -45,7 +45,7 @@ export default function Home() {
     <div>
       <Navbar />
       <HeroSection />
-      <section className="container bg-white mx-auto py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <section className="container px-4 bg-white mx-auto py-16 grid xxl:grid-cols-3 lg:grid-cols-2 sm:grid-cols-1 gap-8">
         {features.map((feature, index) => (
           <FeatureCard
             key={index}
@@ -55,9 +55,7 @@ export default function Home() {
           />
         ))}
       </section>
-      <div className='p-8 bg-gradient-to-r from-blue-100 to-blue-200'>
       <ProductivityFeatures />
-      </div>
       <Footer />
       </div>
   );
