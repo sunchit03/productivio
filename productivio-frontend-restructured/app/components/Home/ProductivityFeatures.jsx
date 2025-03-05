@@ -26,7 +26,7 @@ const features = [
 
 const ProductivityFeatures = () => {
   return (
-    <section className="xxl:px-28 xxl:py-28 lg:p-16 bg-gradient-to-r from-purple-50 to-purple-100">
+    <section className="xxl:px-28 xxl:py-28 lg:p-16 bg-gradient-to-r from-indigo-100 via-purple-100 to-pink-100">
       <div className="container mx-auto flex flex-col gap-16">
         {features.map((feature, index) => (
           <div
