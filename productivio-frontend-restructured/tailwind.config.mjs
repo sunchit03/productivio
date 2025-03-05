@@ -29,6 +29,7 @@ export default {
 			// => @media (max-width: 1279px) { ... }
 
       xllg: {max: "1130px"},
+			// => @media (max-width: 1130px) { ... }
 
 			lg: { max: "1023px" },
 			// => @media (max-width: 1023px) { ... }
