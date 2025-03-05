@@ -1,4 +1,3 @@
-import { useRouter } from "next/navigation";
 import { BiDotsHorizontal } from "react-icons/bi";
 import { Menu, MenuItem, MenuButton } from '@szhsin/react-menu';
 import CreateOrEditTeam from "./CreateOrEditTeam";
@@ -6,8 +5,12 @@ import { useState } from "react";
 import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/zoom.css';
 
-export default function TeamCard({ team, userId, editTeam, setSelectedTeam }) {
+export default function TeamCard({ team, userId, editTeam, removeTeam, setSelectedTeam}) {
   const [addEditTeamModal, setAddEditTeamModal] = useState(false);
+
+  const handleDeleteTeam = () => {
+    removeTeam(team._id);
+  }
 
   // Function to extract the initials from the title
   const getInitials = (title) => {
@@ -73,7 +76,7 @@ export default function TeamCard({ team, userId, editTeam, setSelectedTeam }) {
             >
                 <MenuItem key={"Edit"} onClick={() => setAddEditTeamModal(true, team)}>{"Edit"}</MenuItem>
                 {/* onClick={() => setIsListDeleteModalOpen(true) } */}
-                <MenuItem key={"Delete"} >{"Delete"}</MenuItem>
+                <MenuItem key={"Delete"} onClick={() => handleDeleteTeam()}>{"Delete"}</MenuItem>
             </Menu>
         </div>
       )}

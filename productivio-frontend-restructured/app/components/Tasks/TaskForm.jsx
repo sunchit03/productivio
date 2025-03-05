@@ -14,6 +14,7 @@ const TaskForm = ( {todayOrNext = false, listId = null, teamId = null, refresh, 
   const [dueDate, setDueDate] = useState(null);
   const [dueDateSelected, setDueDateSelected] = useState(false);
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
   useEffect(() => {
     if (todayOrNext) {
@@ -26,6 +27,10 @@ const TaskForm = ( {todayOrNext = false, listId = null, teamId = null, refresh, 
     } else {
       setDueDate(null);
       setDueDateSelected(false);
+    }
+    else{
+      setDueDateSelected(false);
+      setDueDate(null);
     }
   }, [todayOrNext]);
 
@@ -59,6 +64,63 @@ const TaskForm = ( {todayOrNext = false, listId = null, teamId = null, refresh, 
     setDueDate(null);
   };
 
+
+  
+  const returnString = (dateVal) =>  {
+    let now = new Date();
+    now.setHours(0, 0, 0, 0);
+    let date = dateVal.getDate().toString();
+    let month = monthNames[dateVal.getMonth()];
+    let year = dateVal.getFullYear();
+    let dateString = `${date} ${month} ${year !== now.getFullYear() ? year.toString() : ""}`;
+    return dateString;
+  }
+
+  const formatDate = () => {
+    if(!dueDate){
+      return { dateText: "", color: "" };
+    }
+    let dateVal = new Date(dueDate);
+    let now = new Date();
+    now.setHours(0, 0, 0, 0); // start from midnight 00:00:00
+
+    const tempDateVal = new Date(dateVal);
+    tempDateVal.setHours(0, 0, 0, 0);
+
+    const todayEnd = new Date(now);
+    todayEnd.setHours(23, 59, 59, 999);
+
+
+    // Get yesterday’s date and set its time to midnight
+    const yesterday = new Date();
+    yesterday.setDate(now.getDate() - 1);
+
+    //extract date month and year(ignores time)
+    yesterday.setHours(0, 0, 0, 0);
+    
+    if (tempDateVal.getTime() < yesterday.getTime()) { 
+      return { dateText: returnString(tempDateVal), color: "text-red-500" };
+    }
+
+    if (tempDateVal.getTime() === yesterday.getTime()) {
+      return { dateText: "Yesterday", color: "text-red-500" };
+    }
+
+    if (tempDateVal.getTime() <= todayEnd.getTime() && tempDateVal.getTime() >= now.getTime()) {
+      return { dateText: "Today", color: "text-indigo-500" };
+    }
+    
+    let next7Days = new Date();
+    next7Days.setDate(now.getDate() + 7);
+    next7Days.setHours(0, 0, 0, 0);
+  
+    if (tempDateVal.getTime() <= next7Days.getTime() && tempDateVal.getTime() > now.getTime()) {
+      return {dateText: dayNames[tempDateVal.getDay()], color: "text-indigo-500"};
+    }
+
+    return {dateText: returnString(tempDateVal), color: "text-indigo-500"};
+  };
+
   const handleDueDateSelection = (date) => {
     const updatedDate = new Date(date);
     updatedDate.setHours(23, 59, 59, 999); // 11:59:59 PM
@@ -83,26 +145,23 @@ const TaskForm = ( {todayOrNext = false, listId = null, teamId = null, refresh, 
           className={`py-2 px-3 pr-25 w-full text-base rounded font-weight:bold text-black ${typeof window !== "undefined" && window.innerWidth < 639 && (teamId ? !membersSectionCollapse : !taskBarCollapse) ? "bg-gray-300/90" : "bg-gray-50"} placeholder-gray-300 focus:outline-none focus:bg-white focus:ring-1 focus:ring-violet-500`}
         />
         <span 
-          className="absolute inset-y-0 right-0 pr-2 flex items-center cursor-pointer text-base text-black"
+          className="absolute inset-y-0 right-0 pr-2 flex items-center cursor-pointer text-base"
         >
           {
             dueDateSelected ? 
               <>
-                <div className="flex items-center" onClick={() => setDatePicker((val) => !val)}>
+                <div className={`flex items-center ${formatDate().color}`} onClick={() => setDatePicker((val) => !val)}>
                   <BsCalendar2Date className="mr-2"/>
-                  <span> {dueDate.getFullYear() != new Date().getFullYear() ? 
-                    dueDate.getDate().toString() + " " + monthNames[dueDate.getMonth()] + " " + dueDate.getFullYear().toString() 
-                    : 
-                    dueDate.getDate().toString() + " " + monthNames[dueDate.getMonth()]
-                    } 
+                  <span> 
+                    {formatDate().dateText}
                   </span>
                 </div>
                 { datePicker &&
-                  <GrClear className="ml-2" onClick={() => { setDueDate(null); setDueDateSelected(false); }}/>
+                  <GrClear className="ml-2 text-gray-600" onClick={() => { setDueDate(null); setDueDateSelected(false); }}/>
                 }
               </>
               :
-              <IoCalendarOutline onClick={() => setDatePicker((val) => !val)}/>
+              <IoCalendarOutline className="text-gray-600" onClick={() => setDatePicker((val) => !val)}/>
           }
         </span>
         {datePicker &&

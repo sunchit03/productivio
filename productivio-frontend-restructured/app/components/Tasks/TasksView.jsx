@@ -364,6 +364,7 @@ const TasksView = ({
             onClick={(e) => e.stopPropagation()}>
             <DetailTaskView 
             task={selectedTask} 
+            pageTitle={title}
             userId={userId} 
             handleCheckBoxCheck={handleCheckBoxCheck} 
             handleEditTask={handleEditTask} 

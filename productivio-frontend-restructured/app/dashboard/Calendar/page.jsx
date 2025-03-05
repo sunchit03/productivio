@@ -211,7 +211,7 @@ const handleDueDateUpdate = async(taskId, date) => {
 
       {selectedTask &&
       <div className="fixed inset-0 bg-opacity-5 flex flex-col justify-center items-center z-50" onClick={()=>{setSelectedTask(null)} }> 
-      <div className="p-2 shadow-xl rounded-md bg-gray-50 w-3/12 h-3/6 flex flex-col justify-between z-50" onClick={(e) => e.stopPropagation()}>
+      <div className="p-2 shadow-xl rounded-md bg-gray-50 min-w-[25%] max-w-[50%] min-h-[50%] md:min-w-[50%] md:min-h-[50%] sm:min-h-[40%] flex flex-col justify-between z-50" onClick={(e) => e.stopPropagation()}>
       <DetailTaskView
         setSelectedTask={setSelectedTask}
         task={selectedTask}
