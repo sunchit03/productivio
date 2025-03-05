@@ -3,7 +3,7 @@ import styles from '../../styles/HeroSection.module.css';
 
 const HeroSection = () => {
   return (
-    <section className={`${styles.heroSection} bg-gradient-to-r from-purple-50 to-purple-100 py-20 px-4`}>
+    <section className={`${styles.heroSection} bg-gradient-to-r from-indigo-100 via-purple-100 to-pink-100 py-20 px-4`}>
       <div className="container mx-auto text-center">
         <h1 className="xxl:text-4xl sm:text-3xl font-bold text-purple-900 mb-6">
           Stay Organized, Stay Productive.

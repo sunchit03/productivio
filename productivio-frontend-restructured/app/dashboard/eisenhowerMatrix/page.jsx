@@ -34,7 +34,7 @@ export default function EisenhowerMatrix( {userId} ) {
     return (
       <div className="bg-gradient-to-b from-indigo-100 to-pink-50 flex flex-col p-4 overflow-hidden h-screen">
         <div>
-          <h1 className="mb-4 text-black text-left text-2xl md:text-xl font-bold" >Eisenhower Matrix</h1>
+          <h1 className="ml-1 text-xl text-black font-semibold mb-4" >Eisenhower Matrix</h1>
         </div>
         <div className="md:flex-1 md:hover:overflow-y-auto md:pr-2">
           <div className="grid grid-cols-2 grid-rows-2 md:grid-cols-1 md:grid-rows-2 gap-2 w-full max-w-8xl min-h-[40vh]">

@@ -254,7 +254,7 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                 </div>
                 <div className="h-[1px] w-full bottom-0 bg-purple-100 z-10"></div>
                 {/* create two fields - to display title or description */}
-                <div className="flex flex-col pt-2 gap-3">
+                <div className="flex flex-col pt-2 pr-1 gap-3">
                     <input
                         type = "text"
                         value={title}
@@ -270,7 +270,7 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                             placeholder="Would you like to add a task description?"
                             onChange={(e)=> setDescription(e.target.value)}
                             disabled={pageTitle === "Trash"}
-                            className={`${pageTitle === "Trash" ? "cursor-not-allowed" : ""} w-full block text-sm text-gray-500 font-thin p-1 rounded-sm focus:outline-none`}
+                            className={`${pageTitle === "Trash" ? "cursor-not-allowed" : ""} resize-y w-full block text-sm text-gray-500 font-thin p-1 rounded-sm focus:outline-none`}
                             rows={3}
                         />  
                     </article>  

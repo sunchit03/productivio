@@ -5,7 +5,7 @@ import { useState } from "react";
 import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/zoom.css';
 
-export default function TeamCard({ team, userId, editTeam, removeTeam}) {
+export default function TeamCard({ team, userId, editTeam, removeTeam, setSelectedTeam}) {
   const [addEditTeamModal, setAddEditTeamModal] = useState(false);
 
   const handleDeleteTeam = () => {
@@ -39,7 +39,9 @@ export default function TeamCard({ team, userId, editTeam, removeTeam}) {
 
   return (
     <div
-      className="bg-white shadow-md rounded-lg p-4 cursor-pointer hover:shadow-lg transition">
+      className="bg-white shadow-md rounded-lg p-4 cursor-pointer hover:shadow-lg transition"
+      onClick={() => setSelectedTeam(team)}
+    >
       <div className="flex items-center justify-between">
       <div className="flex items-center space-x-4">
         {/* Circular image with initials */}
