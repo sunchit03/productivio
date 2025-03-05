@@ -38,7 +38,7 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user, selectedTeam, setS
       <div className="flex flex-col items-center space-y-4 flex-grow">
         {user ? (
           <img
-          src={userPicture}
+          src={userPicture || "/assets/default-avatar.jpg"}
           alt="Profile"
           className="rounded-md img-fluid profile-picture mb-md-0"
           decode="async"
