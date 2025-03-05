@@ -299,7 +299,7 @@ const TasksView = ({
             membersSectionCollapse={membersSectionCollapse}
           />
         )}
-        <div className="mt-4 h-[calc(100vh-140px)] mdlg:w-[100%] overflow-hidden hover:overflow-y-auto relative">
+        <div className="mt-4 h-[calc(100vh-140px)] mdlg:w-[100%] relative lg:overflow-y-auto overflow-y-hidden hover:overflow-y-auto">
           {tasks.length > 0 ? (
             tasks.map((task) => (
               <div className="group pr-2" key={task._id}>
