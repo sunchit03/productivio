@@ -306,7 +306,7 @@ const TasksView = ({
                 <div className={`px-3 py-2 rounded-md ${ selectedTask?._id == task?._id ? "bg-purple-50 hover:bg-purple-100" : "hover:bg-gray-50"}`} 
                   onClick={(e) => {
                     if (typeof window !== "undefined" && window.innerWidth < 639) {
-                      if (!taskBarCollapse || !membersSectionCollapse) {
+                      if ((!teamId && !taskBarCollapse) || (teamId && !membersSectionCollapse)) {
                         teamId ? setMembersSectionCollapse(true) : setTaskBarCollapse(true);
                       }
                       else {
