@@ -299,14 +299,14 @@ const TasksView = ({
             membersSectionCollapse={membersSectionCollapse}
           />
         )}
-        <div className="mt-4 h-[calc(100vh-140px)] mdlg:w-[100%] overflow-hidden hover:overflow-y-auto relative">
+        <div className="mt-4 h-[calc(100vh-140px)] mdlg:w-[100%] relative lg:overflow-y-auto overflow-y-hidden hover:overflow-y-auto">
           {tasks.length > 0 ? (
             tasks.map((task) => (
               <div className="group pr-2" key={task._id}>
                 <div className={`px-3 py-2 rounded-md ${ selectedTask?._id == task?._id ? "bg-purple-50 hover:bg-purple-100" : "hover:bg-gray-50"}`} 
                   onClick={(e) => {
                     if (typeof window !== "undefined" && window.innerWidth < 639) {
-                      if (!taskBarCollapse || !membersSectionCollapse) {
+                      if ((!teamId && !taskBarCollapse) || (teamId && !membersSectionCollapse)) {
                         teamId ? setMembersSectionCollapse(true) : setTaskBarCollapse(true);
                       }
                       else {
