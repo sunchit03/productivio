@@ -3,26 +3,26 @@ import styles from '../../styles/HeroSection.module.css';
 
 const HeroSection = () => {
   return (
-    <section className={`${styles.heroSection} bg-gradient-to-r from-blue-100 to-blue-200 py-20`}>
+    <section className={`${styles.heroSection} bg-gradient-to-r from-purple-50 to-purple-100 py-20 px-4`}>
       <div className="container mx-auto text-center">
-        <h1 className="text-4xl font-bold text-gray-800 mb-6">
+        <h1 className="xxl:text-4xl sm:text-3xl font-bold text-purple-900 mb-6">
           Stay Organized, Stay Productive.
         </h1>
-        <p className="text-lg text-gray-600 mb-8">
-          Simplify your tasks, plan effectively, and achieve your goals with Productivio.
+        <p className="xxl:text-lg sm:text-md text-purple-900 mb-8">
+          Simplify your tasks, plan effectively and achieve your goals with Productivio.
         </p>
         <a
           href="/api/auth/signup"
-          className="px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 inline-block text-center"
+          className="px-6 py-3 bg-purple-800 text-white rounded hover:bg-purple-900 inline-block text-center font-semibold"
         >
           Get Started
         </a>
         {/* Hero Image */}
         <div className="mt-10 flex justify-center">
           <img
-            src="/assets/hero-image.png"  // Place your image in public/assets folder
+            src="/assets/hero-image.png"
             alt="Task Management Dashboard"
-            className="w-full max-w-4xl rounded-2xl shadow-lg"
+            className="w-full max-w-4xl rounded-2xl shadow-xl"
           />
         </div>
       </div>
