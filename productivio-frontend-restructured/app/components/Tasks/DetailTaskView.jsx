@@ -11,7 +11,7 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import toast from 'react-hot-toast';
 
 const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, handleTrashOrRestore, handleTaskPriorityChange, 
-    handleDueDateUpdate, handleDeleteTask, matrixBlockPriority, handleMatrixAddNewTask, setSelectedTask, pageTitle = ""} ) => {
+    handleDueDateUpdate, handleDeleteTask, matrixBlockPriority, handleMatrixAddNewTask, setSelectedTask, pageTitle=""} ) => {
 
     const [completion, setCompletion] = useState(task?.isCompleted || false);
     const [datePicker, setDatePicker] = useState(false);
@@ -92,7 +92,7 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
     }
 
     useEffect(() => {
-        if (task) {
+        if(task){
             setTitle(task?.title || "");
             setDescription(task?.description || "");
             setSelectedPriority(task?.priority || selectedPriority);
@@ -102,9 +102,14 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                 setDueDateSelected(true);
                 setDueDate(new Date(task?.dueDate));
             } else {
-                setDueDate(null);
                 setDueDateSelected(false);
+                setDueDate(null);
             }
+        }
+        else{
+            setTitle("");
+            setDueDateSelected(false);
+            setDueDate(null);
         }
     }, [task]);
 
@@ -157,10 +162,11 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
             {/* topmost row of detailtask view - contains checkbox if task exists, calendar, date if task date exists, flag for priority */}
                 <div className="flex items-center justify-between p-2 w-full">
                     <div className="flex items-center gx-2">
-                        {task && 
-                            <span className="cursor-pointer hidden mdlg:inline">
-                                <IoClose size={"1.5em"} className="text-slate-400" onClick={() => setSelectedTask(null)}/>
-                            </span>
+                        
+                        {task && pageTitle !== "" &&
+                        (<span className="cursor-pointer hidden mdlg:inline">
+                            <IoClose size={"1.5em"} className="text-slate-400" onClick={() => setSelectedTask(null)}/>
+                        </span>)
                         }
                         {/* Checkbox */}
                         {task && (
@@ -214,7 +220,7 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                             <Calendar 
                             className="text-black" 
                             onChange={handleDueDateSelection} 
-                            value={dueDate || null} 
+                            value={task ? dueDate : null} 
                             />
                         </div>
                         )}
@@ -295,7 +301,7 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                 <div className="fixed inset-0 flex items-start justify-center bg-gray-900 bg-opacity-0 z-50 top-10 drop-shadow-xl">
                     <div className="xs:w-5/6 xssm:w-4/5 mdlg:w-3/5 bg-white p-6 rounded-md shadow-lg w-2/5">
                         <h2 className="text-lg font-semibold mb-4 text-black">{pageTitle === "Trash" ? `Delete Task?` : `Trash Task?`}</h2>   
-                        <p className="text-black font-thin mb-2">{pageTitle !== "Trash" ? `Are you sure that you want to move task "${initTaskTitle}" to trash?` : `Are you sure you want to delete the task "${task ? initTaskTitle : initMatrixTitle}"?`}</p>        
+                        <p className="text-black font-thin mb-2">{pageTitle !== "Trash" ? `Are you sure that you want to move task "${initTaskTitle}" to trash?` : `Are you sure you want to delete the task "${initTaskTitle}"?`}</p>        
                         <div className="flex justify-between mt-8">
                             <div className="flex-1"></div>
                                 <div className="flex flex-1 justify-stretch">

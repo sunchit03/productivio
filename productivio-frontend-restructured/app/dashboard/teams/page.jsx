@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import TeamCard from "@/app/components/Teams/TeamCard";
 import CreateOrEditTeam from "@/app/components/Teams/CreateOrEditTeam";
-import { getUserTeams, updateTeam } from "@/app/services/teams";
+import { getUserTeams, updateTeam, deleteTeam } from "@/app/services/teams";
 export default function TeamsPage({userId}) {
 
     const [teams, setTeams] = useState([]);
@@ -47,6 +47,21 @@ export default function TeamsPage({userId}) {
       }
     }
 
+    const removeTeam = async(teamId) => {
+      try{
+        const data = await deleteTeam(teamId, userId);
+        if(data.success){
+          console.log("deleted");
+          setTeams(prevTeams => prevTeams.filter(prevTeam=> prevTeam._id !== teamId))
+        }
+        else{
+          console.log("Error deleting team: ",data.error);
+        }
+      }catch(error){
+        console.log("Error while deleting team: ", error.message);
+      }
+    }
+
     return (
         <>
         <div className="p-6 bg-gradient-to-b from-indigo-100 to-pink-50 h-screen overflow-y-auto"
@@ -67,7 +82,7 @@ export default function TeamsPage({userId}) {
           ) : (
             <div className="grid grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
               {teams.map((team) => (
-                <TeamCard key={team._id} team={team} userId={userId} editTeam={editTeam}/>
+                <TeamCard key={team._id} team={team} userId={userId} editTeam={editTeam} removeTeam={removeTeam}/>
               ))}
             </div>
           )}

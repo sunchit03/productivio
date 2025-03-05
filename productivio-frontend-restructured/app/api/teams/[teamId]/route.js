@@ -87,7 +87,7 @@ export async function DELETE(req, {params}){
     }
     await Task.deleteMany({ _id: { $in: team.tasks } });
     await User.updateMany({ _id:{ $in: team.members} },{ $pull: { teams: teamId } });
-    await team.deleteOne(teamId);
+    await team.deleteOne();
     return NextResponse.json({success: true, error: "Team deleted successfully."},{status:200});
     }catch(error){
       return NextResponse.json({success: false, error:error.message},{status:500});
