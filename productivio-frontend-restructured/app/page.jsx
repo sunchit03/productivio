@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Navbar from './components/Home/Navbar';
 import HeroSection from './components/Home/HeroSection';
 import FeatureCard from './components/Home/FeatureCard';
@@ -41,6 +41,11 @@ const features = [
 ];
 
 export default function Home() {
+
+  useEffect(() => {
+    localStorage.setItem("activeTab", "task")
+  }, [])
+
   return (
     <div>
       <Navbar />

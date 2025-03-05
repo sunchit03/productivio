@@ -154,6 +154,14 @@ const TasksView = ({
           if (selectedTask?._id === taskId) {
               setSelectedTask(prevTask => ({ ...prevTask, isCompleted: updatedCompletion }));
           }
+
+          if (title === "Completed") {
+            setTasks(prevTasks => prevTasks.filter(task => task._id !== taskId));
+
+            if (selectedTask?._id === taskId) {
+              setSelectedTask(null);
+            }
+          }
         
        } else {
             console.log("Error in changing completed state of task:", data.error);
@@ -258,7 +266,7 @@ const TasksView = ({
   }
   
   return (
-    <div className={`relative w-full flex h-full px-5`} onClick={handleTaskBarDismissal}>
+    <div className={`relative w-full flex h-full px-5 overflow-hidden`} onClick={handleTaskBarDismissal}>
       <Toaster
           toastOptions={{
             removeDelay: 500,
@@ -291,7 +299,7 @@ const TasksView = ({
             membersSectionCollapse={membersSectionCollapse}
           />
         )}
-        <div className="mt-4 h-[calc(100vh-150px)] mdlg:w-[100%] overflow-hidden hover:overflow-y-auto relative">
+        <div className="mt-4 h-[calc(100vh-140px)] mdlg:w-[100%] overflow-hidden hover:overflow-y-auto relative">
           {tasks.length > 0 ? (
             tasks.map((task) => (
               <div className="group pr-2" key={task._id}>
