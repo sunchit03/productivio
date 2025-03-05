@@ -373,7 +373,6 @@ const TasksView = ({
             handleDueDateUpdate={handleDueDateUpdate} 
             handleDeleteTask={handleDeleteTask}
             setSelectedTask={setSelectedTask}
-            pageTitle={title}
             />
           </div>
         }

@@ -28,10 +28,6 @@ const TaskForm = ( {todayOrNext = false, listId = null, teamId = null, refresh, 
       setDueDate(null);
       setDueDateSelected(false);
     }
-    else{
-      setDueDateSelected(false);
-      setDueDate(null);
-    }
   }, [todayOrNext]);
 
   const handleSubmit = async (e) => {
