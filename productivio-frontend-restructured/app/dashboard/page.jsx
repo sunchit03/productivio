@@ -18,6 +18,9 @@ import { getJWT } from "@/app/utils/auth";
 function Dashboard() {
   const { user, error, isLoading } = useUser();
 
+  // Reference Variables
+  const hasRun = useRef(false);
+
   // State Variables
   const [userId, setUserId] = useState(null);
   const [activeMainTab, setActiveMainTab] = useState(localStorage.getItem("activeTab")); // Main Sidebar Tabs
@@ -48,7 +51,6 @@ function Dashboard() {
   }, [])
 
   useEffect(() => {
-    const hasRun = useRef(false);
     async function init() {
       if (hasRun.current) return; // Prevent second execution
       hasRun.current = true;
