@@ -1,7 +1,7 @@
 // app/dashboard/page.jsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0/client";
 import { saveUser } from "../services/users";
 import MainSidebar from "../components/MainSidebar";
@@ -17,6 +17,9 @@ import { getJWT } from "@/app/utils/auth";
 
 function Dashboard() {
   const { user, error, isLoading } = useUser();
+
+  // Reference Variables
+  const hasRun = useRef(false);
 
   // State Variables
   const [userId, setUserId] = useState(null);
@@ -49,6 +52,8 @@ function Dashboard() {
 
   useEffect(() => {
     async function init() {
+      if (hasRun.current) return; // Prevent second execution
+      hasRun.current = true;
 
       const token = await getJWT();
       if (!token) {
