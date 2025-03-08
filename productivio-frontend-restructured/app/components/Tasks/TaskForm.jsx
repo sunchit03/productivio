@@ -5,23 +5,22 @@ import { BsCalendar2Date } from "react-icons/bs";
 import { IoCalendarOutline } from "react-icons/io5";
 import { GrClear } from "react-icons/gr";
 import { createTask } from "@/app/services/tasks";
+import toast, { Toaster } from 'react-hot-toast';
 
 import 'react-calendar/dist/Calendar.css';
 
-const TaskForm = ( {todayOrNext = false, listId = null, teamId = null, refresh, userId, taskBarCollapse, membersSectionCollapse } ) => {
+const TaskForm = ( {todayOrNext = false, listId = null, teamId = null, refresh, userId, taskBarCollapse, membersSectionCollapse, pageTitle="" } ) => {
   const [title, setTitle] = useState("");
   const [datePicker, setDatePicker] = useState(false);
   const [dueDate, setDueDate] = useState(null);
   const [dueDateSelected, setDueDateSelected] = useState(false);
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
 
   useEffect(() => {
     if (todayOrNext) {
-
       const today = new Date();
       today.setHours(23, 59, 59, 999);
-
       setDueDate(today);
       setDueDateSelected(true);
     } else {
@@ -34,7 +33,46 @@ const TaskForm = ( {todayOrNext = false, listId = null, teamId = null, refresh, 
     e.preventDefault();
     if (!title.trim()) return;
 
-    if (!dueDateSelected) {
+    if(pageTitle === "Today"){
+      if(dueDateSelected){
+        const today = new Date();
+        today.setHours(23, 59, 59, 999);
+        
+        const selectedDate = new Date(dueDate);
+        selectedDate.setHours(0, 0, 0, 0);
+        if(today.getTime() !== selectedDate.getTime()){
+          toast("Task is created in inbox tab!")
+        }
+      }
+      else{
+        setDueDate(null)
+        toast("Task is created in inbox tab!")
+      }
+    }
+
+    if(pageTitle === "Next 7 Days"){
+      if(dueDateSelected){
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const selectedDate = new Date(dueDate);
+      selectedDate.setHours(0, 0, 0, 0);
+
+      const next7Days = new Date();
+      next7Days.setDate(today.getDate() + 7)
+      next7Days.setHours(23, 59, 59, 999)
+
+      if(selectedDate.getTime() < today.getTime() || selectedDate.getTime() > next7Days.getTime()){
+        toast("Task is created in inbox tab!")
+      }
+      }
+      else{
+        setDueDate(null)
+        toast("Task is created in inbox tab!")
+      }
+    }
+
+    if (!todayOrNext && !dueDateSelected) {
       setDueDate(null)
     }
 
@@ -55,13 +93,19 @@ const TaskForm = ( {todayOrNext = false, listId = null, teamId = null, refresh, 
       console.error("Error creating task:", error);
     }
 
-    setDueDateSelected(false);
-    setTitle("");
-    setDueDate(null);
+    if (todayOrNext) {
+      const today = new Date();
+      today.setHours(23, 59, 59, 999);
+      setDueDate(today);
+      setDueDateSelected(true);
+      setTitle("");
+    } else {
+      setDueDate(null);
+      setDueDateSelected(false);
+      setTitle("");
+    }
   };
 
-
-  
   const returnString = (dateVal) =>  {
     let now = new Date();
     now.setHours(0, 0, 0, 0);
@@ -78,7 +122,7 @@ const TaskForm = ( {todayOrNext = false, listId = null, teamId = null, refresh, 
     }
     let dateVal = new Date(dueDate);
     let now = new Date();
-    now.setHours(0, 0, 0, 0); // start from midnight 00:00:00
+    now.setHours(0, 0, 0, 0);
 
     const tempDateVal = new Date(dateVal);
     tempDateVal.setHours(0, 0, 0, 0);
@@ -106,12 +150,12 @@ const TaskForm = ( {todayOrNext = false, listId = null, teamId = null, refresh, 
       return { dateText: "Today", color: "text-indigo-500" };
     }
     
-    let next7Days = new Date();
-    next7Days.setDate(now.getDate() + 7);
-    next7Days.setHours(0, 0, 0, 0);
+    let tomorrow = new Date();
+    tomorrow.setDate(now.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
   
-    if (tempDateVal.getTime() <= next7Days.getTime() && tempDateVal.getTime() > now.getTime()) {
-      return {dateText: dayNames[tempDateVal.getDay()], color: "text-indigo-500"};
+    if (tempDateVal.getTime() > todayEnd.getTime() && tempDateVal.getTime() <= tomorrow.getTime()) {
+      return {dateText: "Tomorrow", color: "text-indigo-500"};
     }
 
     return {dateText: returnString(tempDateVal), color: "text-indigo-500"};
@@ -126,47 +170,61 @@ const TaskForm = ( {todayOrNext = false, listId = null, teamId = null, refresh, 
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mb-4 w-full" >
-      <div className="relative">
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder={todayOrNext ? '+ Add task to "Inbox"' : '+ Add task'}
-          onKeyDown={(e) => {
-          if (e.key === "Enter")
-              handleSubmit;
-          }}
-          onClick={() => setDatePicker(false)}
-          className={`py-2 px-3 pr-25 w-full text-base rounded font-weight:bold text-black ${typeof window !== "undefined" && window.innerWidth < 639 && (teamId ? !membersSectionCollapse : !taskBarCollapse) ? "bg-gray-300/90" : "bg-gray-50"} placeholder-gray-300 focus:outline-none focus:bg-white focus:ring-1 focus:ring-violet-500`}
-        />
-        <span 
-          className="absolute inset-y-0 right-0 pr-2 flex items-center cursor-pointer text-base"
-        >
-          {
-            dueDateSelected ? 
-              <>
-                <div className={`flex items-center ${formatDate().color}`} onClick={() => setDatePicker((val) => !val)}>
-                  <BsCalendar2Date className="mr-2"/>
-                  <span> 
-                    {formatDate().dateText}
-                  </span>
-                </div>
-                { datePicker &&
-                  <GrClear className="ml-2 text-gray-600" onClick={() => { setDueDate(null); setDueDateSelected(false); }}/>
-                }
-              </>
-              :
-              <IoCalendarOutline className="text-gray-600" onClick={() => setDatePicker((val) => !val)}/>
+    <>
+      <Toaster
+      toastOptions={{
+        removeDelay: 500,
+        position: 'bottom-center',
+        style: {
+          backgroundColor: "#E6E6FA",
+          padding: '16px',
+          color: '#6A0DAD',
+          textAlign: "center",
+        },
+      }}
+      />
+      <form onSubmit={handleSubmit} className="mb-4 w-full" >
+        <div className="relative">
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder={todayOrNext ? '+ Add task to "Inbox"' : '+ Add task'}
+            onKeyDown={(e) => {
+            if (e.key === "Enter")
+                handleSubmit;
+            }}
+            onClick={() => setDatePicker(false)}
+            className={`py-2 px-3 pr-25 w-full text-base rounded font-weight:bold text-black ${typeof window !== "undefined" && window.innerWidth < 639 && (teamId ? !membersSectionCollapse : !taskBarCollapse) ? "bg-gray-300/90" : "bg-gray-50"} placeholder-gray-300 focus:outline-none focus:bg-white focus:ring-1 focus:ring-violet-500`}
+          />
+          <span 
+            className="absolute inset-y-0 right-0 pr-2 flex items-center cursor-pointer text-base"
+          >
+            {
+              dueDateSelected ? 
+                <>
+                  <div className={`flex items-center ${formatDate().color}`} onClick={() => setDatePicker((val) => !val)}>
+                    <BsCalendar2Date className="mr-2"/>
+                    <span> 
+                      {formatDate().dateText}
+                    </span>
+                  </div>
+                  { datePicker &&
+                    <GrClear className="ml-2 text-gray-600" onClick={() => { setDueDate(null); setDueDateSelected(false); }}/>
+                  }
+                </>
+                :
+                <IoCalendarOutline className="text-gray-600" onClick={() => setDatePicker((val) => !val)}/>
+            }
+          </span>
+          {datePicker &&
+            <div className="absolute right-0 z-10 mt-1">
+              <Calendar className="text-black" onChange={handleDueDateSelection} value={dueDate} />
+            </div>
           }
-        </span>
-        {datePicker &&
-          <div className="absolute right-0 z-10 mt-1">
-            <Calendar className="text-black" onChange={handleDueDateSelection} value={dueDate} />
-          </div>
-        }
-      </div>
-    </form>
+        </div>
+      </form>
+    </>
   );
 };
 

@@ -290,6 +290,7 @@ const TasksView = ({
         </div>
         {!completedOrTrash && (
           <TaskForm 
+            pageTitle={title}
             todayOrNext={todayOrNext} 
             listId={listId} 
             teamId={teamId} 
