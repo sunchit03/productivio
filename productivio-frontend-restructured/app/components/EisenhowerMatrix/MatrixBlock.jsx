@@ -159,10 +159,9 @@ return(
                     <HiOutlinePlusSm size={20} />
                 </button>
             </div>
-
             {addEditTaskModal &&
             <div className="fixed inset-0 bg-opacity-5 flex flex-col justify-center items-center z-50" onClick={()=>{setAddEditTaskModal(false); setSelectedTask(null)} }> 
-                <div className="relative p-2 shadow-xl rounded-md bg-gray-50 min-w-[25%] max-w-[50%] min-h-[50%] md:min-w-[50%] md:min-h-[50%] sm:min-h-[40%] flex flex-col justify-between z-50" onClick={(e) => e.stopPropagation()}>
+                <div className="relative p-2 shadow-xl rounded-md bg-gray-50 min-w-[25%] max-w-[50%] min-h-[50%] md:min-w-[50%] md:min-h-[50%] sm:min-h-[50%] sm:min-w-[75%] flex flex-col justify-between z-50" onClick={(e) => e.stopPropagation()}>
                 <DetailTaskView
                 setSelectedTask={setSelectedTask}
                 handleTrashOrRestore={handleTrashOrRestore}

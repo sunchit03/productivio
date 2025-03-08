@@ -1,16 +1,14 @@
 import { BiDotsHorizontal } from "react-icons/bi";
 import { Menu, MenuItem, MenuButton } from '@szhsin/react-menu';
 import CreateOrEditTeam from "./CreateOrEditTeam";
+import DeleteTeamModal from "./DeleteTeamModal";
 import { useState } from "react";
 import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/zoom.css';
 
 export default function TeamCard({ team, userId, editTeam, removeTeam, setSelectedTeam}) {
   const [addEditTeamModal, setAddEditTeamModal] = useState(false);
-
-  const handleDeleteTeam = () => {
-    removeTeam(team._id);
-  }
+  const [deleteTeamModal, setDeleteTeamModal] = useState(false);
 
   // Function to extract the initials from the title
   const getInitials = (title) => {
@@ -59,24 +57,24 @@ export default function TeamCard({ team, userId, editTeam, removeTeam, setSelect
       </div>
 
       {team.admin === userId && (
-        <div>
+        <div onClick={(e)=>e.stopPropagation()}>
             <Menu menuButton= {
                 <MenuButton>
-                    <BiDotsHorizontal size={24} className="flex items-center hover:bg-gray-300 rounded-sm p-1"/>
+                    <BiDotsHorizontal size={24} className="flex items-center hover:bg-gray-300 rounded-sm p-1" />
                 </MenuButton>
             }
             key={'bottom'}
             direction={'bottom'}
-            align={'start'}
+            align={'end'}
             position={'anchor'}
             viewScroll={'initial'}
             arrow={false}
             gap={10}
             shift={0}
             >
-                <MenuItem key={"Edit"} onClick={() => setAddEditTeamModal(true, team)}>{"Edit"}</MenuItem>
+                <MenuItem key={"Edit"} onClick={() => setAddEditTeamModal(true)}>{"Edit"}</MenuItem>
                 {/* onClick={() => setIsListDeleteModalOpen(true) } */}
-                <MenuItem key={"Delete"} onClick={() => handleDeleteTeam()}>{"Delete"}</MenuItem>
+                <MenuItem key={"Delete"} onClick={() => setDeleteTeamModal(true)}>{"Delete"}</MenuItem>
             </Menu>
         </div>
       )}
@@ -86,6 +84,14 @@ export default function TeamCard({ team, userId, editTeam, removeTeam, setSelect
           editTeam={editTeam}
           onClose={() => setAddEditTeamModal(false)}
         />}
+
+        {deleteTeamModal &&
+        <DeleteTeamModal
+          team={team}
+          removeTeam={removeTeam}
+          onClose={() => setDeleteTeamModal(false)}
+        />
+        }
       </div>
     </div>
   );

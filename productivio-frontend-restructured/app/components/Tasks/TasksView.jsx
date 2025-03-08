@@ -290,6 +290,7 @@ const TasksView = ({
         </div>
         {!completedOrTrash && (
           <TaskForm 
+            pageTitle={title}
             todayOrNext={todayOrNext} 
             listId={listId} 
             teamId={teamId} 
@@ -373,7 +374,6 @@ const TasksView = ({
             handleDueDateUpdate={handleDueDateUpdate} 
             handleDeleteTask={handleDeleteTask}
             setSelectedTask={setSelectedTask}
-            pageTitle={title}
             />
           </div>
         }
