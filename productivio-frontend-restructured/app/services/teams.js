@@ -61,3 +61,17 @@ export async function updateTeam(teamId, userId, updatedTeam) {
         console.log("Error while updating team: ", error)
     }
 }
+
+export async function addUserToTeam(teamId, userId, newMember) {
+    try {
+        const res = await fetch(`/api/teams/${teamId}/members`,{
+        method: "PATCH",
+        headers: {"Content-type":"application/json"},
+        body: JSON.stringify({userId, newMember}),
+        });
+        return await res.json();
+    } catch(error) {
+        console.log("Error while adding user to team: ", error)
+        return { success: false };
+    }
+}
