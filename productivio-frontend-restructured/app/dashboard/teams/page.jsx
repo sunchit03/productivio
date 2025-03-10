@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { IoAdd } from "react-icons/io5";
+import toast,{Toaster} from "react-hot-toast";
 import TeamCard from "@/app/components/Teams/TeamCard";
 import CreateOrEditTeam from "@/app/components/Teams/CreateOrEditTeam";
 import { getUserTeams, updateTeam, deleteTeam } from "@/app/services/teams";
@@ -37,15 +38,13 @@ export default function TeamsPage({ userId, setSelectedTeam }) {
           if(data){
             console.log(data);
             setTeams(prevTeams => prevTeams.map(prevTeam => prevTeam._id === teamId ? {...prevTeam, title, description} : prevTeam))
-            return true;
+            toast("Team updated successfully!")
           }
           else{
             console.log("Error while editing team: ", data.error);
-            return false;
           }
       }catch(error){
         console.log("Error while editing team: ", error)
-        return false;
       }
     }
 
@@ -53,8 +52,8 @@ export default function TeamsPage({ userId, setSelectedTeam }) {
       try{
         const data = await deleteTeam(teamId, userId);
         if(data.success){
-          console.log("deleted");
           setTeams(prevTeams => prevTeams.filter(prevTeam=> prevTeam._id !== teamId))
+          toast("Team deleted successfully!");
         }
         else{
           console.log("Error deleting team: ",data.error);
@@ -66,6 +65,18 @@ export default function TeamsPage({ userId, setSelectedTeam }) {
 
     return (
         <>
+          <Toaster
+            toastOptions={{
+            removeDelay: 500,
+            position: 'bottom-center',
+            style: {
+              backgroundColor: "#E6E6FA",
+              padding: '16px',
+              color: '#6A0DAD',
+              textAlign: "center",
+            },
+          }}
+          />
         <div className="p-4 bg-gradient-to-b from-indigo-100 to-pink-50 h-screen overflow-hidden"
           onClick={()=>{setAddEditTeamModal(false)}}>
           <div className="w-full flex items-center justify-between">
