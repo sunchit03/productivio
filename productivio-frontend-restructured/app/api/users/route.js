@@ -3,6 +3,23 @@ import mongoose from "mongoose";
 import User from "../../models/User";
 const connectDB = require('../../utils/connect');
 
+export async function GET() {
+  try {
+    // Connect to MongoDB if not already connected
+    if (mongoose.connection.readyState === 0) {
+      await connectDB();
+    }
+
+    // Check if the user already exists
+    const users = await User.find({}).select('email connection');
+
+    return NextResponse.json({ success: true, users }, { status: 201 });
+  } catch (error) {
+    console.error("Error retrieving users:", error);
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}
+
 export async function POST(req) {
   try {
     // Connect to MongoDB if not already connected

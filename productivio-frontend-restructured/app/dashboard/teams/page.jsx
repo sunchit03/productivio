@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { IoAdd } from "react-icons/io5";
 import toast,{Toaster} from "react-hot-toast";
 import TeamCard from "@/app/components/Teams/TeamCard";
 import CreateOrEditTeam from "@/app/components/Teams/CreateOrEditTeam";
@@ -64,27 +65,28 @@ export default function TeamsPage({ userId, setSelectedTeam }) {
 
     return (
         <>
-        <Toaster
-        toastOptions={{
-        removeDelay: 500,
-        position: 'bottom-center',
-        style: {
-        backgroundColor: "#E6E6FA",
-        padding: '16px',
-        color: '#6A0DAD',
-        textAlign: "center",
-        },
-        }}
-        />
-        <div className="p-6 bg-gradient-to-b from-indigo-100 to-pink-50 h-screen overflow-hidden"
+          <Toaster
+            toastOptions={{
+            removeDelay: 500,
+            position: 'bottom-center',
+            style: {
+              backgroundColor: "#E6E6FA",
+              padding: '16px',
+              color: '#6A0DAD',
+              textAlign: "center",
+            },
+          }}
+          />
+        <div className="p-4 bg-gradient-to-b from-indigo-100 to-pink-50 h-screen overflow-hidden"
           onClick={()=>{setAddEditTeamModal(false)}}>
-          <div className="p-2 w-full flex items-center justify-between">
+          <div className="w-full flex items-center justify-between">
             <h1 className="ml-1 text-xl text-black font-semibold mb-4">My Teams</h1>
             <button
-              className="bg-purple-700 p-4 text-lg text-white rounded-md shadow-lg hover:bg-purple-800"
+              className="bg-purple-700 p-4 text-sm text-white rounded-md shadow-lg hover:bg-purple-800 flex items-center"
               onClick={(e) => {e.stopPropagation(); setAddEditTeamModal(true);}}
             >
-              Create New Team
+              <IoAdd className="mr-1" size={"1.5em"}/>
+              <span>Create New Team</span>
             </button>
           </div>
 
