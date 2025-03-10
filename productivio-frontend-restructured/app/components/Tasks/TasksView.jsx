@@ -114,8 +114,7 @@ const TasksView = ({
     if (teamId) {
       fetchTeamTasks();
     }
-
-    if (userId) {
+    else if (userId) {
       fetchTasks();
     }
     setSelectedTask(null);
