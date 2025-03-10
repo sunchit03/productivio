@@ -22,7 +22,10 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user, selectedTeam, setS
       console.error("Failed to clear tokens on logout");
     }
 
-    window.location.href = "/api/auth/logout?federated";
+    // window.location.href = "/api/auth/logout?federated";
+
+    // Redirect to Auth0 logout URL (ensures session is cleared)
+    window.location.href = `https://${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/v2/logout?client_id=${process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID}&returnTo=${encodeURIComponent(`${process.env.NEXT_PUBLIC_APP_URL}`)}`;
   };
 
   const router = useRouter();

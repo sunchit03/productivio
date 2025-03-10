@@ -31,7 +31,10 @@ const TasksSidebar = ({ activeTab, setActiveTab, activeList, setActiveList = nul
       console.error("Failed to clear tokens on logout");
     }
 
-    window.location.href = "/api/auth/logout?federated";
+    //window.location.href = "/api/auth/logout?federated";
+    
+    // Redirect to Auth0 logout URL (ensures session is cleared)
+    window.location.href = `https://${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/v2/logout?client_id=${process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID}&returnTo=${encodeURIComponent(`${process.env.NEXT_PUBLIC_APP_URL}`)}`;
   };
 
   const renderButton = (tab) => {
@@ -81,47 +84,47 @@ const TasksSidebar = ({ activeTab, setActiveTab, activeList, setActiveList = nul
     <div className={`sm:absolute sm:left-0 sm:z-30 transition-width duration-200 ease-linear relative bg-gradient-to-b from-indigo-100 to-pink-50 bg-white text-black h-screen flex flex-col justify-between overflow-y-auto
        ${taskBarCollapse ? "w-0" : "w-[310px] mdlg:w-[305px] md:w-[213px] sm:w-[300px] xs:w-[288px]"}`}>
 
-      <div className="hidden xs:flex justify-between items-center pt-4 px-2">
-        {user ? (
-          <img
-          src={userPicture}
-          alt="Profile"
-          className="rounded-md img-fluid profile-picture mb-md-0 size-10"
-          decode="async"
-          data-testid="profile-picture"
-          />
-        ) : (
-          <button
-          className={`px-2 py-1 rounded text-black`}
-          title={user?.name || "Profile"}
-          >
-            <FaUser size="1.4em"/>
-          </button>
-        )}
-
-        <div className="flex items-center">
-          {/* Notifications Button */}
-          <button 
-            className="px-2 py-1 rounded text-black"
-            title="Notifications"
-            onClick={() => setShowNotifications(true)}>
-            <IoMdNotificationsOutline  size="1.4em"/>
-          </button>
-  
-          <button 
-            onClick={() => handleLogout()} 
-            className="px-2 py-1 rounded text-black"
-            title="Sign Out"
+      <div>
+        <div className="hidden xs:flex justify-between items-center pt-4 px-2">
+          {user ? (
+            <img
+            src={userPicture}
+            alt="Profile"
+            className="rounded-md img-fluid profile-picture mb-md-0 size-10"
+            decode="async"
+            data-testid="profile-picture"
+            />
+          ) : (
+            <button
+            className={`px-2 py-1 rounded text-black`}
+            title={user?.name || "Profile"}
             >
-            <IoLogOutOutline size="1.4em"/>
-          </button>
+              <FaUser size="1.4em"/>
+            </button>
+          )}
+
+          <div className="flex items-center">
+            {/* Notifications Button */}
+            <button 
+              className="px-2 py-1 rounded text-black"
+              title="Notifications"
+              onClick={() => setShowNotifications(true)}>
+              <IoMdNotificationsOutline  size="1.4em"/>
+            </button>
+    
+            <button 
+              onClick={() => handleLogout()} 
+              className="px-2 py-1 rounded text-black"
+              title="Sign Out"
+              >
+              <IoLogOutOutline size="1.4em"/>
+            </button>
+          </div>
+
+          {/* Notifications Modal */}
+          {showNotifications && <NotificationsModal onClose={() => setShowNotifications(false)} notifications={[]} activities={[]} />}
         </div>
 
-        {/* Notifications Modal */}
-        {showNotifications && <NotificationsModal onClose={() => setShowNotifications(false)} notifications={[]} activities={[]} />}
-      </div>
-
-      <div>
         {createTabs(upperTabs)}
         <div className="w-4/5 h-[1px] bg-purple-950 place-self-center"></div>
         {createTabs(["Lists"])}

@@ -13,20 +13,23 @@ export async function saveUser(user) {
     return res.json();
   }
 
-export async function isUser(email) {
+export async function getAllUsers() {
   try {
-    const res = await fetch(`/api/users/check?email=${email}`);
+    const res = await fetch("/api/users");
     const data = await res.json();
-    if (data.exists) {
-      return true
-    } else {
-      return false
-    }
+    return data.users;
   } catch (error) {
-
+    console.error("Error fetching team data:", error);
+    return [];
   }
 }
 
-export async function inviteUser(email) {
-  
+export async function sendInvite(email) {
+  const res = await fetch('/api/users/invite', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+
+  return res.json();
 }

@@ -1,14 +1,14 @@
 // app/teams/team/page.jsx
 "use client";
 import { useState, useEffect } from "react";
-import MembersSection from "@/app/components/Teams/MembersSection";
+import MembersSection from "@/app/components/Team/MembersSection";
 import TasksView from "@/app/components/Tasks/TasksView";
 import { getTeamData } from "@/app/services/teams";
 
-export default function TeamPage({ selectedTeam, setSelectedTeam, userId, membersSectionCollapse, setMembersSectionCollapse }) {
+export default function TeamPage({ selectedTeam, setSelectedTeam, user, userId, membersSectionCollapse, setMembersSectionCollapse }) {
     const [team, setTeam] = useState(null);
     const [members, setMembers] = useState([]);
-    const [isAdmin, setIsAdmin] =useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
    
     async function fetchTeamDetails() {
         try {            
@@ -34,10 +34,14 @@ export default function TeamPage({ selectedTeam, setSelectedTeam, userId, member
     return (
         <div className={"sm:relative w-full flex h-full"}>
             <MembersSection 
+                teamId={selectedTeam?._id} 
                 members={members} 
                 isAdmin={isAdmin} 
                 setSelectedTeam={setSelectedTeam} 
                 membersSectionCollapse={membersSectionCollapse}
+                user={user}
+                userId={userId}
+                refresh={fetchTeamDetails}
             />
         <div className={`flex-grow h-full sm:w-full overflow-auto ${typeof window !== "undefined" && window.innerWidth < 639 && !membersSectionCollapse ? "bg-black/10" : "bg-white"}`}>
             <TasksView 
