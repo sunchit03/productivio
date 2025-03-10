@@ -54,6 +54,8 @@ function Dashboard() {
     async function init() {
       if (hasRun.current) return; // Prevent second execution
       hasRun.current = true;
+      
+      setActiveMainTab("task");
 
       const token = await getJWT();
       if (!token) {
@@ -129,6 +131,7 @@ function Dashboard() {
                 <TeamPage 
                   selectedTeam={selectedTeam} 
                   setSelectedTeam={setSelectedTeam}
+                  user={user}
                   userId={userId}
                   membersSectionCollapse={membersSectionCollapse}
                   setMembersSectionCollapse={setMembersSectionCollapse}  
