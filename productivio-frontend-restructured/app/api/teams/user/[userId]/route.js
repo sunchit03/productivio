@@ -17,8 +17,15 @@ export async function GET(req, { params }) {
         return NextResponse.json({ success: false, error: "User ID is required" }, { status: 400 });
       }
   
-      const user = await User.findById(userId).populate("teams");
-  
+      const user = await User.findById(userId).populate({
+        path: "teams",
+        select: "_id title description admin",
+        populate: {
+          path: "admin",
+          select: "_id", // Only selecting _id for admin
+        },
+      });
+
       if (!user) {
         return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
       }

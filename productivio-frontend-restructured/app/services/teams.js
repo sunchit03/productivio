@@ -37,27 +37,27 @@ export async function createTeam(admin, title, description) {
 }
 
 export async function deleteTeam(teamId, userId) {
-    try{
+    try {
         const res = await fetch(`/api/teams/${teamId}`,{
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userId }),
         });
         return await res.json();
-    }catch(error){
+    } catch(error) {
         console.log("Error deleting the team: ", error);
     }
 }
 
 export async function updateTeam(teamId, userId, updatedTeam) {
-    try{
+    try {
         const res = await fetch(`/api/teams/${teamId}`,{
         method: "PATCH",
         headers: {"Content-type":"application/json"},
         body: JSON.stringify({userId, ...updatedTeam}),
         });
         return await res.json();
-    }catch(error){
+    } catch(error) {
         console.log("Error while updating team: ", error)
     }
 }
