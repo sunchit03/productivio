@@ -1,11 +1,10 @@
-import { createTeam, updateTeam } from "@/app/services/teams";
+import { createTeam} from "@/app/services/teams";
 import { useState, useEffect } from "react";
 import toast,{Toaster} from "react-hot-toast";
 
 export default function CreateOrEditTeam({ onClose, refresh, userId, team, editTeam }) {
   const [title, setTitle] = useState(team ? team.title : "");
   const [description, setDescription] = useState(team ? (team.description ? team.description : "") : "");
-  //const isEnable = title.trim() !== "";
   const initTeamTitle = team?.title || "";
   const initDescription = team?.description || "";
   const isEnable = team && ((title.trim() !== "" && initTeamTitle !== title) || initDescription !== description);
@@ -14,7 +13,6 @@ export default function CreateOrEditTeam({ onClose, refresh, userId, team, editT
     try{
       const data = await createTeam(userId, title, description);
       if (data.success) {
-        toast.success("Team updated successfully!");
         onClose();
         refresh(); 
       }
@@ -28,11 +26,7 @@ export default function CreateOrEditTeam({ onClose, refresh, userId, team, editT
 
   const handleEditTeam = async() => {
     description === "" ? null : description;
-    let data = editTeam(team._id, title, description);
-    if(data){
-      console.log("hihi");
-      toast.success("Team updated successfully!");
-    }
+    editTeam(team._id, title, description);
     onClose();
   }
 
@@ -59,7 +53,7 @@ export default function CreateOrEditTeam({ onClose, refresh, userId, team, editT
         }}
       />
     <div className="fixed inset-0 flex justify-center bg-gray-100 bg-opacity-30 pt-12">
-      <div className="flex flex-col bg-white p-4 rounded-lg shadow-md w-2/5 h-2/5 gap-2"
+      <div className="flex flex-col bg-white p-4 rounded-lg shadow-md w-2/5 h-2/5 xs:w-5/6 xs:h-1/3 xssm:w-4/5 mdlg:w-3/5 gap-2"
       onClick={(e)=>{e.stopPropagation()}}>
         <h2 className="text-xl font-semibold mb-2 text-black">{team ? `Edit Team - ${team.title}` : "Create New Team"}</h2>
 

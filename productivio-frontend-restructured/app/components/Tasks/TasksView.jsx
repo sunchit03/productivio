@@ -114,8 +114,7 @@ const TasksView = ({
     if (teamId) {
       fetchTeamTasks();
     }
-
-    if (userId) {
+    else if (userId) {
       fetchTasks();
     }
     setSelectedTask(null);
@@ -153,6 +152,14 @@ const TasksView = ({
           //Update selectedTask if it's the one being changed
           if (selectedTask?._id === taskId) {
               setSelectedTask(prevTask => ({ ...prevTask, isCompleted: updatedCompletion }));
+          }
+
+          if (title === "Completed") {
+            setTasks(prevTasks => prevTasks.filter(task => task._id !== taskId));
+
+            if (selectedTask?._id === taskId) {
+              setSelectedTask(null);
+            }
           }
         
        } else {
@@ -258,7 +265,7 @@ const TasksView = ({
   }
   
   return (
-    <div className={`relative w-full flex h-full px-5`} onClick={handleTaskBarDismissal}>
+    <div className={`relative w-full flex h-full px-5 overflow-hidden`} onClick={handleTaskBarDismissal}>
       <Toaster
           toastOptions={{
             removeDelay: 500,
@@ -282,6 +289,7 @@ const TasksView = ({
         </div>
         {!completedOrTrash && (
           <TaskForm 
+            pageTitle={title}
             todayOrNext={todayOrNext} 
             listId={listId} 
             teamId={teamId} 
@@ -291,14 +299,14 @@ const TasksView = ({
             membersSectionCollapse={membersSectionCollapse}
           />
         )}
-        <div className="mt-4 h-[calc(100vh-150px)] mdlg:w-[100%] overflow-hidden hover:overflow-y-auto relative">
+        <div className="mt-4 h-[calc(100vh-140px)] mdlg:w-[100%] relative lg:overflow-y-auto overflow-y-hidden hover:overflow-y-auto">
           {tasks.length > 0 ? (
             tasks.map((task) => (
               <div className="group pr-2" key={task._id}>
                 <div className={`px-3 py-2 rounded-md ${ selectedTask?._id == task?._id ? "bg-purple-50 hover:bg-purple-100" : "hover:bg-gray-50"}`} 
                   onClick={(e) => {
                     if (typeof window !== "undefined" && window.innerWidth < 639) {
-                      if (!taskBarCollapse || !membersSectionCollapse) {
+                      if ((!teamId && !taskBarCollapse) || (teamId && !membersSectionCollapse)) {
                         teamId ? setMembersSectionCollapse(true) : setTaskBarCollapse(true);
                       }
                       else {
@@ -356,6 +364,7 @@ const TasksView = ({
             onClick={(e) => e.stopPropagation()}>
             <DetailTaskView 
             task={selectedTask} 
+            pageTitle={title}
             userId={userId} 
             handleCheckBoxCheck={handleCheckBoxCheck} 
             handleEditTask={handleEditTask} 
@@ -364,7 +373,6 @@ const TasksView = ({
             handleDueDateUpdate={handleDueDateUpdate} 
             handleDeleteTask={handleDeleteTask}
             setSelectedTask={setSelectedTask}
-            pageTitle={title}
             />
           </div>
         }

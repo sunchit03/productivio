@@ -3,57 +3,55 @@ import React from "react";
 const features = [
   {
     title: "Todo List",
-    description: "Organize everything in your life with structured task lists. Whether it's work projects, personal tasks, or study plans, TickTick helps you organize and confidently tackle everything in your life.",
-    image: "/assets/todo-list.jpg",
-    textAlign: "left",
-  },
-  {
-    title: "Pomodoro Technique",
-    description: "Track time and stay focused. Adopt the popular - Pomodoro Technique. Break tasks into 25-minute intervals to stay focused and achieve a productive flow.",
-    image: "/assets/pomodoro.jpg",
+    description: "Whether it's work projects, personal tasks, or study plans, Productivio helps you organize and confidently tackle everything in your life.",
+    heading: "Organize everything in your life",
+    image: "/assets/todo-list.png",
     textAlign: "right",
   },
   {
-    title: "Eisenhower Matrix",
-    description: "Focus on important and urgent tasks. Different strategies for different matrix. Edit filters to create a customized perspective. Effective plans guide the sequence of actions.",
-    image: "/assets/eisenhower-matrix.png",
+    title: "Pomodoro Technique",
+    description: "Adopt the popular - Pomodoro Technique. Break tasks into 25-minute intervals to stay focused and achieve a productive flow.",
+    heading: "Track time and stay focused",
+    image: "/assets/pomodoro.png",
     textAlign: "left",
+  },
+  {
+    title: "Eisenhower Matrix",
+    description: "Different strategies for different matrix. Edit filters to create a customized perspective. Effective plans guide the sequence of actions.",
+    heading: "Divide tasks based on importance and priority",
+    image: "/assets/eisenhower-matrix.png",
+    textAlign: "right",
   },
 ];
 
 const ProductivityFeatures = () => {
   return (
-    <section className="px-5 py-16 bg-gradient-to-r from-blue-100 to-blue-200">
+    <section className="xxl:p-28 lg:p-16 sm:px-6 bg-gradient-to-r from-indigo-100 via-purple-100 to-pink-100">
       <div className="container mx-auto flex flex-col gap-16">
         {features.map((feature, index) => (
           <div
             key={index}
-            className={`relative flex flex-col md:flex-row items-center gap-10 rounded-lg overflow-hidden shadow-lg bg-white p-8 ${
-              feature.textAlign === "right" ? "md:flex-row-reverse" : ""
+            className={`relative flex xxl:flex-row xxl:items-center xxl:gap-12 xxl:p-12 xl:flex-row xl:items-center xl:gap-8 xl:p-8 xllg:flex-row xllg:gap-8 xllg:p-6 lg:flex-row lg:gap-4 lg:p-6 md:flex-col md:p-6 md:gap-4 rounded-2xl overflow-hidden shadow-2xl bg-white ${
+              feature.textAlign === "left" ? "xxl:flex-row-reverse xl:flex-row-reverse xllg:flex-row-reverse lg:flex-row-reverse" : ""
             }`}
           >
-            {/* Background Image */}
-            <div className="absolute inset-0 opacity-5">
-              <img
-                src={feature.image}
-                alt={feature.title}
-                className="object-cover w-full h-full"
-              />
+
+            {/* Text Section */}
+            <div className="flex-1">
+              <div className="flex-col xxl:mt-10 xxl:mb-10 xxl:space-y-12 xl:mt-6 xl:mb-6 xl:space-y-8 xllg:mt-0 xllg:mb-0 xllg:space-y-2 lg:mt-0 lg:mb-4 lg:space-y-1">
+                <p className="xxl:text-xl xl:text-lg xllg:text-md lg:text-md font-bold text-purple-800">{feature.title}</p>
+                <h1 className="text-4xl xl:text-2xl xllg:text-2xl lg:text-lg font-bold text-purple-900">{feature.heading}</h1>
+                <p className="text-purple-950 xxl:text-lg xl:text-sm xllg:text-sm lg:text-sm">{feature.description}</p>
+              </div>
             </div>
 
             {/* Image Section */}
-            <div className="relative ml-10 mr-10 md:w-1/3">
+            <div className="flex-none flex xxl:justify-center xl:justify-center xllg:justify-center lg:justify-center">
               <img
                 src={feature.image}
                 alt={feature.title}
-                className="w-full rounded-lg shadow-lg"
+                className="xxl:w-[600px] xl:w-[500px] xllg:w-[500px] lg:w-[400px] md:w-full rounded-lg shadow-xl"
               />
-            </div>
-
-            {/* Text Section */}
-            <div className="relative md:w-2/3 text-center md:text-left">
-              <h2 className="text-2xl font-bold text-gray-800">{feature.title}</h2>
-              <p className="text-gray-600 mt-2 text-lg">{feature.description}</p>
             </div>
           </div>
         ))}

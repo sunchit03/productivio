@@ -1,5 +1,4 @@
 import { HiOutlinePlusSm } from "react-icons/hi";
-import { RxDotsHorizontal } from "react-icons/rx";
 import TaskItem from "../Tasks/TaskItem";
 import DetailTaskView from "../Tasks/DetailTaskView";
 import {updateTask} from "@/app/services/tasks"
@@ -57,7 +56,6 @@ const handleDueDateUpdate = async(taskId, date) => {
 
 const handleMatrixAddNewTask = async(userId, title, description, dueDate, selectedPriority) => {
     try{
-        console.log("sjsj");
         const data = await createTask({createdBy: userId, title: title, description: ((description.trim() === "" ? null : description)), dueDate: dueDate, priority: selectedPriority});
         if(data){
             setAddEditTaskModal(false);
@@ -122,22 +120,23 @@ const handleTaskPriorityChange = async(taskId, setPriority) => {
       }
     }
 
-    const handleEditTask = async(taskId, title, description) => {
-        setAddEditTaskModal(false);
-        try{
-          const data = await updateTask(taskId, userId, {title: title, description: (description === "" ? null : description)})
-          if(data){
-            setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, title: title, description: (description === "" ? null : description)} : task));
-          if(selectedTask?._id === taskId){
-            setSelectedTask(prevTask=>({...prevTask, title: title, description: description}));
-          }
-        }
-        else{
-          console.log("Error updating task with title and description: ", data.error)}
-        }catch(error){
-          console.log("Error updating task: ", error.message);
-          }
-        }
+const handleEditTask = async(taskId, title, description) => {
+    try{
+    const data = await updateTask(taskId, userId, {title: title, description: (description === "" ? null : description)})
+    if(data){
+        setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, title: title, description: (description === "" ? null : description)} : task));
+    if(selectedTask?._id === taskId){
+        setSelectedTask(prevTask=>({...prevTask, title: title, description: description}));
+    }
+    setAddEditTaskModal(false);
+    setSelectedTask(null);
+    }
+    else{
+    console.log("Error updating task with title and description: ", data.error)}
+    }catch(error){
+    console.log("Error updating task: ", error.message);
+    }
+    }
 
 const handleTaskSelection = (task) => { 
         if (selectedTask !== task) {
@@ -154,17 +153,17 @@ const handleTaskSelection = (task) => {
 return(
     <div className= "group border rounded-md p-2 bg-white shadow-md h-[43vh] flex flex-col">
         <div className={`text-sm p-2 font-bold flex w-full justify-between items-center`}>
-            <div className={`flex items-center gap-2  ${textColor}`}>{title} </div>
+            <div className={`flex items-center gap-2 pb-1  ${textColor}`}>{title} </div>
             <div className="invisible group-hover:visible flex items-center">
                 <button className={`hover:bg-gray-300 rounded-sm ${textColor}`} onClick={()=>{setAddEditTaskModal(true)}}>
                     <HiOutlinePlusSm size={20} />
                 </button>
             </div>
-
             {addEditTaskModal &&
             <div className="fixed inset-0 bg-opacity-5 flex flex-col justify-center items-center z-50" onClick={()=>{setAddEditTaskModal(false); setSelectedTask(null)} }> 
-                <div className="relative p-2 shadow-xl rounded-md bg-gray-50 w-3/12 h-3/6 flex flex-col justify-between z-50" onClick={(e) => e.stopPropagation()}>
+                <div className="relative p-2 shadow-xl rounded-md bg-gray-50 min-w-[25%] max-w-[50%] min-h-[50%] md:min-w-[50%] md:min-h-[50%] sm:min-h-[50%] sm:min-w-[75%] flex flex-col justify-between z-50" onClick={(e) => e.stopPropagation()}>
                 <DetailTaskView
+                setSelectedTask={setSelectedTask}
                 handleTrashOrRestore={handleTrashOrRestore}
                 handleCheckBoxCheck={handleCheckBoxCheck}
                 handleEditTask={handleEditTask}
@@ -173,7 +172,6 @@ return(
                 handleDueDateUpdate={handleDueDateUpdate}
                 handleTaskPriorityChange={handleTaskPriorityChange}
                 matrixBlockPriority={handleDefaultMatrixPriority}
-                setAddEditTaskModal={setAddEditTaskModal}
                 userId={userId}/>
                 </div>
             </div>

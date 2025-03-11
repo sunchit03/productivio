@@ -17,7 +17,10 @@ export async function GET(req, { params }) {
       return NextResponse.json({ success: false, error: "Team ID is required" }, { status: 400 });
     }
 
-    const team = await Team.findById(teamId).populate("members").populate("admin");
+    const team = await Team.findById(teamId)
+      .populate("admin", "_id") // Only get admin ID
+      .populate("members", "_id email connection profilePicture") // Only get required fields for members
+      .select("_id title members admin"); // Only retrieve these fields from the Team model
 
     if (!team) {
       return NextResponse.json({ success: false, error: "Team not found" }, { status: 404 });
@@ -87,7 +90,7 @@ export async function DELETE(req, {params}){
     }
     await Task.deleteMany({ _id: { $in: team.tasks } });
     await User.updateMany({ _id:{ $in: team.members} },{ $pull: { teams: teamId } });
-    await team.deleteOne(teamId);
+    await team.deleteOne();
     return NextResponse.json({success: true, error: "Team deleted successfully."},{status:200});
     }catch(error){
       return NextResponse.json({success: false, error:error.message},{status:500});
