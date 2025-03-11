@@ -3,7 +3,8 @@ import { cookies } from "next/headers";
 
 export async function middleware(req) {
   
-  const token = await cookies().get("token")?.value;
+  // const token = await cookies().get("token")?.value;
+  const token = (await cookies()).get("token")?.value;
 
   if (!token) {
     return NextResponse.json({ success: false, error: "Unauthorized: No token provided" }, { status: 401 });

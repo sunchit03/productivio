@@ -89,7 +89,7 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user, selectedTeam, setS
           title="Pomodoro"
           onClick={() => {
             if (activeMainTab != "pomodoro") {
-              router.push("/dashboard");
+              router.push("/dashboard/pomodoro");
               setActiveMainTab("pomodoro");
               localStorage.setItem("activeTab", "pomodoro");
             }
