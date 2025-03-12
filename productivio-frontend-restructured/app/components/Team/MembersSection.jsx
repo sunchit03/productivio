@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { FaUser, FaUserPlus } from "react-icons/fa";
 import { IoMdNotificationsOutline } from "react-icons/io";
-import { IoChevronBackCircle, IoLogOutOutline } from "react-icons/io5";
+import { IoChevronBackCircle, IoExit, IoLogOutOutline } from "react-icons/io5";
 import AddMemberModal from "./AddMemberModal";
-import { addUserToTeam } from "@/app/services/teams";
 import { addUserToTeam, deleteTeam, removeUserFromTeam, updateTeam } from "@/app/services/teams";
 import { sendInvite } from "@/app/services/users";
 import MembersSectionItem from "./MembersSectionItem";
@@ -179,14 +178,19 @@ export default function MembersSection({ user, teamId, members, isAdmin, adminId
         {/* Members Header with Add Icon */}
         <div className="flex justify-between items-center mb-3">
           <div className="flex items-center">
-            <IoChevronBackCircle className="mr-2 cursor-pointer" size={20} onClick={() => setSelectedTeam(null)} />
-            <h2 className="text-lg font-bold text-black">Members</h2>
+            <IoChevronBackCircle className="mr-2 cursor-pointer text-violet-800 hover:text-violet-900" size={20} onClick={() => setSelectedTeam(null)} />
+            <h2 className="text-lg font-bold text-violet-900">Members</h2>
           </div>
-          {isAdmin &&
-            <button onClick={() => setShowAddModal(true)} className="text-blue-500 hover:text-blue-700">
-              <FaUserPlus size={20} />
+          <div className="flex justify-between items-center">
+            {isAdmin &&
+              <button onClick={() => setShowAddModal(true)} className="text-violet-800 hover:text-violet-900 mr-2">
+                <FaUserPlus size={20} />
+              </button>
+            }
+            <button onClick={() => setShowLeaveModal(true) } className="text-violet-800 hover:text-violet-900">
+              <IoExit size={20}/>
             </button>
-          }
+          </div>
         </div>
 
         {/* Search Bar */}
