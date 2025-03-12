@@ -13,6 +13,7 @@ import LeaveTeamModal from "./LeaveTeamModal";
 
 export default function MembersSection({ user, teamId, members, isAdmin, adminId, userId, setSelectedTeam, membersSectionCollapse, refresh }) {
   const [query, setQuery] = useState("");
+  const [teamMembers, setTeamMembers] = useState(members);
   const [filteredMembers, setFilteredMembers] = useState(members);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showLeaveModal, setShowLeaveModal] = useState(false);
@@ -41,7 +42,8 @@ export default function MembersSection({ user, teamId, members, isAdmin, adminId
 	}, [query]);
 
   useEffect(() => {
-    setFilteredMembers(members)
+    setTeamMembers(members);
+    setFilteredMembers(members);
   }, [members])
 
   const handleLogout = async () => {
@@ -102,6 +104,7 @@ export default function MembersSection({ user, teamId, members, isAdmin, adminId
     const data = await removeUserFromTeam(teamId, userId, userId, false);
     if (data.success) {
       setFilteredMembers(prevMembers => prevMembers.filter(prevMember => prevMember._id == userId))
+      setTeamMembers(prevMembers => prevMembers.filter(prevMember => prevMember._id !== userId))
       setSelectedTeam(null);
       setShowLeaveModal(false);
       // left team
@@ -114,13 +117,14 @@ export default function MembersSection({ user, teamId, members, isAdmin, adminId
     const data = await removeUserFromTeam(teamId, userId, memberId, false);
     if (data.success) {
       setFilteredMembers(prevMembers => prevMembers.filter(prevMember => prevMember._id !== memberId))
+      setTeamMembers(prevMembers => prevMembers.filter(prevMember => prevMember._id !== memberId))
       // removed from team
     } else {
       // something went wrong
     }
   }
 
-  const deleteTeam = async () => {
+  const teamDeletion = async () => {
     const data = await deleteTeam(teamId, userId);
     if(data.success){
       setSelectedTeam(null);
@@ -225,7 +229,7 @@ export default function MembersSection({ user, teamId, members, isAdmin, adminId
             onClose={() => setShowAddModal(false)} 
             addUser={addUser} 
             inviteUser={inviteUser}
-            teamMembers={members} 
+            teamMembers={teamMembers} 
             userId={userId}
           />
         }
@@ -235,8 +239,8 @@ export default function MembersSection({ user, teamId, members, isAdmin, adminId
             onClose={() => setShowLeaveModal(false)}
             leaveTeam={leaveTeam}
             isAdmin={isAdmin}
-            members={members}
-            deleteTeam={deleteTeam}
+            members={teamMembers}
+            deleteTeam={teamDeletion}
             userId={userId}
           />
         }
