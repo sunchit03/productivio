@@ -47,11 +47,6 @@ export async function PATCH(req, { params }) {
       return NextResponse.json({ success: false, error: "Task not found" }, { status: 404 });
     }
 
-    // Only the creator or assigned user can update the task
-    if (task.createdBy.toString() !== userId && task.assignedTo.toString() !== userId) {
-      return NextResponse.json({ success: false, error: "Not authorized to update this task" }, { status: 403 });
-    }
-
     const updatedTask = await Task.findByIdAndUpdate(taskId, updateData, { new: true });
 
     return NextResponse.json({ success: true, task: updatedTask }, { status: 200 });

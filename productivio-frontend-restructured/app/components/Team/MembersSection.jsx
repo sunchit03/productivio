@@ -1,19 +1,21 @@
 import { useState, useEffect } from "react";
 import { FaUser, FaUserPlus } from "react-icons/fa";
 import { IoMdNotificationsOutline } from "react-icons/io";
-import { IoChevronBackCircle, IoLogOutOutline } from "react-icons/io5";
+import { IoChevronBackCircle, IoExit, IoLogOutOutline } from "react-icons/io5";
 import AddMemberModal from "./AddMemberModal";
-import { addUserToTeam } from "@/app/services/teams";
+import { addUserToTeam, deleteTeam, removeUserFromTeam, updateTeam } from "@/app/services/teams";
 import { sendInvite } from "@/app/services/users";
 import MembersSectionItem from "./MembersSectionItem";
 import NotificationsModal from "../NotificationsModal";
 import { preLogOut } from "../../utils/prelogout";
+import LeaveTeamModal from "./LeaveTeamModal";
 
 
-export default function MembersSection({ user, teamId, members, isAdmin, userId, setSelectedTeam, membersSectionCollapse, refresh }) {
+export default function MembersSection({ user, teamId, members, isAdmin, adminId, userId, setSelectedTeam, membersSectionCollapse, refresh }) {
   const [query, setQuery] = useState("");
   const [filteredMembers, setFilteredMembers] = useState(members);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
   const [invitations, setInvitations] = useState([]);
   const [userPicture, setUserPicture] = useState(user?.picture || null);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -85,6 +87,49 @@ export default function MembersSection({ user, teamId, members, isAdmin, userId,
     }
   }
 
+  const leaveTeam = async (newAdmin = null) => {
+
+    if (newAdmin) {
+      const data = await updateTeam(teamId, userId, {admin: newAdmin})
+
+      if (data.success) {
+        // new admin assigned
+      } else {
+        // something went wrong
+      }
+    }
+
+    const data = await removeUserFromTeam(teamId, userId, userId, false);
+    if (data.success) {
+      setFilteredMembers(prevMembers => prevMembers.filter(prevMember => prevMember._id == userId))
+      setSelectedTeam(null);
+      setShowLeaveModal(false);
+      // left team
+    } else {
+      // something went wrong
+    }
+  }
+
+  const memberRemoval = async(memberId) => {
+    const data = await removeUserFromTeam(teamId, userId, memberId, false);
+    if (data.success) {
+      setFilteredMembers(prevMembers => prevMembers.filter(prevMember => prevMember._id !== memberId))
+      // removed from team
+    } else {
+      // something went wrong
+    }
+  }
+
+  const deleteTeam = async () => {
+    const data = await deleteTeam(teamId, userId);
+    if(data.success){
+      setSelectedTeam(null);
+    }
+    else{
+      //something went wrong
+    }
+  }
+
   return (
     <div className={`sm:absolute sm:left-0 sm:z-30 transition-width duration-200 ease-linear relative bg-gradient-to-b from-indigo-100 to-pink-50 bg-white text-black h-screen flex flex-col overflow-y-auto
      ${membersSectionCollapse ? "w-0" : "w-[310px] mdlg:w-[305px] md:w-[213px] sm:w-[300px] xs:w-[288px]"}`}>
@@ -133,14 +178,19 @@ export default function MembersSection({ user, teamId, members, isAdmin, userId,
         {/* Members Header with Add Icon */}
         <div className="flex justify-between items-center mb-3">
           <div className="flex items-center">
-            <IoChevronBackCircle className="mr-2 cursor-pointer" size={20} onClick={() => setSelectedTeam(null)} />
-            <h2 className="text-lg font-bold text-black">Members</h2>
+            <IoChevronBackCircle className="mr-2 cursor-pointer text-violet-800 hover:text-violet-900" size={20} onClick={() => setSelectedTeam(null)} />
+            <h2 className="text-lg font-bold text-violet-900">Members</h2>
           </div>
-          {isAdmin &&
-            <button onClick={() => setShowAddModal(true)} className="text-blue-500 hover:text-blue-700">
-              <FaUserPlus size={20} />
+          <div className="flex justify-between items-center">
+            {isAdmin &&
+              <button onClick={() => setShowAddModal(true)} className="text-violet-800 hover:text-violet-900 mr-2">
+                <FaUserPlus size={20} />
+              </button>
+            }
+            <button onClick={() => setShowLeaveModal(true) } className="text-violet-800 hover:text-violet-900">
+              <IoExit size={20}/>
             </button>
-          }
+          </div>
         </div>
 
         {/* Search Bar */}
@@ -160,7 +210,9 @@ export default function MembersSection({ user, teamId, members, isAdmin, userId,
                   key={member._id}
                   member={member}
                   isAdmin={isAdmin}
+                  adminId={adminId}
                   userId={userId}
+                  memberRemoval={memberRemoval}
                 />
               ))
             }
@@ -174,6 +226,17 @@ export default function MembersSection({ user, teamId, members, isAdmin, userId,
             addUser={addUser} 
             inviteUser={inviteUser}
             teamMembers={members} 
+            userId={userId}
+          />
+        }
+
+        {showLeaveModal &&
+          <LeaveTeamModal
+            onClose={() => setShowLeaveModal(false)}
+            leaveTeam={leaveTeam}
+            isAdmin={isAdmin}
+            members={members}
+            deleteTeam={deleteTeam}
             userId={userId}
           />
         }

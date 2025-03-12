@@ -56,7 +56,7 @@ export default function TeamCard({ team, userId, editTeam, removeTeam, setSelect
           </div>
       </div>
 
-      {team.admin === userId && (
+      {team.admin._id === userId && (
         <div onClick={(e)=>e.stopPropagation()}>
             <Menu menuButton= {
                 <MenuButton>
