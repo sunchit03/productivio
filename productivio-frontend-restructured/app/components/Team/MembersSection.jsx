@@ -4,6 +4,7 @@ import { IoMdNotificationsOutline } from "react-icons/io";
 import { IoChevronBackCircle, IoLogOutOutline } from "react-icons/io5";
 import AddMemberModal from "./AddMemberModal";
 import { addUserToTeam } from "@/app/services/teams";
+import { addUserToTeam, deleteTeam, removeUserFromTeam, updateTeam } from "@/app/services/teams";
 import { sendInvite } from "@/app/services/users";
 import MembersSectionItem from "./MembersSectionItem";
 import NotificationsModal from "../NotificationsModal";
@@ -11,6 +12,7 @@ import { preLogOut } from "../../utils/prelogout";
 
 
 export default function MembersSection({ user, teamId, members, isAdmin, userId, setSelectedTeam, membersSectionCollapse, refresh }) {
+export default function MembersSection({ user, teamId, members, isAdmin, adminId, userId, setSelectedTeam, membersSectionCollapse, refresh }) {
   const [query, setQuery] = useState("");
   const [filteredMembers, setFilteredMembers] = useState(members);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -82,6 +84,16 @@ export default function MembersSection({ user, teamId, members, isAdmin, userId,
     } else {
       // something went wrong
       console.log("oh nooooo")
+    }
+  }
+
+  const memberRemoval = async(memberId) => {
+    const data = await removeUserFromTeam(teamId, userId, memberId, false);
+    if (data.success) {
+      setFilteredMembers(prevMembers => prevMembers.filter(prevMember => prevMember._id !== memberId))
+      // removed from team
+    } else {
+      // something went wrong
     }
   }
 
@@ -160,7 +172,9 @@ export default function MembersSection({ user, teamId, members, isAdmin, userId,
                   key={member._id}
                   member={member}
                   isAdmin={isAdmin}
+                  adminId={adminId}
                   userId={userId}
+                  memberRemoval={memberRemoval}
                 />
               ))
             }

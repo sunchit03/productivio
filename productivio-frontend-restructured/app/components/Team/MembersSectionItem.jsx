@@ -13,7 +13,7 @@ export default function MembersSectionItem({ member, isAdmin, adminId, userId, m
     
     const removeMember = () => {
     
-        //removeMember(member._id);
+        memberRemoval(member._id);
     
         setIsRemoveModalOpen(false);
     }

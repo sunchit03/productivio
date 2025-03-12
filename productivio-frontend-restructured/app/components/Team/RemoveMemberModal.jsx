@@ -2,8 +2,7 @@ export default function RemoveMemberModal({ member, onClose, removeMember }) {
   
   const handleRemoveMember = (e) => {
     e.preventDefault();
-
-    removeMember();
+    removeMember(member._id);
   }
 
   return (
