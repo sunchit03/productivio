@@ -9,13 +9,14 @@ import { sendInvite } from "@/app/services/users";
 import MembersSectionItem from "./MembersSectionItem";
 import NotificationsModal from "../NotificationsModal";
 import { preLogOut } from "../../utils/prelogout";
+import LeaveTeamModal from "./LeaveTeamModal";
 
 
-export default function MembersSection({ user, teamId, members, isAdmin, userId, setSelectedTeam, membersSectionCollapse, refresh }) {
 export default function MembersSection({ user, teamId, members, isAdmin, adminId, userId, setSelectedTeam, membersSectionCollapse, refresh }) {
   const [query, setQuery] = useState("");
   const [filteredMembers, setFilteredMembers] = useState(members);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
   const [invitations, setInvitations] = useState([]);
   const [userPicture, setUserPicture] = useState(user?.picture || null);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -87,6 +88,29 @@ export default function MembersSection({ user, teamId, members, isAdmin, adminId
     }
   }
 
+  const leaveTeam = async (newAdmin = null) => {
+
+    if (newAdmin) {
+      const data = await updateTeam(teamId, userId, {admin: newAdmin})
+
+      if (data.success) {
+        // new admin assigned
+      } else {
+        // something went wrong
+      }
+    }
+
+    const data = await removeUserFromTeam(teamId, userId, userId, false);
+    if (data.success) {
+      setFilteredMembers(prevMembers => prevMembers.filter(prevMember => prevMember._id == userId))
+      setSelectedTeam(null);
+      setShowLeaveModal(false);
+      // left team
+    } else {
+      // something went wrong
+    }
+  }
+
   const memberRemoval = async(memberId) => {
     const data = await removeUserFromTeam(teamId, userId, memberId, false);
     if (data.success) {
@@ -94,6 +118,16 @@ export default function MembersSection({ user, teamId, members, isAdmin, adminId
       // removed from team
     } else {
       // something went wrong
+    }
+  }
+
+  const deleteTeam = async () => {
+    const data = await deleteTeam(teamId, userId);
+    if(data.success){
+      setSelectedTeam(null);
+    }
+    else{
+      //something went wrong
     }
   }
 
@@ -188,6 +222,17 @@ export default function MembersSection({ user, teamId, members, isAdmin, adminId
             addUser={addUser} 
             inviteUser={inviteUser}
             teamMembers={members} 
+            userId={userId}
+          />
+        }
+
+        {showLeaveModal &&
+          <LeaveTeamModal
+            onClose={() => setShowLeaveModal(false)}
+            leaveTeam={leaveTeam}
+            isAdmin={isAdmin}
+            members={members}
+            deleteTeam={deleteTeam}
             userId={userId}
           />
         }
