@@ -4,7 +4,7 @@ import Timer from "@/app/components/pomodoro/Timer";
 import MainSidebar from "@/app/components/MainSidebar";
 import SettingsContext from "@/app/components/pomodoro/SettingsContext";
 import Overview from "@/app/components/pomodoro/Overview";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function PomodoroPage() {
   const [workMinutes, setWorkMinutes] = useState(25);
@@ -12,6 +12,19 @@ export default function PomodoroPage() {
   const [showSettings, setShowSettings] = useState(false);
   const [activeMainTab, setActiveMainTab] = useState("pomodoro");
   const [pomoCount, setPomoCount] = useState(0);
+  const [isLandscape, setIsLandscape] = useState(false);
+
+  // Check screen orientation on mount and resize
+  useEffect(() => {
+    const checkOrientation = () => {
+      setIsLandscape(window.innerWidth > window.innerHeight);
+    };
+
+    checkOrientation(); // Run once when mounted
+    window.addEventListener("resize", checkOrientation);
+
+    return () => window.removeEventListener("resize", checkOrientation);
+  }, []);
 
   return (
     <SettingsContext.Provider value={{ workMinutes, breakMinutes, setShowSettings }}>
@@ -26,10 +39,12 @@ export default function PomodoroPage() {
           <Timer onPomoComplete={() => setPomoCount((prev) => prev + 1)} />
         </div>
 
-        {/* Right Section: Overview */}
-        <div className="w-1/3 bg-white p-4 shadow-md">
-          <Overview pomoCount={pomoCount} />
-        </div>
+        {/* Right Section: Overview - Visible on laptops and in landscape mode on phones */}
+        {(isLandscape || window.innerWidth >= 768) && (
+          <div className="w-1/3 bg-white p-4 shadow-md">
+            <Overview pomoCount={pomoCount} />
+          </div>
+        )}
       </div>
     </SettingsContext.Provider>
   );
