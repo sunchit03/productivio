@@ -30,7 +30,7 @@ const TasksView = ({
   setMembersSectionCollapse
 }) => {
   const [tasks, setTasks] = useState([]);
-  const [selectedTask, setSelectedTask] = useState({});
+  const [selectedTask, setSelectedTask] = useState(null);
 
   let todayOrNext = title == "Today" || title == "Next 7 Days";
   let completedOrTrash = title == "Completed" || title == "Trash";
@@ -355,8 +355,8 @@ const handleTaskAssignment = async(taskId, assignedTo) => {
             </div>
             <h2 className="ml-1 text-xl text-black font-semibold">{title}</h2>
           </div>
-          <div className="p-1 hover:bg-gray-100 hover:rounded-md">
-            <PiExport size={"1.5em"} className="text-gray-500 cursor-pointer font-thin" onClick={handleTasksExport} />
+          <div className={`p-1 hover:bg-gray-100 hover:rounded-md`}>
+            <PiExport size={"1.5em"} className={`text-gray-500 font-thin ${tasks.length === 0 ? 'cursor-not-allowed' : 'cursor-pointer'}`} onClick={() => tasks.length > 0 && handleTasksExport} />
           </div>
         </div>
         {!completedOrTrash && (
