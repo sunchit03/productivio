@@ -53,7 +53,7 @@ export default function CreateOrEditTeam({ onClose, refresh, userId, team, editT
         }}
       />
     <div className="fixed inset-0 flex justify-center bg-gray-100 bg-opacity-30 pt-12">
-      <div className="flex flex-col bg-white p-4 rounded-lg shadow-md w-2/5 h-2/5 xs:w-5/6 xs:h-1/3 xssm:w-4/5 mdlg:w-3/5 gap-2"
+      <div className="flex flex-col bg-white p-4 rounded-lg shadow-md w-2/5 h-2/5 mdlg:w-3/5 xs:w-5/6 xs:h-1/3 xssm:w-4/5 gap-2"
       onClick={(e)=>{e.stopPropagation()}}>
         <h2 className="text-xl font-semibold mb-2 text-black">{team ? `Edit Team - ${team.title}` : "Create New Team"}</h2>
 

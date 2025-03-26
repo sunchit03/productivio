@@ -8,10 +8,14 @@ import { BsCalendar2Date } from "react-icons/bs";
 import { IoCalendarOutline, IoClose } from "react-icons/io5";
 import { GrClear } from "react-icons/gr";
 import { RiDeleteBin5Line } from "react-icons/ri";
-import toast from 'react-hot-toast';
+import { Combobox, ComboboxInput, ComboboxButton, ComboboxOption, ComboboxOptions, Label, Field} from '@headlessui/react'
+import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
+import React, {useCallback} from 'react'
+import {useDropzone} from 'react-dropzone'
+
 
 const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, handleTrashOrRestore, handleTaskPriorityChange, 
-    handleDueDateUpdate, handleDeleteTask, matrixBlockPriority, handleMatrixAddNewTask, setSelectedTask, pageTitle=""} ) => {
+    handleDueDateUpdate, handleDeleteTask, matrixBlockPriority, handleMatrixAddNewTask, setSelectedTask, pageTitle="", teamId, teamMembers, formatUpdatedAtTime, handleTaskAssignment} ) => {
 
     const [completion, setCompletion] = useState(task?.isCompleted || false);
     const [datePicker, setDatePicker] = useState(false);
@@ -23,6 +27,25 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
     const [dueDateSelected, setDueDateSelected] = useState(false);
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const [assignedToTeamMember, setAssignedToTeamMember] = useState(null);
+    const [query, setQuery] = useState("");
+    const [filteredMembers, setFilteredMembers] = useState(teamMembers);
+    const [uploadedFiles, setUploadedFiles] = useState([]);
+
+    // only Trigger this function when files are dropped
+    const onDrop = useCallback((acceptedFiles) => {
+        setUploadedFiles(prevFiles => [...prevFiles, ...acceptedFiles]);
+        console.log("Dropped files:", uploadedFiles);
+        // Can make a POST call here to upload files
+    }, [uploadedFiles]);
+
+    const {getRootProps, getInputProps} = useDropzone({
+        onDrop,
+        accept: {
+            'image/png': ['.png'],
+            'application/pdf': ['.pdf'],
+          }
+    })
 
     let initTaskTitle = task?.title;
     let initTaskDescription = task?.description || "";
@@ -87,7 +110,7 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
             case '1': return "text-red-500"; // High
             case '2': return "text-yellow-500"; // Medium
             case '3': return "text-blue-500"; // Low
-            case '4': return "text-teal-400"; // None       }
+            case '4': return "text-teal-400"; // None
         };
     }
 
@@ -112,6 +135,24 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
             setDueDate(null);
         }
     }, [task]);
+
+    useEffect(() => {
+        if (teamId && teamId !== null) {
+            const filtered = teamMembers.filter(member =>
+                member?.email.toLowerCase().includes(query.toLowerCase())
+            );
+            setFilteredMembers(filtered.slice(0, 5));
+        }
+    
+      }, [query, teamMembers]);
+
+    useEffect(() => {
+        if (teamId && task) {
+            console.log(task.assignedTo);
+            setAssignedToTeamMember((task.assignedTo !== "undefined" && task.assignedTo !== null) ? task.assignedTo : null)
+            setQuery(task.assignedTo?.email || "");
+        }
+    }, [task, teamId])
 
     const handleDueDateSelection = (date) => {
         const updatedDate = new Date(date);
@@ -145,8 +186,6 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
             {
                 // task restored successfully
                 handleTrashOrRestore(task._id, false);
-                toast.remove();
-                toast("Task restored successfully!")
             }
             else{
                 handleEditTask(task._id, title, description);
@@ -154,6 +193,10 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
         }
         else
             handleMatrixAddNewTask(userId, title, description, dueDate, selectedPriority, completion);
+    }
+
+    const handleDeleteFile = (number) => {
+        console.log(`delete delete delete!!!!!! ${number}`);
     }
 
     return ( 
@@ -216,7 +259,7 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                         }
                         {/* Date Picker (Calendar) */}
                         {datePicker && pageTitle !== "Trash" && (
-                        <div className={task ? `absolute top-12 left-0 mt-2 z-50 bg-white shadow-lg p-2 border border-gray-300 rounded-md` :`absolute top-72 left-60 z-50 bg-gray-100 shadow-lg p-2 border border-gray-300 rounded-md`}>
+                        <div className={(task && pageTitle !== "") || (teamId && teamId !== null) ? `absolute top-12 left-0 mt-2 z-50 bg-white shadow-lg p-2 border border-gray-300 rounded-md` :`absolute top-56 left-60 z-50 bg-gray-100 shadow-lg p-2 border border-gray-300 rounded-md`}>
                             <Calendar 
                             className="text-black" 
                             onChange={handleDueDateSelection} 
@@ -254,7 +297,7 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                 </div>
                 <div className="h-[1px] w-full bottom-0 bg-purple-100 z-10"></div>
                 {/* create two fields - to display title or description */}
-                <div className="flex flex-col pt-2 pr-1 gap-3">
+                <div className="flex flex-col pt-2 pr-1 gap-4">
                     <input
                         type = "text"
                         value={title}
@@ -273,7 +316,105 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                             className={`${pageTitle === "Trash" ? "cursor-not-allowed" : ""} resize-y w-full block text-sm text-gray-500 font-thin p-1 rounded-sm focus:outline-none`}
                             rows={3}
                         />  
-                    </article>  
+                    </article>
+                        <div {...getRootProps({className: "border-dashed border-2 p-5 text-center cursor-pointer"})}>
+                        <input {...getInputProps()} />
+                        {
+                            <p className="text-gray-400">Drag and drop files here or click to select files</p>
+                        }
+                        </div>
+                        <div>
+                            <h2 className="font-bold text-lg mb-2 text-gray-400" >Uploaded files:</h2>
+                            <div className={`${(pageTitle !== "" || (teamId && teamId !== null)) ? `${uploadedFiles.length > 2 ? "max-h-36 overflow-hidden hover:overflow-y-auto" : ""}`: `${uploadedFiles.length > 1 ? "max-h-11 overflow-hidden hover:overflow-y-auto" : ""}`}`}>
+                                {uploadedFiles.length > 0 ? (
+                                    uploadedFiles.map((file, index) => (
+                                        <div key={index} className="flex items-center mb-2 p-2 w-full rounded-md text-gray-600 bg-gray-100 justify-between">
+                                            <span >
+                                                {file.name}
+                                            </span>
+                                            <RiDeleteBin5Line onClick={()=>handleDeleteFile(index)}/>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="font-thin text-gray-400 mb-1">No files uploaded yet!</p>
+                                )}
+                            </div>
+                        </div>
+                    {teamId && teamId !== null && (
+                    <div className="flex flex-col gap-3">
+                        <Field className="flex items-center justify-stretch">
+                            <Label className="mr-4">Assigned to:</Label>
+                            <Combobox
+                            value={assignedToTeamMember}
+                            onChange={(selected) => { 
+                                console.log(selected);
+                                if (selected !== "Unassigned" && (assignedToTeamMember === null || assignedToTeamMember?._id !== selected?._id)) {
+                                    setAssignedToTeamMember(selected);
+                                    // console.log("1   " + selected.email);
+                                } else if (selected === "Unassigned" && assignedToTeamMember !== null) {
+                                    setAssignedToTeamMember(null);
+                                    // console.log("2   " + selected);
+                                }
+                                handleTaskAssignment(task._id, selected === "Unassigned" ? null : selected)
+                            }}
+                            as="div" 
+                            className="relative w-64"
+                            >
+                            <div className="relative w-full">
+                                <ComboboxInput
+                                className="w-full border rounded-lg py-1.5 pr-8 pl-3 text-sm text-black"
+                                displayValue={(memberOpt) => memberOpt === "Unassigned" || assignedToTeamMember === null ? "Unassigned" :  memberOpt?.email || assignedToTeamMember?.email || ""}
+                                //value={query}
+                                placeholder="Select Team Member"
+                                onChange={(event) => setQuery(event.target.value)}
+                                // onBlur={() => setQuery(assignedToTeamMember?.email)}
+                                />
+                                <ComboboxButton className="absolute inset-y-0 right-0 px-2.5">
+                                <ChevronDownIcon onClick={() => setQuery("")} className="size-4 text-gray-400" />
+                                </ComboboxButton>
+                            </div>
+
+                            {/* Dropdown Options */}
+                            <ComboboxOptions 
+                            transition
+                            className="absolute z-50 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-300 max-h-60 overflow-auto transition duration-200 ease-in data-[leave]:data-[closed]:opacity-0">
+                    
+                            <ComboboxOption 
+                                key={null} 
+                                value={"Unassigned"} 
+                                className="group flex cursor-pointer items-center px-3 py-2 hover:bg-gray-100"
+                                >
+                                <CheckIcon className={`size-4 text-gray-500 ${assignedToTeamMember === null ? "opacity-100" : "opacity-0"}`} />
+                                <span className="italic ml-2">Unassigned</span>
+                                </ComboboxOption>
+
+                                {filteredMembers.map((memberOpt) => (
+                                <ComboboxOption 
+                                    key={memberOpt._id} 
+                                    value={memberOpt} 
+                                    className="group flex cursor-pointer items-center px-3 py-2 hover:bg-gray-100"
+                                >
+                                    {/* opacity-0 group-aria-selected:opacity-100 */}
+                                    <CheckIcon className={`size-4 text-gray-500 ${assignedToTeamMember?._id === memberOpt._id ? "opacity-100" : "opacity-0"}`} />
+                                    <span className="ml-2">{memberOpt.email}</span>
+                                </ComboboxOption>
+                                ))}
+                            </ComboboxOptions>
+                            </Combobox>
+                        </Field>
+                        <div className="flex items-center text-black">
+                            <span className="mr-4">Created By:</span>
+                            <span className="font-thin">{task?.createdBy?.email}</span>
+                        </div>
+                        <div className="flex items-center text-black">
+                            <span className="mr-4">Last Updated By:</span>
+                            <span className="font-thin">{task?.updatedBy?.email}</span>
+                        </div>
+                        <div className="flex items-center text-black">
+                            <span className="mr-4">Updated At:</span>
+                            <span className="font-thin">{formatUpdatedAtTime(task?.updatedAt)}</span>
+                        </div>
+                    </div>)}
                 </div>
             </div>
             {/* update button and  trash button*/}

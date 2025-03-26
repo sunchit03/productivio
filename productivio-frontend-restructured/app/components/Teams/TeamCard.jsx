@@ -56,11 +56,11 @@ export default function TeamCard({ team, userId, editTeam, removeTeam, setSelect
           </div>
       </div>
 
-      {team.admin === userId && (
+      {team.admin._id === userId && (
         <div onClick={(e)=>e.stopPropagation()}>
             <Menu menuButton= {
                 <MenuButton>
-                    <BiDotsHorizontal size={24} className="flex items-center hover:bg-gray-300 rounded-sm p-1" />
+                    <BiDotsHorizontal size={24} className="flex items-center text-gray-400 hover:text-black rounded-sm p-1" />
                 </MenuButton>
             }
             key={'bottom'}
