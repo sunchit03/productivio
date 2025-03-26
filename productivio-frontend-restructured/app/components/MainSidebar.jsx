@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { IoIosCheckbox } from "react-icons/io";
-import { FaCalendarAlt, FaSignOutAlt, FaUser } from "react-icons/fa";
+import { FaCalendarAlt, FaExclamationCircle, FaSignOutAlt, FaUser } from "react-icons/fa";
 import { MdTimer } from "react-icons/md";
 import { PiGridFourFill } from "react-icons/pi";
 import { RiTeamFill } from "react-icons/ri";
@@ -8,9 +8,13 @@ import { IoMdNotifications } from "react-icons/io";
 import NotificationsModal from "../components/NotificationsModal";
 import { useRouter } from "next/navigation";
 import { preLogOut } from "../utils/prelogout";
+import { getUserNotifications } from "../services/notifications";
+import toast from "react-hot-toast";
 
-const MainSidebar = ({ activeMainTab, setActiveMainTab, user, selectedTeam, setSelectedTeam }) => {
+const MainSidebar = ({ activeMainTab, setActiveMainTab, user, selectedTeam, setSelectedTeam, userId }) => {
   const [userPicture, setUserPicture] = useState(user?.picture || null);
+  const [notifications, setNotifications] = useState([]);
+  const [isNewNotification, setIsNewNotification] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
 
   const handleLogout = async () => {
@@ -30,11 +34,28 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user, selectedTeam, setS
 
   const router = useRouter();
 
+  const fetchNotifications = async () => {
+    const data = await getUserNotifications(userId);
+    
+    if (data.success) {
+      console.log(data);
+      setNotifications(data.notifications);
+      setIsNewNotification(notifications.includes(notification => notification.new === true))
+    } else {
+      toast.error("Failed to load notifications");
+      setNotifications([]);
+    }
+  }
+
   useEffect(() => {
     if (user) {
-    setUserPicture(user.picture);
+      setUserPicture(user.picture);
+
+      if (userId) {
+        fetchNotifications();
+      }
     }
-  }, [user]);
+  }, [user, userId]);
 
   return (
     <aside className="xs:hidden w-[50px] bg-gradient-to-b from-indigo-400/75 to-pink-200 p-4 flex flex-col items-center justify-between h-full">
@@ -136,13 +157,22 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user, selectedTeam, setS
       </div>
       
       <div className="flex flex-col items-center space-y-4 mt-auto">
-        {/* Notifications Button */}
-        <button 
-          className="px-2 py-1 rounded text-white/50 hover:text-white/75"
-          title="Notifications"
-          onClick={() => setShowNotifications(true)}>
-          <IoMdNotifications size="1.4em"/>
-        </button>
+        <div className="relative">
+          {/* Notifications Button */}
+          <button
+            className={`px-2 py-1 rounded ${
+              showNotifications ? "text-white/100" : "text-white/50 hover:text-white/75"
+            }`}
+            title="Notifications"
+            onClick={() => setShowNotifications(true)}>
+            <IoMdNotifications size="1.4em"/>
+          </button>
+          {isNewNotification && 
+            <div className="absolute -right-[1.5px] -top-1 text-indigo-400/90 text-sm/4 font-semibold">
+              <FaExclamationCircle size="1.2em"/>
+            </div>
+          }
+        </div>
 
         <button 
           onClick={() => handleLogout()} 
@@ -154,7 +184,7 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user, selectedTeam, setS
       </div>
 
       {/* Notifications Modal */}
-      {showNotifications && <NotificationsModal onClose={() => setShowNotifications(false)} notifications={[]} activities={[]} />}
+      {showNotifications && <NotificationsModal onClose={() => setShowNotifications(false)} notifications={notifications} />}
 
       
     </aside>
