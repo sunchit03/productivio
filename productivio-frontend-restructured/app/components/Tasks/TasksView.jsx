@@ -15,6 +15,7 @@ import toast, { Toaster } from 'react-hot-toast';
 // import { format, toZonedTime } from "date-fns-tz";
 import { format} from "date-fns-tz";
 import jsonToCsvExport from 'json-to-csv-export'
+import { createNotification } from "@/app/services/notifications";
 
 
 const TasksView = ({
@@ -203,8 +204,42 @@ const TasksView = ({
 };
 
 const handleTaskAssignment = async(taskId, assignedTo) => {
+  // get assigned to user (previous)
+  const task = tasks.find(task => task._id === taskId);
+  const prevUser = task.assignedTo;
+
+  if (prevUser && prevUser._id !== assignedTo?._id && prevUser._id !== userId) {
+    // send notification to prevUser (task-deallocate)
+    let dataNotification = await createNotification (
+      {
+        title: `You have been de-assigned from the task: ${task.title} (${teamId && title})`, 
+        type: 'task-deallocate', 
+        receiverId: prevUser._id
+      }
+    )
+    
+    if (!dataNotification.success) {
+      toast.error("Something went wrong, don't worry");
+    }
+  }
   const data = await updateTask(taskId, userId, {assignedTo: assignedTo?._id});
   if(data.success){
+    //send notification to user (assignedTo) (task-allocate)
+    
+    if (assignedTo && assignedTo._id && assignedTo._id !== userId) {
+      let dataNotification = await createNotification (
+        {
+          title: `You have been assigned a task: ${task.title} (${teamId && title})`, 
+          type: 'task-allocate', 
+          receiverId: assignedTo._id
+        }
+      )
+      
+      if (!dataNotification.success) {
+        toast.error("Something went wrong, don't worry");
+      }
+    }
+
     setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, assignedTo: assignedTo, updatedAt: new Date(), updatedBy: mongoUser} : task));
 
     if(selectedTask?._id === taskId){
