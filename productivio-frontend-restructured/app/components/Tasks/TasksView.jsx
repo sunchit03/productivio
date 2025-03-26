@@ -4,16 +4,17 @@ import TaskItem from "./TaskItem";
 import TaskForm from "./TaskForm";
 import { useEffect, useState } from "react";
 import { RiProgress5Line } from "react-icons/ri";
-import { BsTrash2 } from "react-icons/bs";
+import { BsTextIndentLeft, BsTextIndentRight, BsTrash2 } from "react-icons/bs";
 import { GiPapers } from "react-icons/gi";
 import { FaPencilAlt } from "react-icons/fa";
-import { GoSidebarCollapse, GoSidebarExpand  } from "react-icons/go";
+import { PiExport } from "react-icons/pi";
 import { getTeamTasks, getUserTasks } from "@/app/services/tasks";
 import DetailTaskView from "./DetailTaskView";
 import { updateTask, deleteTask} from "@/app/services/tasks"
 import toast, { Toaster } from 'react-hot-toast';
 // import { format, toZonedTime } from "date-fns-tz";
 import { format} from "date-fns-tz";
+import jsonToCsvExport from 'json-to-csv-export'
 
 
 const TasksView = ({
@@ -321,6 +322,12 @@ const handleTaskAssignment = async(taskId, assignedTo) => {
       teamId ? setMembersSectionCollapse(true) : setTaskBarCollapse(true);
     }
   }
+
+  const handleTasksExport = async () => {
+    console.log("exporting");
+    jsonToCsvExport({ data: tasks, filename: title + " Tasks" })
+    toast.success("Tasks exported successfully!")
+  }
   
   return (
     <div className={`relative w-full flex h-full px-5 overflow-hidden`} onClick={handleTaskBarDismissal}>
@@ -337,13 +344,20 @@ const handleTaskAssignment = async(taskId, assignedTo) => {
           }}
       />
       <div className="w-3/5 h-full mdlg:w-full">
-        <div className="flex flex-row items-center">
-          {(teamId ? !membersSectionCollapse : !taskBarCollapse) ?
-            <GoSidebarExpand size={"1.3em"} className="text-gray-500 cursor-pointer font-thin" onClick={(e) => toggleTaskBarCollapse(e)}/>
-            :
-            <GoSidebarCollapse size={"1.3em"} className="text-gray-500 cursor-pointer font-thin" onClick={(e) => toggleTaskBarCollapse(e)}/>
-          }
-          <h2 className="ml-1 text-xl text-black font-semibold my-4">{title}</h2>
+        <div className="flex items-center justify-between">
+          <div className="flex flex-row items-end my-4">
+            <div className="p-1 hover:bg-gray-100 hover:rounded-md">
+              {(teamId ? !membersSectionCollapse : !taskBarCollapse) ?
+                <BsTextIndentRight size={"1.5em"} className="text-gray-500 cursor-pointer font-thin" onClick={(e) => toggleTaskBarCollapse(e)}/>
+                :
+                <BsTextIndentLeft size={"1.5em"} className="text-gray-500 cursor-pointer font-thin" onClick={(e) => toggleTaskBarCollapse(e)}/>
+              }
+            </div>
+            <h2 className="ml-1 text-xl text-black font-semibold">{title}</h2>
+          </div>
+          <div className="p-1 hover:bg-gray-100 hover:rounded-md">
+            <PiExport size={"1.5em"} className="text-gray-500 cursor-pointer font-thin" onClick={handleTasksExport} />
+          </div>
         </div>
         {!completedOrTrash && (
           <TaskForm 

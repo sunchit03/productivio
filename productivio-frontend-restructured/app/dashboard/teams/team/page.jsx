@@ -10,6 +10,7 @@ export default function TeamPage({ selectedTeam, setSelectedTeam, user, userId, 
     const [members, setMembers] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
     const [mongoUser, setMongoUser] = useState(null);
+    const [adminId, setAdminId] = useState(null);
    
     async function fetchTeamDetails() {
         try {            
@@ -19,6 +20,7 @@ export default function TeamPage({ selectedTeam, setSelectedTeam, user, userId, 
 
                 setTeam(data);
                 setIsAdmin(data.admin._id === userId);
+                setAdminId(data.admin._id);
                 setMembers(data.members);
                 setMongoUser(data.members.find(member => member._id === userId));
             }
@@ -39,6 +41,7 @@ export default function TeamPage({ selectedTeam, setSelectedTeam, user, userId, 
                 teamId={selectedTeam?._id} 
                 members={members} 
                 isAdmin={isAdmin} 
+                adminId={adminId}
                 setSelectedTeam={setSelectedTeam} 
                 membersSectionCollapse={membersSectionCollapse}
                 user={user}
