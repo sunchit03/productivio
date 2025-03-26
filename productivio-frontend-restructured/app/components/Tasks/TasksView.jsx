@@ -12,6 +12,8 @@ import { getTeamTasks, getUserTasks } from "@/app/services/tasks";
 import DetailTaskView from "./DetailTaskView";
 import { updateTask, deleteTask} from "@/app/services/tasks"
 import toast, { Toaster } from 'react-hot-toast';
+// import { format, toZonedTime } from "date-fns-tz";
+import { format} from "date-fns-tz";
 import jsonToCsvExport from 'json-to-csv-export'
 
 
@@ -20,7 +22,9 @@ const TasksView = ({
   listId = null,
   teamId = null,
   userId,
+  mongoUser,
   taskBarCollapse,
+  teamMembers,
   setTaskBarCollapse,
   membersSectionCollapse,
   setMembersSectionCollapse
@@ -124,6 +128,7 @@ const TasksView = ({
   const handleTaskSelection = (task) => { 
     if (selectedTask !== task) {
       setSelectedTask(task);
+      console.log(task);
     }
 
     // Collapse sidebar on smaller screens
@@ -142,27 +147,53 @@ const TasksView = ({
     }
   }
 
+
+  const formatUpdatedAtTime = (taskUpdatedAt) => {
+    // Ensure taskUpdatedAt is valid
+    if (!taskUpdatedAt) {
+        console.warn("Skipping format: taskUpdatedAt is undefined or null");
+        return "No timestamp available";
+    }
+    let dateObject;
+    // Check if taskUpdatedAt is already a Date object
+    if (taskUpdatedAt instanceof Date) {
+        dateObject = taskUpdatedAt;
+    } else if (typeof taskUpdatedAt === "string") {
+        // Attempt to parse as a Date
+        dateObject = new Date(taskUpdatedAt);
+    } else {
+        console.error("Invalid taskUpdatedAt type:", typeof taskUpdatedAt);
+        return "Invalid Date";
+    }
+    // Validate the parsed Date
+    if (isNaN(dateObject.getTime())) {
+        console.error("Invalid Date Conversion:", taskUpdatedAt);
+        return "Invalid Date";
+    }
+    // Define the target timezone for Toronto.
+    const timeZone = "America/Toronto";
+    // Format the date as "12 March 2025 | 16:53:44 EST"
+    return format(dateObject, "dd MMMM yyyy | HH:mm:ss zzz", { timeZone });
+};
+
   const handleCheckBoxCheck = async (e, taskId, updatedCompletion) => {
     e.stopPropagation();
     try {
         const data = await updateTask(taskId, userId, { isCompleted: updatedCompletion });
         if (data.success) {
           console.log(data);
-          setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, isCompleted: updatedCompletion} : task));
-
-          //Update selectedTask if it's the one being changed
-          if (selectedTask?._id === taskId) {
-              setSelectedTask(prevTask => ({ ...prevTask, isCompleted: updatedCompletion }));
-          }
-
+          setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, isCompleted: updatedCompletion, updatedBy: mongoUser, updatedAt: new Date()} : task));
           if (title === "Completed") {
             setTasks(prevTasks => prevTasks.filter(task => task._id !== taskId));
-
             if (selectedTask?._id === taskId) {
               setSelectedTask(null);
             }
           }
-        
+        if(!completedOrTrash){
+          if (selectedTask?._id === taskId) {
+              setSelectedTask(prevTask => ({ ...prevTask, isCompleted: updatedCompletion, updatedBy: mongoUser, updatedAt: new Date()}));
+          }
+        }
        } else {
             console.log("Error in changing completed state of task:", data.error);
         }
@@ -171,14 +202,30 @@ const TasksView = ({
     }
 };
 
+const handleTaskAssignment = async(taskId, assignedTo) => {
+  const data = await updateTask(taskId, userId, {assignedTo: assignedTo?._id});
+  if(data.success){
+    setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, assignedTo: assignedTo, updatedAt: new Date(), updatedBy: mongoUser} : task));
+
+    if(selectedTask?._id === taskId){
+      setSelectedTask(prevTask => ({...prevTask, assignedTo: assignedTo, updatedAt: new Date(), updatedBy: mongoUser}))
+    }
+  }
+  else{
+    console.log("Errorrrrrr!!!!!!!!");
+  }
+
+}
+
 
   const handleEditTask = async(taskId, title, description) => {
     try{
       const data = await updateTask(taskId, userId, {title: title, description: (description === "" ? null : description)})
       if(data){
-        setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, title: title, description: (description === "" ? null : description)} : task));
+        setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, title: title, description: (description === "" ? null : description), updatedBy: mongoUser, updatedAt: new Date()} : task));
+        toast.success("Task details updated!")
       if(selectedTask?._id === taskId){
-        setSelectedTask(prevTask=>({...prevTask, title: title, description: description}));
+        setSelectedTask(prevTask=>({...prevTask, title: title, description: description, updatedBy: mongoUser, updatedAt: new Date()}));
       }
     }
     else{
@@ -193,15 +240,26 @@ const TasksView = ({
       console.log(taskId);
       const data = await updateTask(taskId, userId, {isTrash: restore})
       if(data){
-        console.log(data);
         setTasks(prevTasks => prevTasks.filter(task => task._id != taskId));
-        console.log(data);
+        if(restore === true){
+        toast.success("Task moved to trash!")
+        }
+        else{
+          toast.success("Task restored successfully!")
+        }
       if(selectedTask?._id === taskId){
         setSelectedTask(null);
       }
     }
     else{
-      console.log("Error while moving task to trash: ", data.error)}
+        console.log("Error while moving task to trash: ", data.error)
+        if(restore === true){
+          toast.error("Error while moving task to trash.")
+          }
+          else{
+            toast.error("Error while restoring task from trash.")
+          }
+      }
     }catch(error){
       console.log("Error updating task: ", error.message);
       }
@@ -211,9 +269,9 @@ const TasksView = ({
       try{
         const data = await updateTask(taskId, userId, {priority: setPriority})
         if(data){
-          setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, priority: setPriority} : task));
+          setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, priority: setPriority, updatedBy: mongoUser, updatedAat: new Date()} : task));
         if(selectedTask?._id === taskId){
-          setSelectedTask(prevTask=>({...prevTask, priority: setPriority}));
+          setSelectedTask(prevTask=>({...prevTask, priority: setPriority, updatedBy: mongoUser, updatedAat: new Date()}));
         }
       }
       else{
@@ -227,10 +285,9 @@ const TasksView = ({
     try{
       const data = await updateTask(taskId, userId, {dueDate: date})
       if(data){
-        setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, dueDate: date} : task));
+        setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, dueDate: date, updatedBy: mongoUser, updatedAt: new Date()} : task));
       if(selectedTask?._id === taskId){
-        setSelectedTask(prevTask=>({...prevTask, dueDate: date}));
-        console.log(selectedTask);
+        setSelectedTask(prevTask=>({...prevTask, dueDate: date, updatedBy: mongoUser, updatedAt: new Date()}));
       }
     }
     else{
@@ -245,13 +302,14 @@ const TasksView = ({
       const data = await deleteTask(taskId, userId)  
         if(data){
           setTasks(prevTasks => prevTasks.filter(task => task._id !== taskId))
-          toast("Task deleted successfully!");
+          toast.success("Task deleted successfully!");
         if(selectedTask._id === taskId){
           setSelectedTask(null);
         }
       }
       else{
         console.log("Error deleting selected task: ", data.error);
+        toast.error("Error while deleting task.")
       }
     }catch(error){
     console.log("Error deleting task: ", error.message);
@@ -304,7 +362,7 @@ const TasksView = ({
         {!completedOrTrash && (
           <TaskForm 
             pageTitle={title}
-            todayOrNext={todayOrNext} 
+            todayOrNext={todayOrNext}
             listId={listId} 
             teamId={teamId} 
             refresh={teamId ? fetchTeamTasks : fetchTasks} 
@@ -378,15 +436,19 @@ const TasksView = ({
             onClick={(e) => e.stopPropagation()}>
             <DetailTaskView 
             task={selectedTask} 
+            handleTaskAssignment={handleTaskAssignment}
             pageTitle={title}
             userId={userId} 
-            handleCheckBoxCheck={handleCheckBoxCheck} 
+            teamId={teamId}
+            handleCheckBoxCheck={handleCheckBoxCheck}
             handleEditTask={handleEditTask} 
             handleTrashOrRestore={handleTrashOrRestore} 
             handleTaskPriorityChange={handleTaskPriorityChange} 
             handleDueDateUpdate={handleDueDateUpdate} 
             handleDeleteTask={handleDeleteTask}
             setSelectedTask={setSelectedTask}
+            teamMembers={teamMembers}
+            formatUpdatedAtTime={formatUpdatedAtTime}
             />
           </div>
         }

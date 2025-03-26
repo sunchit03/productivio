@@ -9,6 +9,7 @@ export default function TeamPage({ selectedTeam, setSelectedTeam, user, userId, 
     const [team, setTeam] = useState(null);
     const [members, setMembers] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [mongoUser, setMongoUser] = useState(null);
     const [adminId, setAdminId] = useState(null);
    
     async function fetchTeamDetails() {
@@ -21,6 +22,7 @@ export default function TeamPage({ selectedTeam, setSelectedTeam, user, userId, 
                 setIsAdmin(data.admin._id === userId);
                 setAdminId(data.admin._id);
                 setMembers(data.members);
+                setMongoUser(data.members.find(member => member._id === userId));
             }
         } catch (error) {
             console.error("Error fetching team data:", error.message);
@@ -48,9 +50,11 @@ export default function TeamPage({ selectedTeam, setSelectedTeam, user, userId, 
             />
         <div className={`flex-grow h-full sm:w-full overflow-auto ${typeof window !== "undefined" && window.innerWidth < 639 && !membersSectionCollapse ? "bg-black/10" : "bg-white"}`}>
             <TasksView 
+                mongoUser={mongoUser}
                 title={selectedTeam?.title} 
                 userId={userId} 
                 teamId={selectedTeam?._id} 
+                teamMembers={members}
                 setSelectedTeam={setSelectedTeam}
                 membersSectionCollapse={membersSectionCollapse}
                 setMembersSectionCollapse={setMembersSectionCollapse}

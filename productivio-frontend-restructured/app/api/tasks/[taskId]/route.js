@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import Task from "../../../models/Task";
+import User from "../../../models/User";
+
 
 export async function GET(req, { params }) {
     try {
@@ -46,6 +48,19 @@ export async function PATCH(req, { params }) {
     if (!task) {
       return NextResponse.json({ success: false, error: "Task not found" }, { status: 404 });
     }
+
+    if(!userId){
+      return NextResponse.json({ success: false, error: "UserId not found" }, { status: 404 });
+    }
+
+    const user = await User.findById(userId);
+
+    if(!user){
+      return NextResponse.json({ success: false, error: "User not found" }, { status: 403 });
+    }
+
+    updateData.updatedBy = user._id;
+   // updateData.updatedAt = new Date();
 
     const updatedTask = await Task.findByIdAndUpdate(taskId, updateData, { new: true });
 

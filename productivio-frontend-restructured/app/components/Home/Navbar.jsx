@@ -7,13 +7,12 @@ const Navbar = () => {
   return (
     <nav className={`${styles.navbar} bg-white shadow-md`}>
       <div className="container mx-auto px-6 flex justify-between items-center h-16">
-        <div className='flex items-center'>
+        <div>
           <img
             src="/assets/logo.png"  // Place your image in public/assets folder
             alt="logo productivio"
-            className='h-8 w-11'>
+            className='h-14 w-44'>
           </img>
-          <span className="logo text-xl font-bold text-purple-800">Productivio</span>
         </div>
         <ul className="flex space-x-8">
           <li className="text-purple-700 font-bold cursor-pointer hover:text-purple-900">

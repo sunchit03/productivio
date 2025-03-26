@@ -9,7 +9,11 @@ export async function GET(req, { params }) {
         return NextResponse.json({ success: false, error: "Team ID is required" }, { status: 400 });
       }
   
-      const tasks = await Task.find({ team: teamId }).populate("assignedTo createdBy");
+      const tasks = await Task.find({ team: teamId })
+      .populate("updatedAt")
+      .populate("assignedTo", "_id email")
+      .populate("createdBy", "_id email")
+      .populate("updatedBy", "_id email");
   
       return NextResponse.json({ success: true, tasks }, { status: 200 });
   
