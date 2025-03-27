@@ -39,6 +39,7 @@ export default function TeamPage({ selectedTeam, setSelectedTeam, user, userId, 
         <div className={"sm:relative w-full flex h-full"}>
             <MembersSection 
                 teamId={selectedTeam?._id} 
+                teamName={selectedTeam?.title}
                 members={members} 
                 isAdmin={isAdmin} 
                 adminId={adminId}

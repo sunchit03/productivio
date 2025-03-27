@@ -27,5 +27,5 @@ export async function middleware(req) {
 
 // Protect specific API routes
 export const config = {
-  matcher: ["/api/lists/:path*", "/api/tasks/:path*", "/api/teams/:path*", "/api/users/:path*"],
+  matcher: ["/api/lists/:path*", "/api/tasks/:path*", "/api/teams/:path*", "/api/users/:path*", "/api/notifications/:path*"],
 };

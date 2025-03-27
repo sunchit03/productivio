@@ -42,7 +42,7 @@ export async function DELETE(req, { params }) {
 export async function PATCH(req, { params }) {
   try {
     const { taskId } = await params;
-    const { userId, ...updateData } = await req.json();
+    const { userId, ...updatedData } = await req.json();
 
     const task = await Task.findById(taskId);
     if (!task) {
@@ -59,10 +59,10 @@ export async function PATCH(req, { params }) {
       return NextResponse.json({ success: false, error: "User not found" }, { status: 403 });
     }
 
-    updateData.updatedBy = user._id;
+    updatedData.updatedBy = user._id;
    // updateData.updatedAt = new Date();
 
-    const updatedTask = await Task.findByIdAndUpdate(taskId, updateData, { new: true });
+    const updatedTask = await Task.findByIdAndUpdate(taskId, updatedData, { new: true });
 
     return NextResponse.json({ success: true, task: updatedTask }, { status: 200 });
 

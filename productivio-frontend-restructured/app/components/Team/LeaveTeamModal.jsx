@@ -5,7 +5,15 @@ import { useEffect, useState } from 'react';
 
 export default function LeaveTeamModal({ onClose, leaveTeam, isAdmin, members, deleteTeam, userId }) {
   const [filteredMembers, setFilteredMembers] = useState(members);
-  const [newAdmin, setNewAdmin] = useState(members.length >= 2 ? members[1]: null);
+  const [newAdmin, setNewAdmin] = useState(() => {
+    if (members.length >= 2 && members[0]._id !== userId) {
+      return members[0];
+    } else if (members.length >= 2) {
+      return members[1]; 
+    } else {
+      return null;
+    }
+   })
   const [query, setQuery] = useState('');
 
   useEffect(() => {
