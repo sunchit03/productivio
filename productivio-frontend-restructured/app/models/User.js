@@ -26,6 +26,12 @@ const userSchema = new mongoose.Schema({
       ref: 'Team',
     }
   ],
+  notifications: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Notification',
+    }
+  ]
 });
 
 userSchema.index({ email: 1, connection: 1 }, { unique: true });

@@ -53,7 +53,7 @@ export default function CreateOrEditTeam({ onClose, refresh, userId, team, editT
         }}
       />
     <div className="fixed inset-0 flex justify-center bg-gray-100 bg-opacity-30 pt-12">
-      <div className="flex flex-col bg-white p-4 rounded-lg shadow-md w-2/5 h-2/5 mdlg:w-3/5 xs:w-5/6 xs:h-1/3 xssm:w-4/5 gap-2"
+      <div className="flex flex-col bg-white p-4 rounded-lg shadow-md w-2/5 h-1/2 mdlg:w-3/5 xs:w-5/6 xs:h-1/3 xssm:w-4/5 gap-2"
       onClick={(e)=>{e.stopPropagation()}}>
         <h2 className="text-xl font-semibold mb-2 text-black">{team ? `Edit Team - ${team.title}` : "Create New Team"}</h2>
 
@@ -61,40 +61,45 @@ export default function CreateOrEditTeam({ onClose, refresh, userId, team, editT
           type="text"
           value={title}
           placeholder="Team Title"
-          className="w-full border p-2 rounded text-black"
+          className="w-full border p-2 rounded text-black focus:outline-none focus:ring-1 focus:ring-violet-500"
           onChange={(e) => setTitle(e.target.value)}
         />
 
+        <article>
         <textarea
           type="text"
           placeholder="Team Description"
-          className="w-full border p-1 text-sm rounded text-black"
+          className="w-full border p-1 text-sm rounded text-black focus:outline-none focus:ring-1 focus:ring-violet-500"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={3}
         />
+        </article>
 
-        <div className="flex mt-2 justify-end">
-          <button className="text-black font-thin bg-gray-100 px-3 py-3 rounded-sm mr-3 hover:bg-gray-300" 
-          onClick={onClose}>
-            Cancel
-          </button>
-          {team ? 
-            (<button 
-              disabled={!isEnable}
-              className={`${isEnable ? "bg-purple-600 hover:bg-purple-700 cursor-pointer text-white" : "cursor-not-allowed bg-purple-300 text-gray-500"}   font-thin px-3 py-3 rounded-sm`}
-              onClick={() => handleEditTeam(title, description)}>
-                Update
+        <div className="flex justify-between mt-4">
+          <div className="flex-1"></div>
+          <div className="flex flex-1 justify-stretch">
+            <button className="mr-2 px-4 py-2 flex-1 border border-gray-400 bg-white text-gray-500 rounded hover:bg-gray-100" 
+            onClick={onClose}>
+              Cancel
             </button>
-            )
-            : 
-            (<button 
-              className="bg-purple-600 hover:bg-purple-700 cursor-pointer text-white font-thin px-3 py-3 rounded-sm"
-              onClick={title.trim() !== "" ? handleCreateTeam : ()=>toast("Enter a team title.")}>
-                Create
-            </button>
-            )
-          }
+            {team ? 
+              (<button 
+                disabled={!isEnable}
+                className={`${isEnable ? "bg-violet-500 hover:bg-violet-500/75 cursor-pointer" : "cursor-not-allowed bg-purple-300"} px-4 py-2 flex-1 text-white rounded`}
+                onClick={() => handleEditTeam(title, description)}>
+                  Update
+              </button>
+              )
+              : 
+              (<button 
+                className="px-4 py-2 flex-1 bg-violet-500 text-white rounded hover:bg-violet-500/75"
+                onClick={title.trim() !== "" ? handleCreateTeam : ()=>toast("Enter a team title.")}>
+                  Create
+              </button>
+              )
+            }
+          </div>
         </div>
       </div>
     </div>

@@ -340,7 +340,7 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                                 )}
                             </div>
                         </div>
-                    {teamId && teamId !== null && (
+                    {task && teamId && teamId !== null && (
                     <div className="flex flex-col gap-3">
                         <Field className="flex items-center justify-stretch">
                             <Label className="mr-4">Assigned to:</Label>

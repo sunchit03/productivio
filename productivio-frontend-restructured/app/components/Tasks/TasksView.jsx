@@ -15,6 +15,7 @@ import toast, { Toaster } from 'react-hot-toast';
 // import { format, toZonedTime } from "date-fns-tz";
 import { format} from "date-fns-tz";
 import jsonToCsvExport from 'json-to-csv-export'
+import { createNotification } from "@/app/services/notifications";
 
 
 const TasksView = ({
@@ -30,7 +31,7 @@ const TasksView = ({
   setMembersSectionCollapse
 }) => {
   const [tasks, setTasks] = useState([]);
-  const [selectedTask, setSelectedTask] = useState({});
+  const [selectedTask, setSelectedTask] = useState(null);
 
   let todayOrNext = title == "Today" || title == "Next 7 Days";
   let completedOrTrash = title == "Completed" || title == "Trash";
@@ -203,8 +204,42 @@ const TasksView = ({
 };
 
 const handleTaskAssignment = async(taskId, assignedTo) => {
+  // get assigned to user (previous)
+  const task = tasks.find(task => task._id === taskId);
+  const prevUser = task.assignedTo;
+
+  if (prevUser && prevUser._id !== assignedTo?._id && prevUser._id !== userId) {
+    // send notification to prevUser (task-deallocate)
+    let dataNotification = await createNotification (
+      {
+        title: `You have been de-assigned from the task: ${task.title} (${teamId && title})`, 
+        type: 'task-deallocate', 
+        receiverId: prevUser._id
+      }
+    )
+    
+    if (!dataNotification.success) {
+      toast.error("Something went wrong, don't worry");
+    }
+  }
   const data = await updateTask(taskId, userId, {assignedTo: assignedTo?._id});
   if(data.success){
+    //send notification to user (assignedTo) (task-allocate)
+    
+    if (assignedTo && assignedTo._id && assignedTo._id !== userId) {
+      let dataNotification = await createNotification (
+        {
+          title: `You have been assigned a task: ${task.title} (${teamId && title})`, 
+          type: 'task-allocate', 
+          receiverId: assignedTo._id
+        }
+      )
+      
+      if (!dataNotification.success) {
+        toast.error("Something went wrong, don't worry");
+      }
+    }
+
     setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, assignedTo: assignedTo, updatedAt: new Date(), updatedBy: mongoUser} : task));
 
     if(selectedTask?._id === taskId){
@@ -355,8 +390,8 @@ const handleTaskAssignment = async(taskId, assignedTo) => {
             </div>
             <h2 className="ml-1 text-xl text-black font-semibold">{title}</h2>
           </div>
-          <div className="p-1 hover:bg-gray-100 hover:rounded-md">
-            <PiExport size={"1.5em"} className="text-gray-500 cursor-pointer font-thin" onClick={handleTasksExport} />
+          <div className={`p-1 hover:bg-gray-100 hover:rounded-md`}>
+            <PiExport size={"1.5em"} className={`text-gray-500 font-thin ${tasks.length === 0 ? 'cursor-not-allowed' : 'cursor-pointer'}`} onClick={() => tasks.length > 0 && handleTasksExport} />
           </div>
         </div>
         {!completedOrTrash && (

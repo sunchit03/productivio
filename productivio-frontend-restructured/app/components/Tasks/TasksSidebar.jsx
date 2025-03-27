@@ -1,26 +1,47 @@
 // app/components/TasksSidebar.jsx
 import React, { useState, useEffect } from "react";
 import { BsCalendar2Date, BsCalendar2Day } from "react-icons/bs";
-import { FaUser } from "react-icons/fa";
+import { FaExclamationCircle, FaUser } from "react-icons/fa";
 import { IoLogOutOutline } from "react-icons/io5";
 import { FiInbox, FiTrash2, FiCheckSquare  } from "react-icons/fi";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import NotificationsModal from "../NotificationsModal";
 import SidebarListsDropdown from "./SidebarListsDropdown";
 import { preLogOut } from "../../utils/prelogout";
+import { getUserNotifications } from "../../services/notifications";
+import toast from "react-hot-toast";
 
 const TasksSidebar = ({ activeTab, setActiveTab, activeList, setActiveList = null, taskBarCollapse, setTaskBarCollapse, user, userId }) => {
   const [userPicture, setUserPicture] = useState(user?.picture || null);
+  const [notifications, setNotifications] = useState([]);
+  const [isNewNotification, setIsNewNotification] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
 
   const upperTabs = ["Today", "Next 7 Days", "Inbox"];
   const lowerTabs = ["Completed", "Trash"];
 
+  const fetchNotifications = async () => {
+    const data = await getUserNotifications(userId);
+    
+    if (data.success) {
+      console.log(data);
+      setNotifications(data.notifications);
+      setIsNewNotification(notifications.includes(notification => notification.new === true))
+    } else {
+      toast.error("Failed to load notifications");
+      setNotifications([]);
+    }
+  }
+
   useEffect(() => {
     if (user) {
     setUserPicture(user.picture);
+
+      if (userId) {
+        fetchNotifications();
+      }
     }
-  }, [user]);
+  }, [user, userId]);
 
   const handleLogout = async () => {
     localStorage.removeItem("userId");
@@ -104,13 +125,20 @@ const TasksSidebar = ({ activeTab, setActiveTab, activeList, setActiveList = nul
           )}
 
           <div className="flex items-center">
-            {/* Notifications Button */}
-            <button 
-              className="px-2 py-1 rounded text-black"
-              title="Notifications"
-              onClick={() => setShowNotifications(true)}>
-              <IoMdNotificationsOutline  size="1.4em"/>
-            </button>
+            <div className="relative">
+              {/* Notifications Button */}
+              <button 
+                className="px-2 py-1 rounded text-black"
+                title="Notifications"
+                onClick={() => setShowNotifications(true)}>
+                <IoMdNotificationsOutline  size="1.4em"/>
+              </button>
+              {isNewNotification && 
+                <div className="absolute -right-[1.5px] -top-1 text-indigo-400/90 text-sm/4 font-semibold">
+                  <FaExclamationCircle size="1.2em"/>
+                </div>
+              }
+            </div>
     
             <button 
               onClick={() => handleLogout()} 
@@ -122,7 +150,7 @@ const TasksSidebar = ({ activeTab, setActiveTab, activeList, setActiveList = nul
           </div>
 
           {/* Notifications Modal */}
-          {showNotifications && <NotificationsModal onClose={() => setShowNotifications(false)} notifications={[]} activities={[]} />}
+          {showNotifications && <NotificationsModal onClose={() => setShowNotifications(false)} notifications={notifications} />}
         </div>
 
         {createTabs(upperTabs)}
