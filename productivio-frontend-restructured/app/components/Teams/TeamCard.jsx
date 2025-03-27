@@ -36,6 +36,7 @@ export default function TeamCard({ team, userId, editTeam, removeTeam, setSelect
   }
 
   return (
+    <>
     <div
       className="bg-white shadow-md rounded-lg p-4 cursor-pointer hover:shadow-lg transition"
       onClick={() => setSelectedTeam(team)}
@@ -78,21 +79,22 @@ export default function TeamCard({ team, userId, editTeam, removeTeam, setSelect
             </Menu>
         </div>
       )}
-        {addEditTeamModal && 
-        <CreateOrEditTeam
-          team={team}
-          editTeam={editTeam}
-          onClose={() => setAddEditTeamModal(false)}
-        />}
-
-        {deleteTeamModal &&
-        <DeleteTeamModal
-          team={team}
-          removeTeam={removeTeam}
-          onClose={() => setDeleteTeamModal(false)}
-        />
-        }
       </div>
     </div>
+      {addEditTeamModal && 
+      <CreateOrEditTeam
+        team={team}
+        editTeam={editTeam}
+        onClose={() => setAddEditTeamModal(false)}
+      />}
+
+      {deleteTeamModal &&
+      <DeleteTeamModal
+        team={team}
+        removeTeam={removeTeam}
+        onClose={() => setDeleteTeamModal(false)}
+      />
+      }
+  </>
   );
 }
