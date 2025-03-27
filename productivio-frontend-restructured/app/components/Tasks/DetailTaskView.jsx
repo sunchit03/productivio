@@ -7,7 +7,8 @@ import Calendar from 'react-calendar';
 import { BsCalendar2Date } from "react-icons/bs";
 import { IoCalendarOutline, IoClose } from "react-icons/io5";
 import { GrClear } from "react-icons/gr";
-import { RiDeleteBin5Line } from "react-icons/ri";
+import { FaFileUpload } from "react-icons/fa";
+import { RiDeleteBin5Line, RiFileDownloadFill } from "react-icons/ri";
 import { Combobox, ComboboxInput, ComboboxButton, ComboboxOption, ComboboxOptions, Label, Field} from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import React, {useCallback} from 'react'
@@ -44,6 +45,8 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
         accept: {
             'image/png': ['.png'],
             'application/pdf': ['.pdf'],
+            'image/html': ['.htm','.html'],
+            'text/jpeg': ['.jpeg','.jpg']
           }
     })
 
@@ -199,6 +202,10 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
         console.log(`delete delete delete!!!!!! ${number}`);
     }
 
+    const handleDownloadFile = (number) => {
+        console.log(`Downloaded file ${number}`);
+    }
+
     return ( 
         <>
             <div>
@@ -317,33 +324,40 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                             rows={3}
                         />  
                     </article>
-                        <div {...getRootProps({className: "border-dashed border-2 p-5 text-center cursor-pointer"})}>
+                    {uploadedFiles.length < 2 &&
+                        <div {...getRootProps({className: "flex bg-purple-50 hover:bg-purple-100 hover: cursor-pointer w-full text-gray-500 font-thin items-center rounded-md p-2 text-md justify-center"})}>
                         <input {...getInputProps()} />
                         {
-                            <p className="text-gray-400">Drag and drop files here or click to select files</p>
+                            <>
+                                <span className="mr-1"><FaFileUpload /></span>  
+                                <span>Click here to upload files</span>
+                            </>                      
                         }
-                        </div>
+                        </div>}
+                        {uploadedFiles.length > 0 && 
                         <div>
-                            <h2 className="font-bold text-lg mb-2 text-gray-400" >Uploaded files:</h2>
-                            <div className={`${(pageTitle !== "" || (teamId && teamId !== null)) ? `${uploadedFiles.length > 2 ? "max-h-36 overflow-hidden hover:overflow-y-auto" : ""}`: `${uploadedFiles.length > 1 ? "max-h-11 overflow-hidden hover:overflow-y-auto" : ""}`}`}>
-                                {uploadedFiles.length > 0 ? (
-                                    uploadedFiles.map((file, index) => (
-                                        <div key={index} className="flex items-center mb-2 p-2 w-full rounded-md text-gray-600 bg-gray-100 justify-between">
-                                            <span >
-                                                {file.name}
-                                            </span>
-                                            <RiDeleteBin5Line onClick={()=>handleDeleteFile(index)}/>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <p className="font-thin text-gray-400 mb-1">No files uploaded yet!</p>
-                                )}
+                            <h2 className="font-bold text-md mb-2 text-gray-400">Uploaded files:</h2>
+                            <div>
+                            {uploadedFiles.map((file, index) => (
+                                <div key={index} className="flex items-center mb-2 p-2 w-full rounded-md text-gray-600 bg-gray-100 justify-between">
+
+                                <span>{file.name}</span>
+                                <div className="flex">
+                                <RiFileDownloadFill className="mr-2" onClick={() => handleDownloadFile(index)} />
+                                <RiDeleteBin5Line onClick={() => handleDeleteFile(index)} />
+                                </div>
+                                </div>
+                            ))}
                             </div>
                         </div>
+                        }
+
                     {task && teamId && teamId !== null && (
-                    <div className="flex flex-col gap-3">
-                        <Field className="flex items-center justify-stretch">
-                            <Label className="mr-4">Assigned to:</Label>
+                    <div className="flex flex-col gap-3 p-2">
+                        <div className="grid grid-cols-2 gap-1 text-gray-700 text-sm items-center">
+                            <Field>
+                            <Label className="font-bold">Assigned To:</Label>
+                            </Field>
                             <Combobox
                             value={assignedToTeamMember}
                             onChange={(selected) => { 
@@ -358,11 +372,11 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                                 handleTaskAssignment(task._id, selected === "Unassigned" ? null : selected)
                             }}
                             as="div" 
-                            className="relative w-64"
+                            className="relative text-gray-700 font-thin"
                             >
                             <div className="relative w-full">
                                 <ComboboxInput
-                                className="w-full border rounded-lg py-1.5 pr-8 pl-3 text-sm text-black"
+                                className="w-full border rounded-lg py-1.5 pr-8 pl-3 text-sm text-gray-700"
                                 displayValue={(memberOpt) => memberOpt === "Unassigned" || assignedToTeamMember === null ? "Unassigned" :  memberOpt?.email || assignedToTeamMember?.email || ""}
                                 //value={query}
                                 placeholder="Select Team Member"
@@ -370,7 +384,7 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                                 // onBlur={() => setQuery(assignedToTeamMember?.email)}
                                 />
                                 <ComboboxButton className="absolute inset-y-0 right-0 px-2.5">
-                                <ChevronDownIcon onClick={() => setQuery("")} className="size-4 text-gray-400" />
+                                <ChevronDownIcon onClick={() => setQuery("")} className="size-4 text-gray-700" />
                                 </ComboboxButton>
                             </div>
 
@@ -379,13 +393,13 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                             transition
                             className="absolute z-50 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-300 max-h-60 overflow-auto transition duration-200 ease-in data-[leave]:data-[closed]:opacity-0">
                     
-                            <ComboboxOption 
-                                key={null} 
+                                <ComboboxOption 
+                                key={null}
                                 value={"Unassigned"} 
                                 className="group flex cursor-pointer items-center px-3 py-2 hover:bg-gray-100"
                                 >
-                                <CheckIcon className={`size-4 text-gray-500 ${assignedToTeamMember === null ? "opacity-100" : "opacity-0"}`} />
-                                <span className="italic ml-2">Unassigned</span>
+                                <CheckIcon className={`size-4 text-gray-700 ${assignedToTeamMember === null ? "opacity-100" : "opacity-0"}`} />
+                                <span className="text-gray-700 ml-2">Unassigned</span>
                                 </ComboboxOption>
 
                                 {filteredMembers.map((memberOpt) => (
@@ -395,24 +409,24 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                                     className="group flex cursor-pointer items-center px-3 py-2 hover:bg-gray-100"
                                 >
                                     {/* opacity-0 group-aria-selected:opacity-100 */}
-                                    <CheckIcon className={`size-4 text-gray-500 ${assignedToTeamMember?._id === memberOpt._id ? "opacity-100" : "opacity-0"}`} />
-                                    <span className="ml-2">{memberOpt.email}</span>
+                                    <CheckIcon className={`size-4 text-gray-700 ${assignedToTeamMember?._id === memberOpt._id ? "opacity-100" : "opacity-0"}`} />
+                                    <span className="text-gray-700 ml-2">{memberOpt.email}</span>
                                 </ComboboxOption>
                                 ))}
                             </ComboboxOptions>
                             </Combobox>
-                        </Field>
-                        <div className="flex items-center text-black">
-                            <span className="mr-4">Created By:</span>
-                            <span className="font-thin">{task?.createdBy?.email}</span>
                         </div>
-                        <div className="flex items-center text-black">
-                            <span className="mr-4">Last Updated By:</span>
-                            <span className="font-thin">{task?.updatedBy?.email}</span>
+                        <div className="grid grid-cols-2 gap-1 text-gray-700 text-sm items-center">
+                            <div className="font-bold">Created By:</div>
+                            <div className="font-thin">{task?.createdBy?.email}</div>
                         </div>
-                        <div className="flex items-center text-black">
-                            <span className="mr-4">Updated At:</span>
-                            <span className="font-thin">{formatUpdatedAtTime(task?.updatedAt)}</span>
+                        <div className="grid grid-cols-2 gap-1 text-gray-700 text-sm items-center">
+                            <div className="font-bold">Last Updated By:</div>
+                            <div className="font-thin">{task?.updatedBy?.email}</div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-1 text-gray-700 text-sm items-center">
+                            <div className="font-bold">Updated At:</div>
+                            <div className="font-thin">{formatUpdatedAtTime(task?.updatedAt)}</div>
                         </div>
                     </div>)}
                 </div>

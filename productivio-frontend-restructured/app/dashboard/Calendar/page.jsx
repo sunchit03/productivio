@@ -92,10 +92,12 @@ function CalendarPage({ userId }) {
         setEvents(prevEvents => prevEvents.filter(event => event.extendedProps.id != taskId));
       if(selectedTask?._id === taskId){
         setSelectedTask(null);
+        toast.success("Task moved to trash!")
       }
     }
     else{
-      console.log("Error while moving task to trash: ", data.error)}
+      console.log("Error while moving task to trash: ", data.error)
+      toast.error("Error while moving task to trash.")}
     }catch(error){
       console.log("Error updating task: ", error.message);
       }
