@@ -3,6 +3,7 @@ import { FaAngleRight, FaAngleDown } from "react-icons/fa6";
 import { createList, deleteList, getUserLists, updateList } from "@/app/services/lists";
 import SidebarListItem from "./SidebarListItem";
 import AddEditListModal from "./AddEditListModal";
+import toast, { Toaster } from 'react-hot-toast';
 
 const SidebarListsDropdown = ({ activeTab, setActiveTab, activeList, setActiveList, setTaskBarCollapse, userId }) => {
   const [lists, setLists] = useState([]);
@@ -33,7 +34,8 @@ const SidebarListsDropdown = ({ activeTab, setActiveTab, activeList, setActiveLi
     }
   }, [userId])
 
-  const openListModal = (isEdit = false, list = {id: "", name: "", emoji: ""}) => {
+  const 
+  openListModal = (isEdit = false, list = {id: "", name: "", emoji: ""}) => {
     setNewList({ name: list.name, emoji: list.emoji }); 
     setShowPicker(false)
     setIsListModalOpen({isOpen: true, isEdit, list});
@@ -52,14 +54,26 @@ const SidebarListsDropdown = ({ activeTab, setActiveTab, activeList, setActiveLi
       }
 
       if (data.success) {
-        console.log("List is created!");
         await fetchLists().then(() => {
           setActiveTab("Lists");
           setActiveList( {id: data.list._id, emoji: data.list.emoji, name: data.list.name});
         });
+        if(!isEdit){
+          toast.success("List created successfully!");
+          }
+          else{
+          toast.success("List updated successfully!");
+          }
+      }
+      else{
+        if(!isEdit){
+          toast.error("Error creating list.");
+        }else{
+          toast.error("Error updating list.");
+        }
       }
     } catch (error) {
-      console.error("Error creating list:", error);
+      console.error("Error creating/updating list:", error);
     }
 
     closeListModal();
@@ -70,13 +84,14 @@ const SidebarListsDropdown = ({ activeTab, setActiveTab, activeList, setActiveLi
       let data = await deleteList(listId, userId);
 
       if (data.success) {
-        console.log("List is deleted!");
         setLists(prevLists => prevLists.filter(prevList => prevList._id != listId))
-
+        toast.success("List deleted successfully!")
         if (activeList.id == listId) {
           setActiveList({});
           setActiveTab("Inbox");
         }
+      }else{
+        toast.error("Error while deleting list.")
       }
     } catch (error) {
       console.error("Error deleting list:", error);
@@ -87,6 +102,17 @@ const SidebarListsDropdown = ({ activeTab, setActiveTab, activeList, setActiveLi
     <div className="relative w-full" 
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}>
+        <Toaster
+        toastOptions={{
+        removeDelay: 500,
+        position: 'bottom-center',
+        style: {
+            backgroundColor: "#E6E6FA",
+            padding: '16px',
+            color: '#6A0DAD',
+            textAlign: "center",},
+        }}
+        />
         <div className="flex justify-between hover:hover:bg-indigo-500/5 rounded-md">
           <button
             onClick={() => setIsListsDropdownOpen(!isListsDropdownOpen)}

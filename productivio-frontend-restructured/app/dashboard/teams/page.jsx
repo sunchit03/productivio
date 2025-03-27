@@ -38,10 +38,11 @@ export default function TeamsPage({ userId, setSelectedTeam }) {
           if(data){
             console.log(data);
             setTeams(prevTeams => prevTeams.map(prevTeam => prevTeam._id === teamId ? {...prevTeam, title, description} : prevTeam))
-            toast("Team updated successfully!")
+            toast.success("Team updated successfully!")
           }
           else{
             console.log("Error while editing team: ", data.error);
+            toast.error("Error updating team.")
           }
       }catch(error){
         console.log("Error while editing team: ", error)
@@ -53,10 +54,11 @@ export default function TeamsPage({ userId, setSelectedTeam }) {
         const data = await deleteTeam(teamId, userId);
         if(data.success){
           setTeams(prevTeams => prevTeams.filter(prevTeam=> prevTeam._id !== teamId))
-          toast("Team deleted successfully!");
+          toast.success("Team deleted successfully!");
         }
         else{
           console.log("Error deleting team: ",data.error);
+          toast.error("Error deleting team.");
         }
       }catch(error){
         console.log("Error while deleting team: ", error.message);

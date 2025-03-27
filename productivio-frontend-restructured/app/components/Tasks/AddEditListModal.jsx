@@ -1,8 +1,9 @@
 import { TbMoodWink2 } from "react-icons/tb";
 import EmojiPicker from 'emoji-picker-react';
+import toast, { Toaster } from 'react-hot-toast';
 
 const AddEditListModal = ( { isEdit = false, list, addEditList, showPicker, setShowPicker, newList, setNewList, closeListModal } ) => {
-
+    const isEnable = list?.name !== newList?.name;
     const handleEmojiClick = (emojiData, _) => {
         setNewList({ ...newList, emoji: emojiData.emoji });
         setShowPicker(false);
@@ -11,7 +12,10 @@ const AddEditListModal = ( { isEdit = false, list, addEditList, showPicker, setS
     const handleAddEditList = (e) => {
         e.preventDefault();
 
-        if (!newList.name.trim()) return;
+        if (!newList.name.trim()){
+            toast("Please enter list name.")
+            return;
+        }
 
         addEditList(isEdit, list);
 
@@ -19,8 +23,19 @@ const AddEditListModal = ( { isEdit = false, list, addEditList, showPicker, setS
     };
 
     return (
-        <div className="fixed inset-0 flex items-start justify-center bg-gray-100 bg-opacity-40 z-50 pt-20 drop-shadow-xl">
-            <div className="xs:w-5/6 xssm:w-4/5 mdlg:w-3/5 bg-white p-6 rounded-md shadow-lg w-2/5">
+        <div className="fixed inset-0 flex items-start justify-center bg-gray-100 bg-opacity-40 z-50 pt-20 drop-shadow-xl" onClick={()=>closeListModal()}>
+            <Toaster
+            toastOptions={{
+            removeDelay: 500,
+            position: 'bottom-center',
+            style: {
+                backgroundColor: "#E6E6FA",
+                padding: '16px',
+                color: '#6A0DAD',
+                textAlign: "center",},
+            }}
+            />
+            <div className="xs:w-5/6 xssm:w-4/5 mdlg:w-3/5 bg-white p-6 rounded-md shadow-lg w-2/5" onClick={(e)=>e.stopPropagation()}>
                 <h2 className="text-xl font-bold mb-4 text-black">
                 {isEdit ? "Edit List" : "Add List"}
                 </h2>
@@ -65,9 +80,15 @@ const AddEditListModal = ( { isEdit = false, list, addEditList, showPicker, setS
                     <button type="button" onClick={closeListModal} className="mr-2 px-4 py-2 flex-1 border border-gray-400 bg-white text-gray-500 rounded hover:bg-gray-100">
                         Cancel
                     </button>
-                    <button type="submit" className="px-4 py-2 flex-1 bg-violet-500 text-white rounded hover:bg-violet-500/75">
-                        {isEdit ? "Edit" : "Create"}
-                    </button>
+                    {isEdit ?
+                        <button type="submit" disabled={!isEnable} className={`px-4 py-2 flex-1 bg-violet-500 text-white rounded ${isEnable ? "cursor-default hover:bg-violet-500/75" : "cursor-not-allowed"}`}>
+                        Edit
+                        </button> :
+                        <button type="submit" className="px-4 py-2 flex-1 bg-violet-500 text-white rounded hover:bg-violet-500/75">
+                        Create
+                        </button>
+                    }
+
                     </div>
                 </div>
                 </form>

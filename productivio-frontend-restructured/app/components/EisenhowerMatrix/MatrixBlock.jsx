@@ -44,7 +44,6 @@ const handleDueDateUpdate = async(taskId, date) => {
         const data = await updateTask(taskId, userId, {dueDate: date})
         if(data){
         setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, dueDate: date} : task));
-        toast("Task due date updated!")
         if(selectedTask?._id === taskId){
         setSelectedTask(prevTask=>({...prevTask, dueDate: date}));
         }
@@ -62,7 +61,7 @@ const handleMatrixAddNewTask = async(userId, title, description, dueDate, select
         if(data){
             setAddEditTaskModal(false);
             refresh();
-            toast("Task created successfully!")
+            toast.success("Task created successfully!")
         }
         else{
             console.log(`Error creating new task with title-${title}: `, data.error);
@@ -82,11 +81,6 @@ try {
                 task._id === taskId ? { ...task, isCompleted: updatedCompletion } : task
             )
         );
-        if(updatedCompletion === true){
-            toast("Task marked as completed!")
-          }else{
-            toast("Task changed to incomplete!")
-          }
         if (selectedTask?._id === taskId) {
             setSelectedTask(prevTask => ({ ...prevTask, isCompleted: updatedCompletion }));
         }
@@ -104,7 +98,7 @@ const handleTrashOrRestore = async(taskId, restore) => {
         setTasks(prevTasks => prevTasks.filter(task => task._id != taskId));
         setAddEditTaskModal(false);
         setSelectedTask(null);
-        toast("Task moved to trash!")
+        toast.success("Task moved to trash!")
     }
     else{
       console.log("Error while moving task to trash: ", data.error)}
@@ -118,7 +112,6 @@ const handleTaskPriorityChange = async(taskId, setPriority) => {
       const data = await updateTask(taskId, userId, {priority: setPriority})
       if(data){
         setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, priority: setPriority} : task));
-        toast("Task priority updated!")
       if(selectedTask?._id === taskId){
         setSelectedTask(prevTask=>({...prevTask, priority: setPriority}));
       }
