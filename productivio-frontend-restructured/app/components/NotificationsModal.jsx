@@ -16,7 +16,7 @@ export default function NotificationsModal({ onClose, notifications }) {
               <ul>
                 {notifications.map((notification) => 
                   <NotificationItem notification={notification} />
-                )}
+                )} 
               </ul>
             ):
             <div className="flex flex-col items-center justify-center h-full text-black cursor-default">
