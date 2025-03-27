@@ -59,8 +59,24 @@ export async function PATCH(req, { params }) {
       return NextResponse.json({ success: false, error: "User not found" }, { status: 403 });
     }
 
+    const previousAssignedTo = task.assignedTo?.toString(); // can be null or userId
+    const newAssignedTo = updatedData.assignedTo;
+
+    // Remove task from previous user if reassigned or unassigned
+    if (previousAssignedTo && previousAssignedTo !== newAssignedTo) {
+      await User.findByIdAndUpdate(previousAssignedTo, {
+        $pull: { tasks: task._id }
+      });
+    }
+
+    // Add task to new user's tasks array
+    if (newAssignedTo && previousAssignedTo !== newAssignedTo) {
+      await User.findByIdAndUpdate(newAssignedTo, {
+        $addToSet: { tasks: task._id }
+      });
+    }
+
     updatedData.updatedBy = user._id;
-   // updateData.updatedAt = new Date();
 
     const updatedTask = await Task.findByIdAndUpdate(taskId, updatedData, { new: true });
 
