@@ -15,7 +15,7 @@ export default function NotificationsModal({ onClose, notifications }) {
             {notifications.length > 0 ? (
               <ul>
                 {notifications.map((notification) => 
-                  <NotificationItem notification={notification} />
+                  <NotificationItem key={notification._id} notification={notification} />
                 )} 
               </ul>
             ):
