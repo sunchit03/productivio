@@ -325,8 +325,8 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                         />  
                     </article>
                     {uploadedFiles.length < 2 &&
-                        <div {...getRootProps({className: "flex bg-purple-50 hover:bg-purple-100 hover: cursor-pointer w-full text-gray-500 font-thin items-center rounded-md p-2 text-md justify-center"})}>
-                        <input {...getInputProps()} />
+                        <div disabled={pageTitle === "Trash"} {...getRootProps({className: pageTitle !== "Trash" ? "flex bg-purple-50 hover:bg-purple-100 hover: cursor-pointer w-full text-gray-500 font-thin items-center rounded-md p-2 text-md justify-center" : "cursor-not-allowed flex bg-gray-100 w-full text-gray-500 font-thin items-center rounded-md p-2 text-md justify-center"})}>
+                        <input disabled={pageTitle === "Trash"} {...getInputProps()} />
                         {
                             <>
                                 <span className="mr-1"><FaFileUpload /></span>  
