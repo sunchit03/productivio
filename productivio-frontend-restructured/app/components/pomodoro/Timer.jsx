@@ -1,110 +1,162 @@
-
-"use client";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
+import { useContext, useState, useEffect, useRef } from "react";
+import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import PlayButton from "./PlayButton";
 import PauseButton from "./PauseButton";
 import StopButton from "./StopButton";
-import { useContext, useState, useEffect, useRef } from "react";
+import SettingsModal from "./SettingsModal";
 import SettingsContext from "./SettingsContext";
-
-const workColors = "#d67d97";
-const breakColors = "#bfd69d";
+import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
+import "@szhsin/react-menu/dist/index.css";
+import SettingsButton from "@/app/components/pomodoro/SettingsButton";
 
 export default function Timer({ onPomoComplete }) {
-  const settingsInfo = useContext(SettingsContext);
-  const [isPaused, setIsPaused] = useState(true);
-  const [mode, setMode] = useState("work"); // "work" or "break"
-  const [key, setKey] = useState(0);
-  const [secondsLeft, setSecondsLeft] = useState(settingsInfo.workMinutes * 60);
+    // Store settings state inside context
+    const [workMinutes, setWorkMinutes] = useState(25);
+    const [breakMinutes, setBreakMinutes] = useState(5);
+    const [showSettings, setShowSettings] = useState(false);
 
-  const secondsLeftRef = useRef(secondsLeft);
-  const isPausedRef = useRef(isPaused);
-  const modeRef = useRef(mode);
+    const [isPaused, setIsPaused] = useState(true);
+    const [mode, setMode] = useState("work");
+    const [key, setKey] = useState(0);
+    const [secondsLeft, setSecondsLeft] = useState(workMinutes * 60);
+    const [sessionId, setSessionId] = useState(null); // Store session ID
 
-  useEffect(() => {
-    secondsLeftRef.current = settingsInfo.workMinutes * 60;
-    setSecondsLeft(secondsLeftRef.current);
+    const secondsLeftRef = useRef(secondsLeft);
+    const isPausedRef = useRef(isPaused);
+    const modeRef = useRef(mode);
+    const hasStartedRef = useRef(false);
 
-    const interval = setInterval(() => {
-      if (!isPausedRef.current) {
-        tick();
-      }
-    }, 1000);
 
-    return () => clearInterval(interval);
-  }, [settingsInfo]);
+    async function createSession(userId) {
+        try {
+            const response = await fetch("/api/pomodoro", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    currentMode: "work",
+                    focusSeconds: 0,
+                    breakSeconds: 0,
+                    assignedUser: localStorage.getItem("userId"),
+                    workAmounts: 0,
+                    breakAmounts: 0,
+                }),
+            });
 
-  function tick() {
-    if (secondsLeftRef.current > 0) {
-      secondsLeftRef.current--;
-      setSecondsLeft(secondsLeftRef.current);
-    } else {
-      switchMode();
+            const data = await response.json();
+            console.log("Session Created:", data);
+        } catch (error) {
+            console.error("Error creating session:", error);
+        }
     }
-  }
 
-  function switchMode() {
-    const nextMode = modeRef.current === "work" ? "break" : "work";
-    const nextSeconds =
-      (nextMode === "work" ? settingsInfo.workMinutes : settingsInfo.breakMinutes) * 60;
 
-    setMode(nextMode);
-    modeRef.current = nextMode;
-    setSecondsLeft(nextSeconds);
-    secondsLeftRef.current = nextSeconds;
-    setKey((prevKey) => prevKey + 1);
 
-    if (nextMode === "break") {
-      onPomoComplete();
+    useEffect(() => {
+        secondsLeftRef.current = workMinutes * 60;
+        setSecondsLeft(secondsLeftRef.current);
+
+        const interval = setInterval(() => {
+            if (!isPausedRef.current) {
+                tick();
+            }
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [workMinutes, breakMinutes]);
+
+    function tick() {
+        if (secondsLeftRef.current > 0) {
+            secondsLeftRef.current--;
+            setSecondsLeft(secondsLeftRef.current);
+        } else {
+            switchMode();
+        }
     }
-  }
 
-  const totalSeconds =
-    mode === "work" ? settingsInfo.workMinutes * 60 : settingsInfo.breakMinutes * 60;
-  const percentage = Math.round((secondsLeft / totalSeconds) * 100);
-  const minutes = Math.floor(secondsLeft / 60);
-  let seconds = secondsLeft % 60;
-  if (seconds < 10) seconds = "0" + seconds;
+    function switchMode() {
+        const nextMode = modeRef.current === "work" ? "break" : "work";
+        const nextSeconds = (nextMode === "work" ? workMinutes : breakMinutes) * 60;
 
-  return (
-    <div className="flex flex-col items-center justify-center h-full">
-      <CircularProgressbar
-        key={key}
-        value={percentage}
-        text={`${minutes}:${seconds}`}
-        styles={buildStyles({
-          textColor: "#3c1361",
-          pathColor: mode === "work" ? workColors : breakColors,
-          tailColor: "rgba(255,255,255,.2)",
-        })}
-      />
-      <p className="mt-3 text-lg font-semibold" style={{ color: mode === "work" ? workColors : breakColors }}>
-        {mode === "work" ? "Work Time" : "Break Time"}
-      </p>
+        setMode(nextMode);
+        modeRef.current = nextMode;
+        setSecondsLeft(nextSeconds);
+        secondsLeftRef.current = nextSeconds;
+        setKey((prevKey) => prevKey + 1);
 
-      <div className="flex justify-center items-center gap-4 mt-5">
-        {isPaused ? (
-          <PlayButton onClick={() => {
-            setIsPaused(false);
-            isPausedRef.current = false;
-          }} />
-        ) : (
-          <PauseButton onClick={() => {
-            setIsPaused(true);
-            isPausedRef.current = true;
-          }} />
-        )}
-        <StopButton onClick={() => {
-          setIsPaused(true);
-          isPausedRef.current = true;
-          setMode("work");
-          modeRef.current = "work";
-          setSecondsLeft(settingsInfo.workMinutes * 60);
-          secondsLeftRef.current = settingsInfo.workMinutes * 60;
-          setKey((prevKey) => prevKey + 1);
-        }} />
-      </div>
-    </div>
-  );
+        if (nextMode === "break") {
+            onPomoComplete();
+        }
+    }
+
+    const totalSeconds = mode === "work" ? workMinutes * 60 : breakMinutes * 60;
+    const colors = mode === "work" ? ["#A5B4FC", "#F2C8E0"] : ["#F2C8E0", "#A5B4FC"];
+
+    return (
+        <SettingsContext.Provider value={{
+            workMinutes,
+            breakMinutes,
+            setWorkMinutes,
+            setBreakMinutes
+        }}>
+            <div className="flex justify-center items-center overflow-hidden">
+                <div className="w-1/3 h-1/3 flex flex-col items-center">
+                    <CountdownCircleTimer
+                        size={500}
+                        strokeWidth={40}
+                        key={key}
+                        isPlaying={!isPaused}
+                        duration={totalSeconds}
+                        colors={colors}
+                        colorsTime={[totalSeconds, 0]}
+                        onComplete={() => {
+                            switchMode();
+                            return { shouldRepeat: false };
+                        }}
+                    >
+                        {({ remainingTime }) => (
+                            <div className="timer text-indigo-400 text-4xl font-bold">
+                                {Math.floor(remainingTime / 60)}:{remainingTime % 60 < 10 ? "0" : ""}
+                                {remainingTime % 60}
+                            </div>
+                        )}
+                    </CountdownCircleTimer>
+
+                    <p className="mt-3 text-lg font-semibold" style={{ color: colors[0] }}>
+                        {mode === "work" ? "Work Time" : "Break Time"}
+                    </p>
+
+                    <div className="flex justify-center items-center gap-4 mt-5">
+                        {isPaused ? (
+                            <PlayButton onClick={() => {
+                                if (!hasStartedRef.current) {
+                                    createSession(); // Create session on first play
+                                    hasStartedRef.current = true;
+                                }
+                                setIsPaused(false);
+                            }} />
+                        ) : (
+                            <PauseButton onClick={() => setIsPaused(true)} />
+                        )}
+                        <StopButton onClick={() => {
+                            setIsPaused(true);
+                            isPausedRef.current = true;
+                            setMode("work");
+                            modeRef.current = "work";
+                            setSecondsLeft(workMinutes * 60);
+                            secondsLeftRef.current = workMinutes * 60;
+                            setKey((prevKey) => prevKey + 1);
+                        }}/>
+
+                        <SettingsButton onClick={() => setShowSettings(true)}/>
+                    </div>
+                </div>
+
+                {showSettings && (
+                    <SettingsModal closeModal={() => setShowSettings(false)} />
+                )}
+            </div>
+        </SettingsContext.Provider>
+    );
 }
