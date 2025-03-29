@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8f5e9c6b-ba65-411c-96e0-78a0a66d55eb" name="Changes" comment="Updated Pomodoro to use react-countdown-circle-timer">
+      <change beforePath="$PROJECT_DIR$/productivio-frontend-restructured/app/components/pomodoro/SettingsContext.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/productivio-frontend-restructured/app/components/pomodoro/SettingsContext.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/productivio-frontend-restructured/app/components/pomodoro/Timer.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/productivio-frontend-restructured/app/components/pomodoro/Timer.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/productivio-frontend-restructured/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/productivio-frontend-restructured/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/productivio-frontend-restructured/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/productivio-frontend-restructured/package.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JSX File" />
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Artomking&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/sunchit03/PRJ666NAA-G6.git&quot;,
+    &quot;accountId&quot;: &quot;20e34047-586b-4677-bc49-0ca5ec34e5e4&quot;
+  }
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2svUJWjtLZ3cEEonvcq5o7Xh0Me" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Node.js.Timer.jsx.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "#88 on feature/issue03-Ali",
+    "javascript.nodejs.core.library.configured.version": "18.18.0",
+    "javascript.nodejs.core.library.typings.version": "18.18.14",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/artom/OneDrive/Documents/GitHub/PRJ666NAA-G6",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.grazie",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2024.3.2.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\artom\OneDrive\Documents\GitHub\PRJ666NAA-G6" />
+      <recent name="C:\Users\artom\OneDrive\Documents\GitHub\PRJ666NAA-G6\productivio-frontend-restructured" />
+      <recent name="C:\Users\artom\OneDrive\Documents\GitHub\PRJ666NAA-G6\productivio-frontend-restructured\app\dashboard" />
+      <recent name="C:\Users\artom\OneDrive\Documents\GitHub\PRJ666NAA-G6\productivio-frontend-restructured\app\components" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-WS-243.23654.157" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8f5e9c6b-ba65-411c-96e0-78a0a66d55eb" name="Changes" comment="" />
+      <created>1739335471096</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1739335471096</updated>
+      <workItem from="1739335472960" duration="293000" />
+      <workItem from="1739747181888" duration="6689000" />
+      <workItem from="1739842935208" duration="2177000" />
+      <workItem from="1739939997279" duration="3306000" />
+      <workItem from="1740014223525" duration="2096000" />
+      <workItem from="1740765891724" duration="249000" />
+      <workItem from="1741572336910" duration="5508000" />
+      <workItem from="1741645757852" duration="682000" />
+      <workItem from="1741646668155" duration="7248000" />
+      <workItem from="1741748643821" duration="3787000" />
+      <workItem from="1741989816357" duration="6784000" />
+      <workItem from="1742159721555" duration="664000" />
+      <workItem from="1742402678517" duration="4938000" />
+      <workItem from="1742409810471" duration="664000" />
+      <workItem from="1742410569537" duration="499000" />
+      <workItem from="1742781013102" duration="4942000" />
+      <workItem from="1742791250902" duration="8260000" />
+      <workItem from="1743116572979" duration="628000" />
+      <workItem from="1743124528364" duration="1351000" />
+      <workItem from="1743193461212" duration="7512000" />
+    </task>
+    <task id="LOCAL-00001" summary="Pomodoro timer implemented">
+      <option name="closed" value="true" />
+      <created>1739775554367</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1739775554367</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Updated Pomodoro to use react-countdown-circle-timer">
+      <option name="closed" value="true" />
+      <created>1741659643484</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1741659643484</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Pomodoro timer implemented" />
+    <MESSAGE value="Updated Pomodoro to use react-countdown-circle-timer" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated Pomodoro to use react-countdown-circle-timer" />
+  </component>
+</project>
