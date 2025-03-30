@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { TbCircleNumber1Filled, TbCircleNumber2Filled, TbCircleNumber3Filled, TbCircleNumber4Filled} from "react-icons/tb";
 import { getUserTasks } from "@/app/services/tasks";
-import MatrixBlock from "../../components/EisenhowerMatrix/MatrixBlock"
+import MatrixBlock from "../../components/EisenhowerMatrix/MatrixBlock";
 
 
 export default function EisenhowerMatrix( {userId} ) {
@@ -12,11 +12,11 @@ export default function EisenhowerMatrix( {userId} ) {
 
     const fetchTasks = async() => {
         try {
-          const data = await getUserTasks(userId, true);
+          const data = await getUserTasks(userId);
           setTasks(data);
           console.log(data);
         } catch (error) {
-          console.error("Error fetching tasks:", error);
+          console.error("Error fetching tasks: ", error);
         }
       };
     

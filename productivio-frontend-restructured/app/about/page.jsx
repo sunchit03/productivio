@@ -98,6 +98,7 @@ export default function AboutPage() {
             <SiMongodb className='text-green-700' title="MongoDB" />
             <img src="/assets/aws.png" alt="aws" title="AWS S3" className='w-16' />
             <SiTailwindcss className='text-blue-400' title="Tailwind CSS" />
+            <img src="/assets/auth0.png" alt="Auth0" title="Auth0" className='w-12 h-12' />
           </div>
         </section>
       </div>

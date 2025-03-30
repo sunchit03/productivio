@@ -343,8 +343,8 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
 
                                 <span>{file.name}</span>
                                 <div className="flex">
-                                <RiFileDownloadFill className="mr-2" onClick={() => handleDownloadFile(index)} />
-                                <RiDeleteBin5Line onClick={() => handleDeleteFile(index)} />
+                                <RiFileDownloadFill disabled={pageTitle === "Trash"} className={`mr-2 ${pageTitle === "Trash" ? "cursor-not-allowed" : "cursor-pointer"}`} onClick= {pageTitle !== "Trash" ? () => handleDownloadFile(index) : () => console.log("Disabled upload!")} />
+                                <RiDeleteBin5Line disabled={pageTitle === "Trash"} className= {pageTitle === "Trash" ? "cursor-not-allowed" : "cursor-pointer"} onClick={pageTitle !== "Trash" ? () => handleDeleteFile(index) : () => console.log("Disabled delete!")} />
                                 </div>
                                 </div>
                             ))}
