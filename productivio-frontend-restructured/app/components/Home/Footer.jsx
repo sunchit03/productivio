@@ -11,7 +11,7 @@ const Footer = () => {
         <div className="mb-6">
           <Link href="/about" passHref>
             <span className="cursor-pointer text-gray-300 hover:text-white transition text-md">
-              Meet the Contributors
+            About Us
             </span>
           </Link>
         </div>
