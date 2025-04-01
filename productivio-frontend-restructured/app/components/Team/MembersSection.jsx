@@ -300,17 +300,28 @@ export default function MembersSection({ user, teamId, teamName, members, isAdmi
         {/* Members Header with Add Icon */}
         <div className="flex justify-between items-center mb-3">
           <div className="flex items-center">
-            <IoChevronBackCircle className="mr-2 cursor-pointer text-violet-800 hover:text-violet-900" size={20} onClick={() => setSelectedTeam(null)} />
-            <h2 className="text-lg font-bold text-violet-900">Members</h2>
+            <IoChevronBackCircle 
+              title="Exit"
+              className="mr-2 cursor-pointer text-indigo-500 hover:text-indigo-700" 
+              size={20} 
+              onClick={() => setSelectedTeam(null)} 
+            />
+            <h2 className="text-lg font-bold text-indigo-500">Members</h2>
           </div>
           <div className="flex justify-between items-center">
             {isAdmin &&
-              <button onClick={() => setShowAddModal(true)} className="text-violet-800 hover:text-violet-900 mr-2">
-                <FaUserPlus size={20} />
+              <button 
+                title="Add User"
+                onClick={() => setShowAddModal(true)} 
+                className="text-indigo-500 hover:text-indigo-700 mr-3">
+                  <FaUserPlus size={20} />
               </button>
             }
-            <button onClick={() => setShowLeaveModal(true) } className="text-violet-800 hover:text-violet-900">
-              <IoExit size={20}/>
+            <button 
+              title="Leave Team"
+              onClick={() => setShowLeaveModal(true) } 
+              className="text-indigo-500 hover:text-indigo-700">
+                <IoExit size={20}/>
             </button>
           </div>
         </div>
