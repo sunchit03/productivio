@@ -380,7 +380,7 @@ const handleTaskAssignment = async(taskId, assignedTo) => {
       />
       <div className="w-3/5 h-full mdlg:w-full">
         <div className="flex items-center justify-between">
-          <div className="flex flex-row items-end my-4">
+          <div className="flex flex-row items-center my-4">
             <div className="p-1 hover:bg-gray-100 hover:rounded-md">
               {(teamId ? !membersSectionCollapse : !taskBarCollapse) ?
                 <BsTextIndentRight size={"1.5em"} className="text-gray-500 cursor-pointer font-thin" onClick={(e) => toggleTaskBarCollapse(e)}/>
@@ -391,7 +391,11 @@ const handleTaskAssignment = async(taskId, assignedTo) => {
             <h2 className="ml-1 text-xl text-black font-semibold">{title}</h2>
           </div>
           <div className={`p-1 hover:bg-gray-100 hover:rounded-md`}>
-            <PiExport size={"1.5em"} className={`text-gray-500 font-thin ${tasks.length === 0 ? 'cursor-not-allowed' : 'cursor-pointer'}`} onClick={() => tasks.length > 0 && handleTasksExport} />
+            <PiExport 
+              size={"1.5em"} 
+              title="Export to CSV"
+              className={`text-gray-500 font-thin ${tasks.length === 0 ? 'cursor-not-allowed' : 'cursor-pointer'}`} 
+              onClick={() => tasks.length > 0 && handleTasksExport} />
           </div>
         </div>
         {!completedOrTrash && (
