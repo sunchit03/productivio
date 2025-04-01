@@ -17,6 +17,9 @@ export default function RemoveMemberModal({ member, onClose, removeMember }) {
               </span>
             </div>
           </label>
+          <div>
+              <span className="text-sm text-black">Tasks assigned to this member will be now unassigned.</span>
+          </div>
           <div className="flex justify-between mt-4">
             <div className="flex-1"></div>
             <div className="flex flex-1 justify-stretch">
