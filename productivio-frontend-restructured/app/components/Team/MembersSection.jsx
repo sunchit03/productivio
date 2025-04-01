@@ -9,7 +9,7 @@ import MembersSectionItem from "./MembersSectionItem";
 import NotificationsModal from "../NotificationsModal";
 import { preLogOut } from "../../utils/prelogout";
 import LeaveTeamModal from "./LeaveTeamModal";
-import { getUserNotifications ,createNotification } from "@/app/services/notifications";
+import { createNotification, deleteAllNotifications, getUserNotifications, updateNotifications } from "../../services/notifications";
 import toast, { Toaster } from 'react-hot-toast';
 
 
@@ -41,13 +41,39 @@ export default function MembersSection({ user, teamId, teamName, members, isAdmi
 
   useEffect(() => {
     if (user) {
-    setUserPicture(user.picture);
-
-      if (userId) {
+      setUserPicture(user.picture);
+    }
+  
+    if (userId) {
+      fetchNotifications(); // Fetch immediately
+  
+      const interval = setInterval(() => {
         fetchNotifications();
-      }
+      }, 300000); // 5 minutes (300,000ms)
+  
+      return () => clearInterval(interval); // Cleanup on unmount
     }
   }, [user, userId]);
+
+  const readNotifications = async () => {
+    const data = await updateNotifications(userId);
+
+    if (data.success) {
+      setNotifications(prevNotifications => prevNotifications.map(notification => ({...notification, new: false})));
+    } else {
+      toast.error("Failed to mark notifications as read");
+    }
+  }
+
+  const clearNotifications = async () => {
+    const data = await deleteAllNotifications(userId);
+
+    if (data.success) {
+      setNotifications([]);
+    } else {
+      toast.error("Failed to mark notifications as read");
+    }
+  }
 
   useEffect(() => {
     if (query === "") {
@@ -137,7 +163,7 @@ export default function MembersSection({ user, teamId, teamName, members, isAdmi
         let dataNotification = await createNotification (
           {
             title: `You are now the admin of the team: ${teamName}`, 
-            type: 'task-admin-assignment', 
+            type: 'team-admin-assignment', 
             receiverId: newAdmin._id
           }
         )
@@ -239,7 +265,7 @@ export default function MembersSection({ user, teamId, teamName, members, isAdmi
             <button 
               className="px-2 py-1 rounded text-black"
               title="Notifications"
-              onClick={() => setShowNotifications(true)}>
+              onClick={() => { setShowNotifications(prev => !prev); setIsNewNotification(false); readNotifications();}}>
               <IoMdNotificationsOutline  size="1.4em"/>
             </button>
             {isNewNotification && 
@@ -259,24 +285,43 @@ export default function MembersSection({ user, teamId, teamName, members, isAdmi
         </div>
 
         {/* Notifications Modal */}
-        {showNotifications && <NotificationsModal onClose={() => setShowNotifications(false)} notifications={notifications} />}
+        {
+          showNotifications && 
+          <NotificationsModal 
+            onClose={() => setShowNotifications(false)} 
+            notifications={notifications}
+            readNotifications={readNotifications}
+            clearNotifications={clearNotifications}
+          />
+        }
       </div>
 
       <div className="py-[14px] px-[10px]">
         {/* Members Header with Add Icon */}
         <div className="flex justify-between items-center mb-3">
           <div className="flex items-center">
-            <IoChevronBackCircle className="mr-2 cursor-pointer text-violet-800 hover:text-violet-900" size={20} onClick={() => setSelectedTeam(null)} />
-            <h2 className="text-lg font-bold text-violet-900">Members</h2>
+            <IoChevronBackCircle 
+              title="Exit"
+              className="mr-2 cursor-pointer text-indigo-500 hover:text-indigo-700" 
+              size={20} 
+              onClick={() => setSelectedTeam(null)} 
+            />
+            <h2 className="text-lg font-bold text-indigo-500">Members</h2>
           </div>
           <div className="flex justify-between items-center">
             {isAdmin &&
-              <button onClick={() => setShowAddModal(true)} className="text-violet-800 hover:text-violet-900 mr-2">
-                <FaUserPlus size={20} />
+              <button 
+                title="Add User"
+                onClick={() => setShowAddModal(true)} 
+                className="text-indigo-500 hover:text-indigo-700 mr-3">
+                  <FaUserPlus size={20} />
               </button>
             }
-            <button onClick={() => setShowLeaveModal(true) } className="text-violet-800 hover:text-violet-900">
-              <IoExit size={20}/>
+            <button 
+              title="Leave Team"
+              onClick={() => setShowLeaveModal(true) } 
+              className="text-indigo-500 hover:text-indigo-700">
+                <IoExit size={20}/>
             </button>
           </div>
         </div>

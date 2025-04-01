@@ -353,81 +353,83 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                         }
 
                     {task && teamId && teamId !== null && (
-                    <div className="flex flex-col gap-3 p-2">
-                        <div className="grid grid-cols-2 gap-1 text-gray-700 text-sm items-center">
+                    <div className="grid grid-cols-5 grid-rows-4 gap-2">
+                        <div className="col-span-2 text-gray-700 text-sm items-center">
                             <Field>
-                            <Label className="font-bold">Assigned To:</Label>
+                                <Label className="font-bold">Assigned To:</Label>
                             </Field>
+                        </div>
+                        <div className="col-span-3">
                             <Combobox
-                            value={assignedToTeamMember}
-                            onChange={(selected) => { 
+                                value={assignedToTeamMember}
+                                onChange={(selected) => { 
                                 console.log(selected);
-                                if (selected !== "Unassigned" && (assignedToTeamMember === null || assignedToTeamMember?._id !== selected?._id)) {
-                                    setAssignedToTeamMember(selected);
-                                    // console.log("1   " + selected.email);
-                                } else if (selected === "Unassigned" && assignedToTeamMember !== null) {
-                                    setAssignedToTeamMember(null);
-                                    // console.log("2   " + selected);
-                                }
-                                handleTaskAssignment(task._id, selected === "Unassigned" ? null : selected)
-                            }}
-                            as="div" 
-                            className="relative text-gray-700 font-thin"
+                                    if (selected !== "Unassigned" && (assignedToTeamMember === null || assignedToTeamMember?._id !== selected?._id)) {
+                                        setAssignedToTeamMember(selected);
+                                        // console.log("1   " + selected.email);
+                                    } else if (selected === "Unassigned" && assignedToTeamMember !== null) {
+                                        setAssignedToTeamMember(null);
+                                        // console.log("2   " + selected);
+                                    }
+                                    handleTaskAssignment(task._id, selected === "Unassigned" ? null : selected)
+                                }}
+                                as="div" 
+                                className="relative text-gray-700 font-thin"
                             >
-                            <div className="relative w-full">
-                                <ComboboxInput
-                                className="w-full border rounded-lg py-1.5 pr-8 pl-3 text-sm text-gray-700"
-                                displayValue={(memberOpt) => memberOpt === "Unassigned" || assignedToTeamMember === null ? "Unassigned" :  memberOpt?.email || assignedToTeamMember?.email || ""}
-                                //value={query}
-                                placeholder="Select Team Member"
-                                onChange={(event) => setQuery(event.target.value)}
-                                // onBlur={() => setQuery(assignedToTeamMember?.email)}
-                                />
-                                <ComboboxButton className="absolute inset-y-0 right-0 px-2.5">
-                                <ChevronDownIcon onClick={() => setQuery("")} className="size-4 text-gray-700" />
-                                </ComboboxButton>
-                            </div>
+                                <div className="relative w-full">
+                                    <ComboboxInput
+                                        className="w-full border rounded-lg py-1.5 pr-8 pl-3 text-sm text-gray-700"
+                                        displayValue={(memberOpt) => memberOpt === "Unassigned" || assignedToTeamMember === null ? "Unassigned" :  memberOpt?.email || assignedToTeamMember?.email || ""}
+                                        //value={query}
+                                        placeholder="Select Team Member"
+                                        onChange={(event) => setQuery(event.target.value)}
+                                        // onBlur={() => setQuery(assignedToTeamMember?.email)}
+                                        />
+                                        <ComboboxButton className="absolute inset-y-0 right-0 px-2.5">
+                                        <ChevronDownIcon onClick={() => setQuery("")} className="size-4 text-gray-700" />
+                                    </ComboboxButton>
+                                </div>
 
-                            {/* Dropdown Options */}
-                            <ComboboxOptions 
-                            transition
-                            className="absolute z-50 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-300 max-h-60 overflow-auto transition duration-200 ease-in data-[leave]:data-[closed]:opacity-0">
-                    
-                                <ComboboxOption 
-                                key={null}
-                                value={"Unassigned"} 
-                                className="group flex cursor-pointer items-center px-3 py-2 hover:bg-gray-100"
-                                >
-                                <CheckIcon className={`size-4 text-gray-700 ${assignedToTeamMember === null ? "opacity-100" : "opacity-0"}`} />
-                                <span className="text-gray-700 ml-2">Unassigned</span>
-                                </ComboboxOption>
+                                {/* Dropdown Options */}
+                                <ComboboxOptions 
+                                transition
+                                className="absolute z-50 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-300 max-h-60 overflow-auto transition duration-200 ease-in data-[leave]:data-[closed]:opacity-0">
+                        
+                                    <ComboboxOption 
+                                        key={null}
+                                        value={"Unassigned"} 
+                                        className="group flex cursor-pointer items-center px-3 py-2 text-xs hover:bg-gray-100"
+                                        >
+                                        <CheckIcon className={`size-4 text-gray-700 ${assignedToTeamMember === null ? "opacity-100" : "opacity-0"}`} />
+                                        <span className="text-gray-700 ml-2">Unassigned</span>
+                                    </ComboboxOption>
 
-                                {filteredMembers.map((memberOpt) => (
-                                <ComboboxOption 
-                                    key={memberOpt._id} 
-                                    value={memberOpt} 
-                                    className="group flex cursor-pointer items-center px-3 py-2 hover:bg-gray-100"
-                                >
-                                    {/* opacity-0 group-aria-selected:opacity-100 */}
-                                    <CheckIcon className={`size-4 text-gray-700 ${assignedToTeamMember?._id === memberOpt._id ? "opacity-100" : "opacity-0"}`} />
-                                    <span className="text-gray-700 ml-2">{memberOpt.email}</span>
-                                </ComboboxOption>
-                                ))}
-                            </ComboboxOptions>
+                                    {filteredMembers.map((memberOpt) => (
+                                    <ComboboxOption 
+                                        key={memberOpt._id} 
+                                        value={memberOpt} 
+                                        className="group flex cursor-pointer items-center px-3 py-2 text-xs hover:bg-gray-100"
+                                    >
+                                        {/* opacity-0 group-aria-selected:opacity-100 */}
+                                        <CheckIcon className={`size-4 text-gray-700 ${assignedToTeamMember?._id === memberOpt._id ? "opacity-100" : "opacity-0"}`} />
+                                        <span className="text-gray-700 ml-2">{memberOpt.email}</span>
+                                    </ComboboxOption>
+                                    ))}
+                                </ComboboxOptions>
                             </Combobox>
                         </div>
-                        <div className="grid grid-cols-2 gap-1 text-gray-700 text-sm items-center">
-                            <div className="font-bold">Created By:</div>
-                            <div className="font-thin">{task?.createdBy?.email}</div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-1 text-gray-700 text-sm items-center">
-                            <div className="font-bold">Last Updated By:</div>
-                            <div className="font-thin">{task?.updatedBy?.email}</div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-1 text-gray-700 text-sm items-center">
-                            <div className="font-bold">Updated At:</div>
-                            <div className="font-thin">{formatUpdatedAtTime(task?.updatedAt)}</div>
-                        </div>
+                        {/* <div className="grid grid-cols-3 gap-1 text-gray-700 text-sm items-center"> */}
+                            <div className="col-span-2 font-bold text-gray-700 text-sm">Created By:</div>
+                            <div className="col-span-3 font-thin text-gray-700 text-sm">{task?.createdBy?.email}</div>
+                        {/* </div> */}
+                        {/* <div className="grid grid-cols-2 gap-1 text-gray-700 text-sm items-center"> */}
+                            <div className="col-span-2 font-bold text-gray-700 text-sm">Last Updated By:</div>
+                            <div className="col-span-3 font-thin text-gray-700 text-sm">{task?.updatedBy?.email}</div>
+                        {/* </div> */}
+                        {/* <div className="grid grid-cols-2 gap-1 text-gray-700 text-sm items-center"> */}
+                            <div className="col-span-2 font-bold text-gray-700 text-sm">Updated At:</div>
+                            <div className="col-span-3 font-thin text-gray-700 text-sm">{formatUpdatedAtTime(task?.updatedAt)}</div>
+                        {/* </div> */}
                     </div>)}
                 </div>
             </div>

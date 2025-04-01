@@ -41,7 +41,7 @@ export async function PATCH(req, { params }) {
         return NextResponse.json({ success: true, message: "No notifications to update" }, { status: 200 });
     }
 
-    await Notification.updateMany({ _id: { $in: user.notifications } }, { $set: { isNew: false } });
+    await Notification.updateMany({ _id: { $in: user.notifications } }, { $set: { new: false } });
 
     return NextResponse.json({ success: true, message: "Notifications marked as read" }, { status: 200 });
 
