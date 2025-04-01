@@ -57,6 +57,11 @@ const TasksView = ({
       if (teamId) {
         filteredTasks = data.filter(task => !task.isTrash && task.team === teamId);
       }
+      else if (listId) {
+        console.log(`list`+listId);
+        filteredTasks = data.filter(task => !task.isTrash && task.list?._id === listId);
+        console.log(filteredTasks);
+      }
       else {
         switch (title) {
           case "Today": 
@@ -83,10 +88,6 @@ const TasksView = ({
 
           case "Trash": 
             filteredTasks = data.filter(task => task.isTrash);
-            break;
-
-          default:
-            filteredTasks = data.filter(task => !task.isTrash && task.list === listId);
             break;
         }
       }
@@ -416,6 +417,7 @@ const handleTaskAssignment = async(taskId, assignedTo) => {
               <div className="group pr-2" key={task._id}>
                 <div className={`px-3 py-2 rounded-md ${ selectedTask?._id == task?._id ? "bg-purple-50 hover:bg-purple-100" : "hover:bg-gray-50"}`} 
                   onClick={(e) => {
+                    console.log(selectedTask);
                     if (typeof window !== "undefined" && window.innerWidth < 639) {
                       if ((!teamId && !taskBarCollapse) || (teamId && !membersSectionCollapse)) {
                         teamId ? setMembersSectionCollapse(true) : setTaskBarCollapse(true);

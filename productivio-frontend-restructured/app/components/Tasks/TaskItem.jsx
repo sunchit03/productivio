@@ -97,10 +97,19 @@ const TaskItem = ({ task, handleCheckBoxCheck, pageTitle = "" }) => {
         {task?.title || "Untitled Task"} {/* Ensures task title is displayed */}
       </span>
       <div className="text-black text-xs font-thin flex items-center">
-        {pageTitle == "" && task.list && (
+        {(pageTitle == "" || pageTitle === "Completed" || pageTitle === "Trash") && task?.list && (
           <>
             <span className="mr-1">{task.list.emoji}</span>
             <span className="mr-1">{task.list.name}</span>
+            {task.dueDate &&
+              <span className="mr-1 text-purple-200">|</span>
+            }
+          </>
+        )
+        }
+        {(pageTitle === "" || pageTitle !== "") && task?.team && (
+          <>
+            <span className="text-black mr-1">{task.team.title}</span>
             {task.dueDate &&
               <span className="mr-1 text-purple-200">|</span>
             }
