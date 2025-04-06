@@ -82,13 +82,14 @@ function Dashboard() {
       {user && (
         <>
           <div className="flex h-screen bg-gray-100">
-          <MainSidebar 
-            activeMainTab={activeMainTab} 
-            setActiveMainTab={setActiveMainTab} 
-            user={user} 
-            selectedTeam={selectedTeam} 
-            setSelectedTeam={setSelectedTeam}
-          />
+            <MainSidebar 
+              activeMainTab={activeMainTab} 
+              setActiveMainTab={setActiveMainTab} 
+              user={user} 
+              selectedTeam={selectedTeam} 
+              setSelectedTeam={setSelectedTeam}
+              userId={userId}
+            />
 
             {/* Tasks Page */}
             {activeMainTab === "task" ? (

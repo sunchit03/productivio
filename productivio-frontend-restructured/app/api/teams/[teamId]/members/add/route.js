@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import Team from "../../../../models/Team";
-import User from "../../../../models/User";
+import Team from "../../../../../models/Team";
+import User from "../../../../../models/User";
 
 export async function PATCH(req, { params }) {
   try {

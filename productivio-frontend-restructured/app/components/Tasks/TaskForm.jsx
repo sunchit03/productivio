@@ -39,14 +39,17 @@ const TaskForm = ( {todayOrNext = false, listId = null, teamId = null, refresh, 
         today.setHours(23, 59, 59, 999);
         
         const selectedDate = new Date(dueDate);
-        selectedDate.setHours(0, 0, 0, 0);
-        if(today.getTime() !== selectedDate.getTime()){
-          toast("Task is created in inbox tab!")
+        selectedDate.setHours(23, 59, 59, 999);
+        if(!(today.getTime() === selectedDate.getTime())){
+          toast.success("Task is created in inbox tab!")
+        }
+        else{
+          toast.success("Task created successfully!")
         }
       }
       else{
         setDueDate(null)
-        toast("Task is created in inbox tab!")
+        toast.success("Task is created in inbox tab!")
       }
     }
 
@@ -63,16 +66,19 @@ const TaskForm = ( {todayOrNext = false, listId = null, teamId = null, refresh, 
       next7Days.setHours(23, 59, 59, 999)
 
       if(selectedDate.getTime() < today.getTime() || selectedDate.getTime() > next7Days.getTime()){
-        toast("Task is created in inbox tab!")
+        toast.success("Task is created in inbox tab!")
+      }
+      else{
+        toast.success("Task created successfully!")
       }
       }
       else{
         setDueDate(null)
-        toast("Task is created in inbox tab!")
+        toast.success("Task is created in inbox tab!")
       }
     }
 
-    if (!todayOrNext && !dueDateSelected) {
+    if (!dueDateSelected) {
       setDueDate(null)
     }
 
@@ -86,8 +92,13 @@ const TaskForm = ( {todayOrNext = false, listId = null, teamId = null, refresh, 
       });
 
       if (data.success) {
-        console.log("task is created!");
+        if(pageTitle === "Inbox"){
+          toast.success("Task created successfully!")
+        }
         refresh();
+      }
+      else{
+        toast.error("Error while creating task!")
       }
     } catch (error) {
       console.error("Error creating task:", error);
@@ -203,18 +214,28 @@ const TaskForm = ( {todayOrNext = false, listId = null, teamId = null, refresh, 
             {
               dueDateSelected ? 
                 <>
-                  <div className={`flex items-center ${formatDate().color}`} onClick={() => setDatePicker((val) => !val)}>
-                    <BsCalendar2Date className="mr-2"/>
+                  <div className={`p-1 flex items-center ${formatDate().color} hover:bg-gray-100 hover:rounded-md`} onClick={() => setDatePicker((val) => !val)}>
+                    <BsCalendar2Date className="mr-1"/>
                     <span> 
                       {formatDate().dateText}
                     </span>
                   </div>
                   { datePicker &&
-                    <GrClear className="ml-2 text-gray-600" onClick={() => { setDueDate(null); setDueDateSelected(false); }}/>
+                    <span 
+                      className="ml-2 p-2 hover:bg-gray-100 hover:rounded-md"
+                      onClick={() => { setDueDate(null); setDueDateSelected(false); }}
+                    >
+                      <GrClear className="text-gray-600"/>
+                    </span>
                   }
                 </>
                 :
-                <IoCalendarOutline className="text-gray-600" onClick={() => setDatePicker((val) => !val)}/>
+                <span 
+                  className="ml-2 p-2 hover:bg-gray-100 hover:rounded-md"
+                  onClick={() => setDatePicker((val) => !val)}
+                >
+                  <IoCalendarOutline className="text-gray-600"/>
+                </span>
             }
           </span>
           {datePicker &&

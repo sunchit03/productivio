@@ -4,6 +4,7 @@ import DetailTaskView from "../Tasks/DetailTaskView";
 import {updateTask} from "@/app/services/tasks"
 import { useState, useEffect } from "react";
 import {createTask} from "@/app/services/tasks"
+import toast, { Toaster } from 'react-hot-toast';
 
 const titleColorMap = {
     "Urgent & Important": "text-red-600",
@@ -60,6 +61,7 @@ const handleMatrixAddNewTask = async(userId, title, description, dueDate, select
         if(data){
             setAddEditTaskModal(false);
             refresh();
+            toast.success("Task created successfully!")
         }
         else{
             console.log(`Error creating new task with title-${title}: `, data.error);
@@ -96,6 +98,7 @@ const handleTrashOrRestore = async(taskId, restore) => {
         setTasks(prevTasks => prevTasks.filter(task => task._id != taskId));
         setAddEditTaskModal(false);
         setSelectedTask(null);
+        toast.success("Task moved to trash!")
     }
     else{
       console.log("Error while moving task to trash: ", data.error)}
@@ -130,6 +133,7 @@ const handleEditTask = async(taskId, title, description) => {
     }
     setAddEditTaskModal(false);
     setSelectedTask(null);
+    toast("Task details updated!")
     }
     else{
     console.log("Error updating task with title and description: ", data.error)}
@@ -152,6 +156,18 @@ const handleTaskSelection = (task) => {
 
 return(
     <div className= "group border rounded-md p-2 bg-white shadow-md h-[43vh] flex flex-col">
+        <Toaster
+            toastOptions={{
+            removeDelay: 500,
+            position: 'bottom-center',
+            style: {
+                backgroundColor: "#E6E6FA",
+                padding: '16px',
+                color: '#6A0DAD',
+                textAlign: "center",
+            },
+            }}
+        />
         <div className={`text-sm p-2 font-bold flex w-full justify-between items-center`}>
             <div className={`flex items-center gap-2 pb-1  ${textColor}`}>{title} </div>
             <div className="invisible group-hover:visible flex items-center">

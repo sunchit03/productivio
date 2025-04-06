@@ -36,6 +36,7 @@ export default function TeamCard({ team, userId, editTeam, removeTeam, setSelect
   }
 
   return (
+    <>
     <div
       className="bg-white shadow-md rounded-lg p-4 cursor-pointer hover:shadow-lg transition"
       onClick={() => setSelectedTeam(team)}
@@ -56,11 +57,11 @@ export default function TeamCard({ team, userId, editTeam, removeTeam, setSelect
           </div>
       </div>
 
-      {team.admin === userId && (
+      {team.admin._id === userId && (
         <div onClick={(e)=>e.stopPropagation()}>
             <Menu menuButton= {
                 <MenuButton>
-                    <BiDotsHorizontal size={24} className="flex items-center hover:bg-gray-300 rounded-sm p-1" />
+                    <BiDotsHorizontal size={24} className="flex items-center text-gray-400 hover:text-black rounded-sm p-1" />
                 </MenuButton>
             }
             key={'bottom'}
@@ -78,21 +79,22 @@ export default function TeamCard({ team, userId, editTeam, removeTeam, setSelect
             </Menu>
         </div>
       )}
-        {addEditTeamModal && 
-        <CreateOrEditTeam
-          team={team}
-          editTeam={editTeam}
-          onClose={() => setAddEditTeamModal(false)}
-        />}
-
-        {deleteTeamModal &&
-        <DeleteTeamModal
-          team={team}
-          removeTeam={removeTeam}
-          onClose={() => setDeleteTeamModal(false)}
-        />
-        }
       </div>
     </div>
+      {addEditTeamModal && 
+      <CreateOrEditTeam
+        team={team}
+        editTeam={editTeam}
+        onClose={() => setAddEditTeamModal(false)}
+      />}
+
+      {deleteTeamModal &&
+      <DeleteTeamModal
+        team={team}
+        removeTeam={removeTeam}
+        onClose={() => setDeleteTeamModal(false)}
+      />
+      }
+  </>
   );
 }

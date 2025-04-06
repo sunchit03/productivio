@@ -21,7 +21,7 @@ export async function GET(req, { params }) {
         select: "_id title description admin",
         populate: {
           path: "admin",
-          select: "_id", // Only selecting _id for admin
+          select: "_id profilePicture", // Only selecting _id for admin
         },
       });
 
