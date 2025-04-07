@@ -32,8 +32,8 @@ const SidebarListItem = ({ list, activeTab, setActiveTab, activeList, setActiveL
 
     const deleteListModal = () => {
         return (
-          <div className="fixed inset-0 flex items-start justify-center bg-gray-900 bg-opacity-0 z-50 top-10 drop-shadow-xl">
-            <div className="xs:w-5/6 xssm:w-4/5 mdlg:w-3/5 bg-white p-6 rounded-md shadow-lg w-2/5">
+          <div className="fixed inset-0 flex items-start justify-center bg-gray-100 bg-opacity-40 z-50 pt-20 drop-shadow-xl" onClick={()=>setIsListDeleteModalOpen(false)}>
+            <div className="xs:w-5/6 xssm:w-4/5 mdlg:w-3/5 bg-white p-6 rounded-md shadow-lg w-2/5" onClick={(e)=>e.stopPropagation()}>
               <h2 className="text-lg font-semibold mb-4 text-black">Delete list "{list.emoji} {list.name}"?</h2>
               <form onSubmit={(e) => handleDeleteList(e)}>
                 <label className="block text-black mb-2">

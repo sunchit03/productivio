@@ -8,8 +8,8 @@ export default function DeleteTeam({team, removeTeam, onClose}) {
     return(
         <>
         <div className="fixed inset-0 flex items-start justify-center bg-gray-900 bg-opacity-0 z-50 top-10 drop-shadow-xl"
-            onClick={(e) => e.stopPropagation()}>
-            <div className="xs:w-5/6 xssm:w-4/5 mdlg:w-3/5 bg-white p-6 rounded-md shadow-lg w-2/5">
+            onClick={onClose}>
+            <div className="xs:w-5/6 xssm:w-4/5 mdlg:w-3/5 bg-white p-6 rounded-md shadow-lg w-2/5" onClick={(e) => e.stopPropagation()}>
                 <h2 className="text-lg font-semibold mb-4 text-black">Delete Team - "{team.title}"?</h2>   
                 <p className="text-black font-thin mb-2">All the tasks and team members will be removed from "{team.title}" team.</p>        
                 <div className="flex justify-between mt-8">

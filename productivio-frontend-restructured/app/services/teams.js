@@ -46,6 +46,7 @@ export async function deleteTeam(teamId, userId) {
         return await res.json();
     } catch(error) {
         console.log("Error deleting the team: ", error);
+        return { success: false };
     }
 }
 
@@ -59,19 +60,34 @@ export async function updateTeam(teamId, userId, updatedTeam) {
         return await res.json();
     } catch(error) {
         console.log("Error while updating team: ", error)
+        return { success: false };
     }
 }
 
 export async function addUserToTeam(teamId, userId, newMember) {
     try {
-        const res = await fetch(`/api/teams/${teamId}/members`,{
-        method: "PATCH",
-        headers: {"Content-type":"application/json"},
-        body: JSON.stringify({userId, newMember}),
+        const res = await fetch(`/api/teams/${teamId}/members/add`, {
+            method: "PATCH",
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify({userId, newMember}),
         });
         return await res.json();
-    } catch(error) {
+    } catch (error) {
         console.log("Error while adding user to team: ", error)
+        return { success: false };
+    }
+}
+
+export async function removeUserFromTeam(teamId, userId, memberId, remove = true) {
+    try {
+        const res = await fetch(`/api/teams/${teamId}/members/remove`, {
+            method: "PATCH",
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify({userId, memberId, remove}),
+        });
+        return await res.json();
+    } catch (error) {
+        console.log(`Error while ${remove ? "removing user from the team": "leaving the team"}: `, error)
         return { success: false };
     }
 }

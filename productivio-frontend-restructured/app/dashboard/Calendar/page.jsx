@@ -7,6 +7,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import DetailTaskView from "@/app/components/Tasks/DetailTaskView";
 import { getUserTasks, updateTask} from "@/app/services/tasks";
+import toast, { Toaster } from 'react-hot-toast';
 
 function CalendarPage({ userId }) {
 
@@ -91,10 +92,12 @@ function CalendarPage({ userId }) {
         setEvents(prevEvents => prevEvents.filter(event => event.extendedProps.id != taskId));
       if(selectedTask?._id === taskId){
         setSelectedTask(null);
+        toast.success("Task moved to trash!")
       }
     }
     else{
-      console.log("Error while moving task to trash: ", data.error)}
+      console.log("Error while moving task to trash: ", data.error)
+      toast.error("Error while moving task to trash.")}
     }catch(error){
       console.log("Error updating task: ", error.message);
       }
@@ -108,11 +111,13 @@ const handleEditTask = async(taskId, title, description) => {
       setEvents(prevEvents=>prevEvents.map(event => event.extendedProps.id === taskId ? {...event, title: title} : event))
       if(selectedTask?._id === taskId){
       setSelectedTask(prevTask=>({...prevTask, title: title, description: description}));
+      toast.success("Task details updated!")
       }
       setSelectedTask(null);
   }
   else{
-      console.log("Error updating task with title and description: ", data.error)}
+      console.log("Error updating task with title and description: ", data.error)
+      toast.error("Error while updating task details.")}
   }catch(error){
       console.log("Error updating task: ", error.message);
       }
@@ -190,6 +195,17 @@ const handleDueDateUpdate = async(taskId, date) => {
 
   return (
     <div className="p-4 sm:p-6 bg-white shadow-md rounded-lg max-w-full overflow-x-auto h-screen">
+      <Toaster
+      toastOptions={{
+      removeDelay: 500,
+      position: 'bottom-center',
+      style: {
+          backgroundColor: "#E6E6FA",
+          padding: '16px',
+          color: '#6A0DAD',
+          textAlign: "center",},
+      }}
+      />
       <FullCalendar 
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]} 
         initialView="dayGridMonth" 

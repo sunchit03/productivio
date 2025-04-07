@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import Task from "../../../models/Task";
+import User from "../../../models/User";
+
 
 export async function GET(req, { params }) {
     try {
@@ -40,19 +42,43 @@ export async function DELETE(req, { params }) {
 export async function PATCH(req, { params }) {
   try {
     const { taskId } = await params;
-    const { userId, ...updateData } = await req.json();
+    const { userId, ...updatedData } = await req.json();
 
     const task = await Task.findById(taskId);
     if (!task) {
       return NextResponse.json({ success: false, error: "Task not found" }, { status: 404 });
     }
 
-    // Only the creator or assigned user can update the task
-    if (task.createdBy.toString() !== userId && task.assignedTo.toString() !== userId) {
-      return NextResponse.json({ success: false, error: "Not authorized to update this task" }, { status: 403 });
+    if(!userId){
+      return NextResponse.json({ success: false, error: "UserId not found" }, { status: 404 });
     }
 
-    const updatedTask = await Task.findByIdAndUpdate(taskId, updateData, { new: true });
+    const user = await User.findById(userId);
+
+    if(!user){
+      return NextResponse.json({ success: false, error: "User not found" }, { status: 403 });
+    }
+
+    const previousAssignedTo = task.assignedTo?.toString(); // can be null or userId
+    const newAssignedTo = updatedData.assignedTo;
+
+    // Remove task from previous user if reassigned or unassigned
+    if (previousAssignedTo && previousAssignedTo !== newAssignedTo) {
+      await User.findByIdAndUpdate(previousAssignedTo, {
+        $pull: { tasks: task._id }
+      });
+    }
+
+    // Add task to new user's tasks array
+    if (newAssignedTo && previousAssignedTo !== newAssignedTo) {
+      await User.findByIdAndUpdate(newAssignedTo, {
+        $addToSet: { tasks: task._id }
+      });
+    }
+
+    updatedData.updatedBy = user._id;
+
+    const updatedTask = await Task.findByIdAndUpdate(taskId, updatedData, { new: true });
 
     return NextResponse.json({ success: true, task: updatedTask }, { status: 200 });
 

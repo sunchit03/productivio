@@ -1,28 +1,79 @@
 import { useState, useEffect } from "react";
-import { FaUser, FaUserPlus } from "react-icons/fa";
+import { FaExclamationCircle, FaUser, FaUserPlus } from "react-icons/fa";
 import { IoMdNotificationsOutline } from "react-icons/io";
-import { IoChevronBackCircle, IoLogOutOutline } from "react-icons/io5";
+import { IoChevronBackCircle, IoExit, IoLogOutOutline } from "react-icons/io5";
 import AddMemberModal from "./AddMemberModal";
-import { addUserToTeam } from "@/app/services/teams";
+import { addUserToTeam, deleteTeam, removeUserFromTeam, updateTeam } from "@/app/services/teams";
 import { sendInvite } from "@/app/services/users";
 import MembersSectionItem from "./MembersSectionItem";
 import NotificationsModal from "../NotificationsModal";
 import { preLogOut } from "../../utils/prelogout";
+import LeaveTeamModal from "./LeaveTeamModal";
+import { createNotification, deleteAllNotifications, getUserNotifications, updateNotifications } from "../../services/notifications";
+import toast, { Toaster } from 'react-hot-toast';
 
 
-export default function MembersSection({ user, teamId, members, isAdmin, userId, setSelectedTeam, membersSectionCollapse, refresh }) {
+export default function MembersSection({ user, teamId, teamName, members, isAdmin, adminId, userId, setSelectedTeam, membersSectionCollapse, refresh }) {
   const [query, setQuery] = useState("");
+  const [teamMembers, setTeamMembers] = useState(members);
   const [filteredMembers, setFilteredMembers] = useState(members);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
   const [invitations, setInvitations] = useState([]);
   const [userPicture, setUserPicture] = useState(user?.picture || null);
+  const [notifications, setNotifications] = useState([]);
+  const [isNewNotification, setIsNewNotification] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+
+
+  const fetchNotifications = async () => {
+    const data = await getUserNotifications(userId);
+    
+    if (data.success) {
+      console.log(data);
+      setNotifications(data.notifications);
+      setIsNewNotification(notifications.includes(notification => notification.new === true))
+    } else {
+      toast.error("Failed to load notifications");
+      setNotifications([]);
+    }
+  }
 
   useEffect(() => {
     if (user) {
-    setUserPicture(user.picture);
+      setUserPicture(user.picture);
     }
-  }, [user]);
+  
+    if (userId) {
+      fetchNotifications(); // Fetch immediately
+  
+      const interval = setInterval(() => {
+        fetchNotifications();
+      }, 300000); // 5 minutes (300,000ms)
+  
+      return () => clearInterval(interval); // Cleanup on unmount
+    }
+  }, [user, userId]);
+
+  const readNotifications = async () => {
+    const data = await updateNotifications(userId);
+
+    if (data.success) {
+      setNotifications(prevNotifications => prevNotifications.map(notification => ({...notification, new: false})));
+    } else {
+      toast.error("Failed to mark notifications as read");
+    }
+  }
+
+  const clearNotifications = async () => {
+    const data = await deleteAllNotifications(userId);
+
+    if (data.success) {
+      setNotifications([]);
+    } else {
+      toast.error("Failed to mark notifications as read");
+    }
+  }
 
   useEffect(() => {
     if (query === "") {
@@ -39,7 +90,8 @@ export default function MembersSection({ user, teamId, members, isAdmin, userId,
 	}, [query]);
 
   useEffect(() => {
-    setFilteredMembers(members)
+    setTeamMembers(members);
+    setFilteredMembers(members);
   }, [members])
 
   const handleLogout = async () => {
@@ -60,6 +112,20 @@ export default function MembersSection({ user, teamId, members, isAdmin, userId,
   const addUser = async (newUser) => {
     const data = await addUserToTeam(teamId, userId, newUser);
     if (data.success) {
+      // send notification to newUser
+
+      let dataNotification = await createNotification (
+        {
+          title: `You are added to the team: ${teamName}`, 
+          type: 'team-member-addition', 
+          receiverId: newUser._id
+        }
+      )
+      
+      if (!dataNotification.success) {
+        toast.error("Something went wrong, don't worry");
+      }
+
       console.log("addeddddddd");
       setShowAddModal(false);
       refresh();
@@ -85,9 +151,95 @@ export default function MembersSection({ user, teamId, members, isAdmin, userId,
     }
   }
 
+  const leaveTeam = async (newAdmin = null) => {
+
+    if (newAdmin) {
+      const data = await updateTeam(teamId, userId, {admin: newAdmin})
+
+      if (data.success) {
+        // new admin assigned
+        // send notification to newAdmin
+
+        let dataNotification = await createNotification (
+          {
+            title: `You are now the admin of the team: ${teamName}`, 
+            type: 'team-admin-assignment', 
+            receiverId: newAdmin._id
+          }
+        )
+        
+        if (!dataNotification.success) {
+          toast.error("Something went wrong, don't worry");
+        }
+
+      } else {
+        // something went wrong
+      }
+    }
+
+    const data = await removeUserFromTeam(teamId, userId, userId, false);
+    if (data.success) {
+      setFilteredMembers(prevMembers => prevMembers.filter(prevMember => prevMember._id == userId))
+      setTeamMembers(prevMembers => prevMembers.filter(prevMember => prevMember._id !== userId))
+      setSelectedTeam(null);
+      setShowLeaveModal(false);
+      // left team
+    } else {
+      // something went wrong
+    }
+  }
+
+  const memberRemoval = async(memberId) => {
+    const data = await removeUserFromTeam(teamId, userId, memberId, false);
+    if (data.success) {
+      // send notification to memberId
+
+      let dataNotification = await createNotification (
+        {
+          title: `You are removed from the team: ${teamName}`, 
+          type: 'team-member-removal', 
+          receiverId: memberId
+        }
+      )
+      
+      if (!dataNotification.success) {
+        toast.error("Something went wrong, don't worry");
+      }
+
+      setFilteredMembers(prevMembers => prevMembers.filter(prevMember => prevMember._id !== memberId))
+      setTeamMembers(prevMembers => prevMembers.filter(prevMember => prevMember._id !== memberId))
+      // removed from team
+    } else {
+      // something went wrong
+    }
+  }
+
+  const teamDeletion = async () => {
+    const data = await deleteTeam(teamId, userId);
+    if(data.success){
+      setSelectedTeam(null);
+    }
+    else{
+      //something went wrong
+    }
+  }
+
   return (
     <div className={`sm:absolute sm:left-0 sm:z-30 transition-width duration-200 ease-linear relative bg-gradient-to-b from-indigo-100 to-pink-50 bg-white text-black h-screen flex flex-col overflow-y-auto
      ${membersSectionCollapse ? "w-0" : "w-[310px] mdlg:w-[305px] md:w-[213px] sm:w-[300px] xs:w-[288px]"}`}>
+
+      <Toaster
+        toastOptions={{
+          removeDelay: 500,
+          position: 'bottom-center',
+          style: {
+            backgroundColor: "#E6E6FA",
+            padding: '16px',
+            color: '#6A0DAD',
+            textAlign: "center",
+          },
+        }}
+      />
 
       <div className="hidden xs:flex justify-between items-center pt-4 px-2">
         {user ? (
@@ -108,13 +260,20 @@ export default function MembersSection({ user, teamId, members, isAdmin, userId,
         )}
 
         <div className="flex items-center">
-          {/* Notifications Button */}
-          <button 
-            className="px-2 py-1 rounded text-black"
-            title="Notifications"
-            onClick={() => setShowNotifications(true)}>
-            <IoMdNotificationsOutline  size="1.4em"/>
-          </button>
+          <div className="relative">
+            {/* Notifications Button */}
+            <button 
+              className="px-2 py-1 rounded text-black"
+              title="Notifications"
+              onClick={() => { setShowNotifications(prev => !prev); setIsNewNotification(false); readNotifications();}}>
+              <IoMdNotificationsOutline  size="1.4em"/>
+            </button>
+            {isNewNotification && 
+              <div className="absolute -right-[1.5px] -top-1 text-indigo-400/90 text-sm/4 font-semibold">
+                <FaExclamationCircle size="1.2em"/>
+              </div>
+            }
+          </div>
   
           <button 
             onClick={() => handleLogout()} 
@@ -126,21 +285,45 @@ export default function MembersSection({ user, teamId, members, isAdmin, userId,
         </div>
 
         {/* Notifications Modal */}
-        {showNotifications && <NotificationsModal onClose={() => setShowNotifications(false)} notifications={[]} activities={[]} />}
+        {
+          showNotifications && 
+          <NotificationsModal 
+            onClose={() => setShowNotifications(false)} 
+            notifications={notifications}
+            readNotifications={readNotifications}
+            clearNotifications={clearNotifications}
+          />
+        }
       </div>
 
       <div className="py-[14px] px-[10px]">
         {/* Members Header with Add Icon */}
         <div className="flex justify-between items-center mb-3">
           <div className="flex items-center">
-            <IoChevronBackCircle className="mr-2 cursor-pointer" size={20} onClick={() => setSelectedTeam(null)} />
-            <h2 className="text-lg font-bold text-black">Members</h2>
+            <IoChevronBackCircle 
+              title="Exit"
+              className="mr-2 cursor-pointer text-indigo-500 hover:text-indigo-700" 
+              size={20} 
+              onClick={() => setSelectedTeam(null)} 
+            />
+            <h2 className="text-lg font-bold text-indigo-500">Members</h2>
           </div>
-          {isAdmin &&
-            <button onClick={() => setShowAddModal(true)} className="text-blue-500 hover:text-blue-700">
-              <FaUserPlus size={20} />
+          <div className="flex justify-between items-center">
+            {isAdmin &&
+              <button 
+                title="Add User"
+                onClick={() => setShowAddModal(true)} 
+                className="text-indigo-500 hover:text-indigo-700 mr-3">
+                  <FaUserPlus size={20} />
+              </button>
+            }
+            <button 
+              title="Leave Team"
+              onClick={() => setShowLeaveModal(true) } 
+              className="text-indigo-500 hover:text-indigo-700">
+                <IoExit size={20}/>
             </button>
-          }
+          </div>
         </div>
 
         {/* Search Bar */}
@@ -160,7 +343,9 @@ export default function MembersSection({ user, teamId, members, isAdmin, userId,
                   key={member._id}
                   member={member}
                   isAdmin={isAdmin}
+                  adminId={adminId}
                   userId={userId}
+                  memberRemoval={memberRemoval}
                 />
               ))
             }
@@ -173,7 +358,18 @@ export default function MembersSection({ user, teamId, members, isAdmin, userId,
             onClose={() => setShowAddModal(false)} 
             addUser={addUser} 
             inviteUser={inviteUser}
-            teamMembers={members} 
+            teamMembers={teamMembers} 
+            userId={userId}
+          />
+        }
+
+        {showLeaveModal &&
+          <LeaveTeamModal
+            onClose={() => setShowLeaveModal(false)}
+            leaveTeam={leaveTeam}
+            isAdmin={isAdmin}
+            members={teamMembers}
+            deleteTeam={teamDeletion}
             userId={userId}
           />
         }
