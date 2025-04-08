@@ -14,7 +14,7 @@ import TaskPage from "./tasks/page";
 import EisenhowerMatrix from "./eisenhowerMatrix/page";
 import CalendarPage from "./Calendar/page";
 import { getJWT } from "@/app/utils/auth";
-
+import PomodoroPage from "./pomodoro/page";
 function Dashboard() {
   const { user, error, isLoading } = useUser();
 
@@ -110,7 +110,9 @@ function Dashboard() {
             :
             /* Pomodoro Page */
             activeMainTab === "pomodoro" ? (
-              <main className="flex-grow bg-gray-50"></main>
+              <main className="flex-grow bg-gray-50">
+                <PomodoroPage /> 
+              </main>
             )
             :
             /* Eisenhower Matrix Page */
