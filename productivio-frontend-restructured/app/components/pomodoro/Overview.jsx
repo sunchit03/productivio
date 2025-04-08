@@ -7,7 +7,6 @@ export default function Overview({ pomoCount }) {
   const [todayFocus, setTodayFocus] = useState(0);
   const [totalPomo, setTotalPomo] = useState(0);
   const [totalFocus, setTotalFocus] = useState(0);
-  const [isCollapsed, setIsCollapsed] = useState(false);
 
   useEffect(() => {
     const savedTotalPomo = localStorage.getItem("totalPomo");
@@ -32,35 +31,29 @@ export default function Overview({ pomoCount }) {
   }, [pomoCount]);
 
   return (
-    <div className={`w-full p-5 bg-white shadow-lg rounded-lg transition-all duration-300 
-        ${isCollapsed ? "h-12 overflow-hidden" : "h-auto"}`}
-    >
-      {/* Header with Collapse Button */}
-      <div className="flex justify-between items-center cursor-pointer" onClick={() => setIsCollapsed(!isCollapsed)}>
+    <div className={`w-full p-2 transition-all duration-300`}>
+      <div className="flex justify-between items-center cursor-pointer">
         <h2 className="text-xl font-bold text-gray-800">Overview</h2>
-        <button className="text-indigo-600">{isCollapsed ? "Expand +" : "Collapse -"}</button>
       </div>
 
-      {!isCollapsed && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-3">
-          <div className="p-4 bg-gray-100 rounded-md shadow-sm transition-transform transform hover:scale-105">
-            <p className="text-gray-600">Today's Pomo</p>
-            <p className="text-3xl font-bold text-indigo-600">{todayPomo}</p>
-          </div>
-          <div className="p-4 bg-gray-100 rounded-md shadow-sm transition-transform transform hover:scale-105">
-            <p className="text-gray-600">Today's Focus</p>
-            <p className="text-3xl font-bold text-green-600">{todayFocus}m</p>
-          </div>
-          <div className="p-4 bg-gray-100 rounded-md shadow-sm transition-transform transform hover:scale-105">
-            <p className="text-gray-600">Total Pomo</p>
-            <p className="text-3xl font-bold text-indigo-600">{totalPomo}</p>
-          </div>
-          <div className="p-4 bg-gray-100 rounded-md shadow-sm transition-transform transform hover:scale-105">
-            <p className="text-gray-600">Total Focus Duration</p>
-            <p className="text-3xl font-bold text-green-600">{totalFocus}m</p>
-          </div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-3">
+        <div className="p-4 bg-gray-100 rounded-md shadow-sm transition-transform transform hover:scale-105">
+          <p className="text-gray-600">Today's Pomo</p>
+          <p className="text-3xl font-bold text-indigo-600">{todayPomo}</p>
         </div>
-      )}
+        <div className="p-4 bg-gray-100 rounded-md shadow-sm transition-transform transform hover:scale-105">
+          <p className="text-gray-600">Today's Focus</p>
+          <p className="text-3xl font-bold text-green-600">{todayFocus}m</p>
+        </div>
+        <div className="p-4 bg-gray-100 rounded-md shadow-sm transition-transform transform hover:scale-105">
+          <p className="text-gray-600">Total Pomo</p>
+          <p className="text-3xl font-bold text-indigo-600">{totalPomo}</p>
+        </div>
+        <div className="p-4 bg-gray-100 rounded-md shadow-sm transition-transform transform hover:scale-105">
+          <p className="text-gray-600">Total Focus Duration</p>
+          <p className="text-3xl font-bold text-green-600">{totalFocus}m</p>
+        </div>
+      </div>
     </div>
   );
 }

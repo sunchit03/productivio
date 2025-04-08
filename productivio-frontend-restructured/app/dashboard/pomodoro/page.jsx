@@ -1,51 +1,61 @@
 
 "use client";
 import Timer from "@/app/components/pomodoro/Timer";
-import MainSidebar from "@/app/components/MainSidebar";
 import SettingsContext from "@/app/components/pomodoro/SettingsContext";
 import Overview from "@/app/components/pomodoro/Overview";
 import { useState, useEffect } from "react";
 
-export default function PomodoroPage() {
-  const [workMinutes, setWorkMinutes] = useState(25);
+export default function PomodoroPage( {userId} ) {
+  const [main, setMain] = useState('pomo');
+  const [workMinutes, setWorkMinutes] = useState(2);
   const [breakMinutes, setBreakMinutes] = useState(5);
   const [showSettings, setShowSettings] = useState(false);
-  const [activeMainTab, setActiveMainTab] = useState("pomodoro");
   const [pomoCount, setPomoCount] = useState(0);
-  // const [isLandscape, setIsLandscape] = useState(false);
-
-  // // Check screen orientation on mount and resize
-  // useEffect(() => {
-  //   const checkOrientation = () => {
-  //     setIsLandscape(window.innerWidth > window.innerHeight);
-  //   };
-
-  //   checkOrientation(); // Run once when mounted
-  //   window.addEventListener("resize", checkOrientation);
-
-  //   return () => window.removeEventListener("resize", checkOrientation);
-  // }, []);
 
   return (
     <SettingsContext.Provider value={{ workMinutes, breakMinutes, setShowSettings }}>
-      <div className="flex h-screen bg-gradient-to-b from-indigo-400/75 to-pink-200">
-        {/* Sidebar Section */}
-        <div className="w-[50px]">
-          <MainSidebar activeMainTab={activeMainTab} setActiveMainTab={setActiveMainTab} />
-        </div>
+      <div className="w-full flex h-full px-5 overflow-hidden">
 
-        {/* Middle Content: Timer */}
-        <div className="flex flex-1 justify-center items-center">
-          <Timer onPomoComplete={() => setPomoCount((prev) => prev + 1)} />
+        {/* Middle Content: Timer / Stopwatch */}
+        <div className={` ${typeof window !== "undefined" && window.innerWidth >= 768 ? "w-3/5" : "w-full"} h-full `}>
+          <div className="flex flex-row items-center justify-around my-4">
+            <h1 className="ml-1 text-xl text-black font-semibold mb-4 flex-1">Pomodoro</h1>
+            <div className="flex-1 flex justify-evenly">
+              <button 
+                className={`px-4 py-1 rounded-full bg-gray-100 hover:text-indigo-400 ${main === 'pomo' ? "bg-indigo-50 text-indigo-400" : "bg-gray-100 text-black/30"}`}
+                onClick={() => setMain('pomo')}
+              >
+                Pomo
+              </button>
+              <button 
+                className={`px-4 py-1 rounded-full bg-gray-100 hover:text-indigo-400 ${main === 'stopwatch' ? "bg-indigo-50 text-indigo-400" : "bg-gray-100 text-black/30"}`}
+                onClick={() => setMain('stopwatch')}
+              >
+                Stopwatch
+              </button>
+            </div>
+            <div className="flex-1"></div>
+          </div>
+          <div className="flex flex-1 justify-center items-center">
+            {main === 'pomo' ?
+              <Timer onPomoComplete={() => setPomoCount((prev) => prev + 1)} />
+            :
+              <></>
+            }
+          </div>
+          
         </div>
 
         {/* Right Section: Overview - Visible on laptops and in landscape mode on phones */}
-        {(/*isLandscape || */(typeof window !== "undefined" && window.innerWidth >= 768)) && (
-          <div className="w-1/3 bg-white p-4 shadow-md">
-            <Overview pomoCount={pomoCount} />
+        {typeof window !== "undefined" && window.innerWidth >= 768 && (
+          <div className="relative w-2/5 h-full">
+            <div className="absolute w-[1px] h-dvh left-0 z-10 bg-purple-100"></div>
+              <div className="w-full h-full pl-2 pt-2 flex flex-col justify-between">
+                <Overview pomoCount={pomoCount} />
+              </div>
           </div>
         )}
       </div>
-    </SettingsContext.Provider>
+      </SettingsContext.Provider>
   );
 }
