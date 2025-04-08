@@ -396,7 +396,7 @@ const handleTaskAssignment = async(taskId, assignedTo) => {
               size={"1.5em"} 
               title="Export to CSV"
               className={`text-gray-500 font-thin ${tasks.length === 0 ? 'cursor-not-allowed' : 'cursor-pointer'}`} 
-              onClick={() => tasks.length > 0 && handleTasksExport} />
+              onClick={() => tasks.length > 0 && handleTasksExport()} />
           </div>
         </div>
         {!completedOrTrash && (
@@ -471,7 +471,7 @@ const handleTaskAssignment = async(taskId, assignedTo) => {
       </div>
 
       <div className={`relative ml-5 w-2/5 h-full xs:w-full sm:w-[80%] md:w-[75%] mdlg:w-[75%] mdlg:absolute mdlg:right-0 mdlg:bg-white mdlg:shadow-lg mdlg:rounded-lg  mdlg:z-10 ${selectedTask != null ? "mdlg:visible" : "mdlg:collapse" }`}>
-      <div className="absolute w-[1px] h-dvh left-0 z-10 bg-purple-100 visible mdlg:invisible"></div>
+        <div className="absolute w-[1px] h-dvh left-0 z-10 bg-purple-100 visible mdlg:invisible"></div>
         {selectedTask && 
           <div className="relative w-full h-full pl-2 pt-2 flex flex-col justify-between"
             onClick={(e) => e.stopPropagation()}>
