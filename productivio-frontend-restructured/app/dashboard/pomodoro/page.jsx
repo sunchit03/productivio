@@ -12,19 +12,19 @@ export default function PomodoroPage() {
   const [showSettings, setShowSettings] = useState(false);
   const [activeMainTab, setActiveMainTab] = useState("pomodoro");
   const [pomoCount, setPomoCount] = useState(0);
-  const [isLandscape, setIsLandscape] = useState(false);
+  // const [isLandscape, setIsLandscape] = useState(false);
 
-  // Check screen orientation on mount and resize
-  useEffect(() => {
-    const checkOrientation = () => {
-      setIsLandscape(window.innerWidth > window.innerHeight);
-    };
+  // // Check screen orientation on mount and resize
+  // useEffect(() => {
+  //   const checkOrientation = () => {
+  //     setIsLandscape(window.innerWidth > window.innerHeight);
+  //   };
 
-    checkOrientation(); // Run once when mounted
-    window.addEventListener("resize", checkOrientation);
+  //   checkOrientation(); // Run once when mounted
+  //   window.addEventListener("resize", checkOrientation);
 
-    return () => window.removeEventListener("resize", checkOrientation);
-  }, []);
+  //   return () => window.removeEventListener("resize", checkOrientation);
+  // }, []);
 
   return (
     <SettingsContext.Provider value={{ workMinutes, breakMinutes, setShowSettings }}>
@@ -40,7 +40,7 @@ export default function PomodoroPage() {
         </div>
 
         {/* Right Section: Overview - Visible on laptops and in landscape mode on phones */}
-        {(isLandscape || window.innerWidth >= 768) && (
+        {(/*isLandscape || */(typeof window !== "undefined" && window.innerWidth >= 768)) && (
           <div className="w-1/3 bg-white p-4 shadow-md">
             <Overview pomoCount={pomoCount} />
           </div>
