@@ -17,7 +17,7 @@ export async function POST(req) {
     }
 
     // Check if list with provided name already exists
-    const list = await List.findOne({name});
+    const list = await List.findOne({name, createdBy});
     if (list) {
       return NextResponse.json({ success: false, error: `List with name ${name} already exists` }, { status: 400 });
     }
