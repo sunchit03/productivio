@@ -1,5 +1,4 @@
 
-"use client";
 import Timer from "@/app/components/pomodoro/Timer";
 import SettingsContext from "@/app/components/pomodoro/SettingsContext";
 import PomoOverview from "@/app/components/pomodoro/pomoOverview";
