@@ -1,16 +1,13 @@
-import { useContext, useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import PlayButton from "./PlayButton";
 import PauseButton from "./PauseButton";
 import StopButton from "./StopButton";
 import SettingsModal from "./SettingsModal";
-import SettingsContext from "./SettingsContext";
-import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import SettingsButton from "@/app/components/pomodoro/SettingsButton";
 
 export default function Timer({ onPomoComplete, userId }) {
-    // Store settings state inside context
     const [workMinutes, setWorkMinutes] = useState(25);
     const [breakMinutes, setBreakMinutes] = useState(5);
     const [showSettings, setShowSettings] = useState(false);
@@ -35,6 +32,29 @@ export default function Timer({ onPomoComplete, userId }) {
     const hasStartedRef = useRef(false);
     const startTimeRef = useRef(null);
 
+    async function loadPreviousSession() {
+        const storedSessionId = localStorage.getItem("sessionId");
+        if (!storedSessionId) return;
+
+        try {
+            const response = await fetch(`/api/pomodoro?sessionId=${storedSessionId}`);
+            const data = await response.json();
+
+            if (data?.session) {
+                focusSecondsRef.current = data.session.focusSeconds || 0;
+                breakSecondsRef.current = data.session.breakSeconds || 0;
+                workAmountsRef.current = data.session.workAmounts || 0;
+                breakAmountsRef.current = data.session.breakAmounts || 0;
+
+                setFocusSeconds(focusSecondsRef.current);
+                setBreakSeconds(breakSecondsRef.current);
+                setWorkAmounts(workAmountsRef.current);
+            }
+        } catch (error) {
+            console.error("Error loading previous session:", error);
+        }
+    }
+
 
     async function createSession() {
         try {
@@ -54,6 +74,7 @@ export default function Timer({ onPomoComplete, userId }) {
             });
 
             const data = await response.json();
+            console.log(data);
             localStorage.setItem("sessionId", data.session._id);
 
             console.log("Session Created:", data);
@@ -62,7 +83,7 @@ export default function Timer({ onPomoComplete, userId }) {
         }
     }
 
-    async function stopSession({ focusSeconds, breakSeconds, workAmounts, breakAmounts }) {
+    async function stopSession({ focusSeconds, breakSeconds, workAmounts=0, breakAmounts=0 }) {
         try {
             const response = await fetch("/api/pomodoro", {
                 method: "PATCH",
@@ -70,7 +91,6 @@ export default function Timer({ onPomoComplete, userId }) {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    userId: localStorage.getItem("userId"),
                     sessionId: localStorage.getItem("sessionId"),
                     currentMode: modeRef.current,
                     focusSeconds,
@@ -88,7 +108,9 @@ export default function Timer({ onPomoComplete, userId }) {
     }
 
 
-
+    useEffect(() => {
+        loadPreviousSession();
+    }, []);
 
 
     useEffect(() => {
@@ -153,7 +175,7 @@ export default function Timer({ onPomoComplete, userId }) {
     const colors = mode === "work" ? ["#8f304e", "#2c7a1d"] : ["#2c7a1d", "#8f304e"];
 
     return (
-        <SettingsContext.Provider value={{
+        <div value={{
             workMinutes,
             breakMinutes,
             setWorkMinutes,
@@ -197,21 +219,24 @@ export default function Timer({ onPomoComplete, userId }) {
                                 setIsPaused(false);
                             }} />
                         ) : (
-                            <PauseButton onClick={() =>
-                                setIsPaused(true)} />
+                            <PauseButton onClick={() =>{
+                                const now = Date.now();
+                                const elapsedMs = now - startTimeRef.current;
+                                const elapsedSec = Math.floor(elapsedMs / 1000);
+                                setIsPaused(true)
+                                startTimeRef.current = Date.now();
+                                stopSession({
+                                    focusSeconds: modeRef.current === "work" ? elapsedSec : 0,
+                                    breakSeconds: modeRef.current === "break" ? elapsedSec : 0
+                                });
+                            }}/>
                         )}
                         <StopButton onClick={() => {
                             const now = Date.now();
                             const elapsedMs = now - startTimeRef.current;
                             const elapsedSec = Math.floor(elapsedMs / 1000);
-
-                            if (modeRef.current === "work") {
-                                setFocusSeconds(elapsedSec);
-                                setWorkAmounts((prev) => prev + 1);
-                            } else {
-                                setBreakSeconds(elapsedSec);
-                                setBreakAmounts((prev) => prev + 1);
-                            }
+                            setIsPaused(true)
+                            startTimeRef.current = Date.now();
 
                             stopSession({
                                 focusSeconds: modeRef.current === "work" ? elapsedSec : 0,
@@ -221,11 +246,9 @@ export default function Timer({ onPomoComplete, userId }) {
                             });
 
                             setIsPaused(true);
-                            isPausedRef.current = true;
                             setMode("work");
                             modeRef.current = "work";
                             setSecondsLeft(workMinutes * 60);
-                            secondsLeftRef.current = workMinutes * 60;
                             setKey((prevKey) => prevKey + 1);
                         }} />
 
@@ -238,6 +261,6 @@ export default function Timer({ onPomoComplete, userId }) {
                     <SettingsModal closeModal={() => setShowSettings(false)} />
                 )}
             </div>
-        </SettingsContext.Provider>
+        </div>
     );
 }

@@ -33,10 +33,12 @@ export async function POST(req) {
             breakSeconds: 0,
             workAmounts: 0,
             breakAmounts: 0,
+            assignedUser: assignedUser
         });
         await newSession.save();
 
         user.sessions.push(newSession);
+
 
         await user.save();
 
@@ -53,11 +55,9 @@ export async function PATCH(req) {
         await connectDB();
         const jsonString = await req.text();
         const requestData = JSON.parse(jsonString);
-        const { userId, sessionId, focusSeconds, breakSeconds, workAmounts, breakAmounts, currentMode } = requestData;
+        const {sessionId, focusSeconds, breakSeconds, workAmounts, breakAmounts, currentMode } = requestData;
 
-        const user = await User.findById(userId);
-
-        const session = user.sessions.find((s) => s._id.toString() === sessionId);
+        const session = await Session.findById(sessionId);
 
         if (!session) {
             return NextResponse.json({ success: false, error: "Session not found" }, { status: 404 });
@@ -68,6 +68,7 @@ export async function PATCH(req) {
         session.workAmounts = session.workAmounts || 0;
         session.breakAmounts = session.breakAmounts || 0;
 
+        console.log("ASD")
         console.log("session: ", session);
         console.log("current focus:", session.focusSeconds);
 
@@ -79,10 +80,11 @@ export async function PATCH(req) {
 
         console.log("update focus:", session.focusSeconds);
 
-        await user.save();
+        await session.save();
         return NextResponse.json({ success: true, updatedSession: session }, { status: 200 });
     } catch (error) {
         console.error("Error updating session:", error);
         return NextResponse.json({ success: false, error: "Server error: " + error.message }, { status: 500 });
     }
 }
+

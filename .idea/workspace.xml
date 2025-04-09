@@ -8,10 +8,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/productivio-frontend-restructured/app/api/pomodoro/route.js" beforeDir="false" afterPath="$PROJECT_DIR$/productivio-frontend-restructured/app/api/pomodoro/route.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/productivio-frontend-restructured/app/components/pomodoro/Timer.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/productivio-frontend-restructured/app/components/pomodoro/Timer.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/productivio-frontend-restructured/app/dashboard/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/productivio-frontend-restructured/app/dashboard/page.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/productivio-frontend-restructured/app/models/Session.js" beforeDir="false" afterPath="$PROJECT_DIR$/productivio-frontend-restructured/app/models/Session.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/productivio-frontend-restructured/app/models/User.js" beforeDir="false" afterPath="$PROJECT_DIR$/productivio-frontend-restructured/app/models/User.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/productivio-frontend-restructured/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/productivio-frontend-restructured/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/productivio-frontend-restructured/app/dashboard/pomodoro/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/productivio-frontend-restructured/app/dashboard/pomodoro/page.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
