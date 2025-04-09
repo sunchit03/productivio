@@ -51,6 +51,8 @@ export async function DELETE(req, { params }) {
       return NextResponse.json({ success: false, error: "Notification not found" }, { status: 404 });
     }
 
+    // Remove the notification from the user's notifications array
+    await User.findByIdAndUpdate(userId, { $pull: { notifications: notificationId } });
     await notification.deleteOne();
     return NextResponse.json({ success: true, message: "Notification deleted" }, { status: 200 });
 

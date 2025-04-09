@@ -391,7 +391,7 @@ const handleTaskAssignment = async(taskId, assignedTo) => {
       />
       <div className="w-3/5 h-full mdlg:w-full">
         <div className="flex items-center justify-between">
-          <div className="flex flex-row items-end my-4">
+          <div className="flex flex-row items-center my-4">
             <div className="p-1 hover:bg-gray-100 hover:rounded-md">
               {(teamId ? !membersSectionCollapse : !taskBarCollapse) ?
                 <BsTextIndentRight size={"1.5em"} className="text-gray-500 cursor-pointer font-thin" onClick={(e) => toggleTaskBarCollapse(e)}/>
@@ -402,7 +402,11 @@ const handleTaskAssignment = async(taskId, assignedTo) => {
             <h2 className="ml-1 text-xl text-black font-semibold">{title}</h2>
           </div>
           <div className={`p-1 hover:bg-gray-100 hover:rounded-md`}>
-            <PiExport size={"1.5em"} className={`text-gray-500 font-thin ${tasks.length === 0 ? 'cursor-not-allowed' : 'cursor-pointer'}`} onClick={() => tasks.length > 0 && handleTasksExport} />
+            <PiExport 
+              size={"1.5em"} 
+              title="Export to CSV"
+              className={`text-gray-500 font-thin ${tasks.length === 0 ? 'cursor-not-allowed' : 'cursor-pointer'}`} 
+              onClick={() => tasks.length > 0 && handleTasksExport()} />
           </div>
         </div>
         {!completedOrTrash && (
@@ -479,7 +483,7 @@ const handleTaskAssignment = async(taskId, assignedTo) => {
       </div>
 
       <div className={`relative ml-5 w-2/5 h-full xs:w-full sm:w-[80%] md:w-[75%] mdlg:w-[75%] mdlg:absolute mdlg:right-0 mdlg:bg-white mdlg:shadow-lg mdlg:rounded-lg  mdlg:z-10 ${selectedTask != null ? "mdlg:visible" : "mdlg:collapse" }`}>
-      <div className="absolute w-[1px] h-dvh left-0 z-10 bg-purple-100 visible mdlg:invisible"></div>
+        <div className="absolute w-[1px] h-dvh left-0 z-10 bg-purple-100 visible mdlg:invisible"></div>
         {selectedTask && 
           <div className="relative w-full h-full pl-2 pt-2 flex flex-col justify-between"
             onClick={(e) => {e.stopPropagation(); handleDatePickerDismissal(); setDeleteModal(false)}}>

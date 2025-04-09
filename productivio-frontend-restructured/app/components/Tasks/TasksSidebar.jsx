@@ -8,7 +8,7 @@ import { IoMdNotificationsOutline } from "react-icons/io";
 import NotificationsModal from "../NotificationsModal";
 import SidebarListsDropdown from "./SidebarListsDropdown";
 import { preLogOut } from "../../utils/prelogout";
-import { getUserNotifications } from "../../services/notifications";
+import { deleteAllNotifications, getUserNotifications, updateNotifications } from "../../services/notifications";
 import toast from "react-hot-toast";
 
 const TasksSidebar = ({ activeTab, setActiveTab, activeList, setActiveList = null, taskBarCollapse, setTaskBarCollapse, user, userId }) => {
@@ -33,13 +33,39 @@ const TasksSidebar = ({ activeTab, setActiveTab, activeList, setActiveList = nul
     }
   }
 
+  const readNotifications = async () => {
+    const data = await updateNotifications(userId);
+
+    if (data.success) {
+      setNotifications(prevNotifications => prevNotifications.map(notification => ({...notification, new: false})));
+    } else {
+      toast.error("Failed to mark notifications as read");
+    }
+  }
+
+  const clearNotifications = async () => {
+    const data = await deleteAllNotifications(userId);
+
+    if (data.success) {
+      setNotifications([]);
+    } else {
+      toast.error("Failed to mark notifications as read");
+    }
+  }
+
   useEffect(() => {
     if (user) {
-    setUserPicture(user.picture);
-
-      if (userId) {
+      setUserPicture(user.picture);
+    }
+  
+    if (userId) {
+      fetchNotifications(); // Fetch immediately
+  
+      const interval = setInterval(() => {
         fetchNotifications();
-      }
+      }, 300000); // 5 minutes (300,000ms)
+  
+      return () => clearInterval(interval); // Cleanup on unmount
     }
   }, [user, userId]);
 
@@ -130,7 +156,7 @@ const TasksSidebar = ({ activeTab, setActiveTab, activeList, setActiveList = nul
               <button 
                 className="px-2 py-1 rounded text-black"
                 title="Notifications"
-                onClick={() => setShowNotifications(true)}>
+                onClick={() => { setShowNotifications(prev => !prev); setIsNewNotification(false); readNotifications();}}>
                 <IoMdNotificationsOutline  size="1.4em"/>
               </button>
               {isNewNotification && 
@@ -150,7 +176,15 @@ const TasksSidebar = ({ activeTab, setActiveTab, activeList, setActiveList = nul
           </div>
 
           {/* Notifications Modal */}
-          {showNotifications && <NotificationsModal onClose={() => setShowNotifications(false)} notifications={notifications} />}
+          {
+            showNotifications && 
+            <NotificationsModal 
+              onClose={() => setShowNotifications(false)} 
+              notifications={notifications}
+              readNotifications={readNotifications}
+              clearNotifications={clearNotifications}
+            />
+          }
         </div>
 
         {createTabs(upperTabs)}

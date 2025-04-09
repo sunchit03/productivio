@@ -14,7 +14,9 @@ import TaskPage from "./tasks/page";
 import EisenhowerMatrix from "./eisenhowerMatrix/page";
 import CalendarPage from "./Calendar/page";
 import { getJWT } from "@/app/utils/auth";
-
+import PomodoroPage from "./pomodoro/page";
+// Importing StopWatch
+import { useStopwatch } from 'react-timer-hook';
 function Dashboard() {
   const { user, error, isLoading } = useUser();
 
@@ -27,6 +29,49 @@ function Dashboard() {
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [taskBarCollapse, setTaskBarCollapse] = useState(false)
   const [membersSectionCollapse, setMembersSectionCollapse] = useState(false);
+  const stopwatch = useStopwatch({ autoStart: false }); // Initializing the stopwatch once
+
+  // For milliseconds
+  const [elapsed, setElapsed] = useState(0);
+  const startTimeRef = useRef(null);
+
+  useEffect(() => {
+    let rafId;
+
+    const update = () => {
+      if (stopwatch.isRunning && startTimeRef.current != null) {
+        setElapsed(performance.now() - startTimeRef.current);
+        rafId = requestAnimationFrame(update);
+      }
+    };
+
+    if (stopwatch.isRunning) {
+      startTimeRef.current = performance.now() - elapsed;
+      rafId = requestAnimationFrame(update);
+    }
+
+    return () => cancelAnimationFrame(rafId);
+  }, [stopwatch.isRunning]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.setElapsed = setElapsed;
+      window.startTimeRef = startTimeRef;
+    }
+  }, []);
+  
+  // Setting up Laps
+  const [laps, setLaps] = useState([]);
+
+  const handleLap = (elapsed, type = "lap") => {
+    if (type === "clear") {
+      setLaps([]); // clear laps
+    } else {
+      setLaps((prev) => [...prev, elapsed]); // add a lap
+    }
+  };
+  
+
 
   const router = useRouter();
 
@@ -110,7 +155,9 @@ function Dashboard() {
             :
             /* Pomodoro Page */
             activeMainTab === "pomodoro" ? (
-              <main className="flex-grow bg-gray-50"></main>
+              <main className="flex-grow bg-gray-50">
+                <PomodoroPage userId={userId} stopwatch = {stopwatch} elapsed = {elapsed} laps={laps} handleLap={handleLap}/> 
+              </main>
             )
             :
             /* Eisenhower Matrix Page */

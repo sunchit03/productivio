@@ -8,7 +8,7 @@ import { IoMdNotifications } from "react-icons/io";
 import NotificationsModal from "../components/NotificationsModal";
 import { useRouter } from "next/navigation";
 import { preLogOut } from "../utils/prelogout";
-import { getUserNotifications } from "../services/notifications";
+import { deleteAllNotifications, getUserNotifications, updateNotifications } from "../services/notifications";
 import toast from "react-hot-toast";
 
 const MainSidebar = ({ activeMainTab, setActiveMainTab, user, selectedTeam, setSelectedTeam, userId }) => {
@@ -40,20 +40,46 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user, selectedTeam, setS
     if (data.success) {
       console.log(data);
       setNotifications(data.notifications);
-      setIsNewNotification(notifications.includes(notification => notification.new === true))
+      setIsNewNotification(data.notifications.some(notification => notification.new));
     } else {
       toast.error("Failed to load notifications");
       setNotifications([]);
     }
   }
 
+  const readNotifications = async () => {
+    const data = await updateNotifications(userId);
+
+    if (data.success) {
+      setNotifications(prevNotifications => prevNotifications.map(notification => ({...notification, new: false})));
+    } else {
+      toast.error("Failed to mark notifications as read");
+    }
+  }
+
+  const clearNotifications = async () => {
+    const data = await deleteAllNotifications(userId);
+
+    if (data.success) {
+      setNotifications([]);
+    } else {
+      toast.error("Failed to mark notifications as read");
+    }
+  }
+
   useEffect(() => {
     if (user) {
       setUserPicture(user.picture);
-
-      if (userId) {
+    }
+  
+    if (userId) {
+      fetchNotifications(); // Fetch immediately
+  
+      const interval = setInterval(() => {
         fetchNotifications();
-      }
+      }, 300000); // 5 minutes (300,000ms)
+  
+      return () => clearInterval(interval); // Cleanup on unmount
     }
   }, [user, userId]);
 
@@ -164,14 +190,12 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user, selectedTeam, setS
               showNotifications ? "text-white/100" : "text-white/50 hover:text-white/75"
             }`}
             title="Notifications"
-            onClick={() => setShowNotifications(true)}>
+            onClick={() => { setShowNotifications(prev => !prev); setIsNewNotification(false); readNotifications();}}>
             <IoMdNotifications size="1.4em"/>
           </button>
-          {isNewNotification && 
-            <div className="absolute -right-[1.5px] -top-1 text-indigo-400/90 text-sm/4 font-semibold">
-              <FaExclamationCircle size="1.2em"/>
-            </div>
-          }
+          <div className={`absolute -right-[1.5px] -top-1 text-indigo-400/90 text-sm/4 font-semibold ${isNewNotification ? 'visible' : 'invisible'}`}>
+            <FaExclamationCircle size="1.2em"/>
+          </div>
         </div>
 
         <button 
@@ -184,7 +208,15 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user, selectedTeam, setS
       </div>
 
       {/* Notifications Modal */}
-      {showNotifications && <NotificationsModal onClose={() => setShowNotifications(false)} notifications={notifications} />}
+      {
+        showNotifications && 
+        <NotificationsModal 
+          onClose={() => setShowNotifications(false)} 
+          notifications={notifications}
+          readNotifications={readNotifications}
+          clearNotifications={clearNotifications}
+        />
+      }
 
       
     </aside>
