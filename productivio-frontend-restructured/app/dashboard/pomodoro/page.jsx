@@ -6,7 +6,7 @@ import PomoOverview from "@/app/components/pomodoro/PomoOverview";
 import StopwatchOverview from "@/app/components/pomodoro/StopwatchOverview";
 import Stopwatch from "@/app/components/pomodoro/Stopwatch";
 
-export default function PomodoroPage( {userId, stopwatch,timer, elapsed, laps, handleLap, pomoCount, workMinutes,breakMinutes, setWorkMinutes, setBreakMinutes} ) {
+export default function PomodoroPage({ userId, stopwatch, timer, elapsed, laps, handleLap, pomoCount, workMinutes, breakMinutes, setWorkMinutes, setBreakMinutes }) {
   const [main, setMain] = useState('pomo');
   const [showSettings, setShowSettings] = useState(false);
 

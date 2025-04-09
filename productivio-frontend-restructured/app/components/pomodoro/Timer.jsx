@@ -8,6 +8,8 @@ const workColors = "#d67d97";
 const breakColors = "#bfd69d";
 
 export default function Timer({ timer }) {
+    if (!timer) return null; // or a loading skeleton / fallback
+    
   const {
     isPaused,
     mode,
