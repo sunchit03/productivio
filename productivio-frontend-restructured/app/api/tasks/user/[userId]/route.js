@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 const connectDB = require('../../../../utils/connect');
+import User from "../../../../models/User";
 import Task from "../../../../models/Task";
 import List from "../../../../models/List"
 import Team from "../../../../models/Team"
@@ -17,6 +18,11 @@ export async function GET(req, { params }) {
 
     if (!userId) {
       return NextResponse.json({ success: false, error: "User ID is required" }, { status: 400 });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
     }
 
     let tasks;
