@@ -290,7 +290,8 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                         }
                         {/* Date Picker (Calendar) */}
                         {datePicker && pageTitle !== "Trash" && (
-                        <div className={(task && pageTitle !== "") || (teamId && teamId !== null) ? `absolute top-12 left-0 mt-2 z-50 bg-white shadow-lg p-2 border border-gray-300 rounded-md` :`absolute top-16 left-20 lg:left-12 mdlg:left-10 md:left-6 sm:left-4 sm:w-72 xssm:left-4 xssm:w-72 xs:left-2 xs:w-72 z-50 bg-gray-100 shadow-lg p-2 border border-gray-300 rounded-md`}>
+                        <div className={(task && pageTitle !== "") || (teamId && teamId !== null) ? `absolute top-12 left-0 mt-2 z-50 bg-white shadow-lg p-2 border border-gray-300 rounded-md` :`absolute top-16 left-20 lg:left-12 mdlg:left-10 md:left-6 sm:left-4 sm:w-72 xssm:left-4 xssm:w-72 xs:left-2 xs:w-72 z-50 bg-gray-100 shadow-lg p-2 border border-gray-300 rounded-md`}
+                        onClick={(e)=> e.stopPropagation()}>
                             <Calendar 
                             className="text-black" 
                             onChange={handleDueDateSelection} 
@@ -328,7 +329,7 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                 </div>
                 <div className="h-[1px] w-full bottom-0 bg-purple-100 z-10"></div>
                 {/* create two fields - to display title or description */}
-                <div className="flex flex-col pt-2 pr-1 gap-4 max-h-[calc(100vh-180px)] overflow-y-auto">
+                <div className="flex flex-col pt-2 pr-1 gap-4 max-h-[calc(100vh-160px)] overflow-y-auto">
                     <input
                         type = "text"
                         value={title}

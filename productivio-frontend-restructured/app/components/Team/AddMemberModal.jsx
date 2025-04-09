@@ -3,6 +3,7 @@ import { FcGoogle } from "react-icons/fc";
 import { SiAuth0 } from "react-icons/si";
 import { getAllUsers } from "@/app/services/users";
 import { useEffect, useState } from "react";
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function AddMemberModal({ onClose, addUser, inviteUser, teamMembers, userId }) {
   const [queryUserExists, setQueryUserExists] = useState(true);
@@ -49,16 +50,19 @@ export default function AddMemberModal({ onClose, addUser, inviteUser, teamMembe
 
     if (query.trim() === "") {
       // email cannot be empty
+      toast.error("User email cannot be empty!")
       return;
     }
 
     if (selectedUser === null) {
       // select a email
+      toast.error("Please select user email to add user to team");
       return;
     }
 
     if (teamMembers.some((member) => member.email === selectedUser?.email)) {
       // already in the team
+      toast("User already exist in team!")
       return;
     }
 
@@ -70,27 +74,26 @@ export default function AddMemberModal({ onClose, addUser, inviteUser, teamMembe
 
     if (query.trim() === "") {
       // email cannot be empty
-      console.log('111');
+      toast.error("User email cannot be empty!")
       return;
     }
     console.log(query);
 
     const regex = new RegExp("^[\\w.%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
     if (!regex.test(query.trim())) {
-      // enter a valid email
-      console.log('222');
+      // entered email is not valid
+      toast.error("Entered email is not valid!")
       return;
     }
 
     if (teamMembers.some((member) => member.email === query.trim())) {
       // already in the team
-      console.log('333');
+      toast("User already exist in team!")
       return;
     }
 
     if (users.some((user) => user.email === query.trim())) {
-      // something went wrong
-      console.log('444');
+      toast.error("Something went wrong!")
       return;
     }
 
@@ -109,6 +112,18 @@ export default function AddMemberModal({ onClose, addUser, inviteUser, teamMembe
 
   return (
     <div className="fixed inset-0 flex items-start justify-center bg-gray-100 bg-opacity-40 pt-20 z-50 drop-shadow-xl">
+      <Toaster
+          toastOptions={{
+            removeDelay: 500,
+            position: 'bottom-center',
+            style: {
+              backgroundColor: "#E6E6FA",
+              padding: '16px',
+              color: '#6A0DAD',
+              textAlign: "center",
+            },
+          }}
+      />
       <div className="xs:w-5/6 xssm:w-4/5 mdlg:w-3/5 bg-white p-6 rounded-md shadow-lg w-2/5">
         <h2 className="text-xl font-bold mb-4 text-black">Add Member</h2>
 

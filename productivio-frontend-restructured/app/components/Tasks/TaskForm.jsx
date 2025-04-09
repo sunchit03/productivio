@@ -238,7 +238,7 @@ const TaskForm = ( {todayOrNext = false, listId = null, teamId = null, refresh, 
             }
           </span>
           {datePicker &&
-            <div className="absolute right-0 z-10 mt-1">
+            <div className="absolute right-0 z-10 mt-1" onClick={(e)=> e.stopPropagation()}>
               <Calendar className="text-black" onChange={handleDueDateSelection} value={dueDate} />
             </div>
           }
