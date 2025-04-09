@@ -11,7 +11,7 @@ export default function TeamsPage({ userId, setSelectedTeam }) {
     const [addEditTeamModal, setAddEditTeamModal] = useState(false);
 
     useEffect(() => {
-      if(userId){
+      if (userId) {
         setSelectedTeam(null);
         fetchTeams()
       }
@@ -20,14 +20,14 @@ export default function TeamsPage({ userId, setSelectedTeam }) {
     const fetchTeams = async() => {
       try{
         const data = await getUserTeams(userId);
-        if(data){
+        if (data) {
           setTeams(data);
           console.log(data);
         }
-        else{
+        else {
           console.log(`Unable to retrieve ${userId} teams: `, data.error);
         }
-      }catch(error){
+      } catch(error) {
         console.log("Unable to fetch teams: ", error.message);
       }
     }
@@ -35,16 +35,16 @@ export default function TeamsPage({ userId, setSelectedTeam }) {
     const editTeam = async(teamId, title, description) => {
       try{
         const data = await updateTeam(teamId, userId, {title, description});
-          if(data){
+          if (data) {
             console.log(data);
             setTeams(prevTeams => prevTeams.map(prevTeam => prevTeam._id === teamId ? {...prevTeam, title, description} : prevTeam))
             toast.success("Team updated successfully!")
           }
-          else{
+          else {
             console.log("Error while editing team: ", data.error);
             toast.error("Error updating team.")
           }
-      }catch(error){
+      } catch(error) {
         console.log("Error while editing team: ", error)
       }
     }
@@ -52,12 +52,12 @@ export default function TeamsPage({ userId, setSelectedTeam }) {
     const removeTeam = async(teamId) => {
       try{
         const data = await deleteTeam(teamId, userId);
-        if(data.success){
-          setTeams(prevTeams => prevTeams.filter(prevTeam=> prevTeam._id !== teamId))
+        if (data) {
+          setTeams(prevTeams => prevTeams.filter(prevTeam => prevTeam._id !== teamId))
           toast.success("Team deleted successfully!");
         }
-        else{
-          console.log("Error deleting team: ",data.error);
+        else {
+          console.log("Error deleting team: ", data.error);
           toast.error("Error deleting team.");
         }
       }catch(error){

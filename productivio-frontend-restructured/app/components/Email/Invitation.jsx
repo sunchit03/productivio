@@ -18,14 +18,14 @@ export default function Invitation({ email }) {
       <Body style={main}>
         <Container style={container}>
         <Img
-  src="https://productivio-zeta.vercel.app/assets/logo.png"
-  alt="Productivio Logo"
-  width="120"
-  style={{
-    margin: '0 auto 40px',
-    display: 'block'
-  }}
-/>
+            src={`${process.env.NEXT_PUBLIC_APP_URL}/assets/logo.png`}
+            alt="Productivio Logo"
+            width="120"
+            style={{
+                margin: '0 auto 40px',
+                display: 'block'
+            }}
+            />
 
           <Heading style={h1}>You're Invited to Join Us!</Heading>
           <Text style={text}>
@@ -36,7 +36,7 @@ export default function Invitation({ email }) {
             <br />
             <br />
             <Button
-              href="https://productivio-zeta.vercel.app"
+              href={`${process.env.NEXT_PUBLIC_APP_URL}`}
               style={button}
             >
               Create Your Account
@@ -93,3 +93,8 @@ const button = {
   borderRadius: '6px',
   display: 'inline-block',
 };
+
+const img = {
+  margin: '0 auto 40px',
+  display: 'block',
+}
