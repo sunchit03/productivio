@@ -12,6 +12,16 @@ const taskSchema = new mongoose.Schema({
   isTrash: { type: Boolean, default: false },
   dueDate: { type: Date, default: null },
   priority: { type: String, enum: ['1', '2', '3', '4'], default: '4' },
+  files: [
+    {
+      name: String,
+      key: String,
+      uploadedAt: {
+        type: Date,
+        default: Date.now
+      }
+    }
+  ]
 }, { timestamps: true });
 
 module.exports = mongoose.models.Task || mongoose.model('Task', taskSchema);

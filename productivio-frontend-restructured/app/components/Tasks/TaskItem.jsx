@@ -1,7 +1,7 @@
 // // app/components/TaskItem.jsx
 import { MdCheckBoxOutlineBlank, MdCheckBox } from "react-icons/md";
 
-const TaskItem = ({ task, handleCheckBoxCheck, pageTitle = "" }) => {
+const TaskItem = ({ task, handleCheckBoxCheck, pageTitle = "", teamId="" }) => {
 
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -107,7 +107,7 @@ const TaskItem = ({ task, handleCheckBoxCheck, pageTitle = "" }) => {
           </>
         )
         }
-        {(pageTitle === "" || pageTitle !== "") && task?.team && (
+        {(pageTitle === "" || pageTitle !== "") && task?.team && !teamId && (
           <>
             <span className="text-black mr-1">{task.team.title}</span>
             {task.dueDate &&

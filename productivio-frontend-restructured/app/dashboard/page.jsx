@@ -71,6 +71,98 @@ function Dashboard() {
     }
   };
   
+  // The Timer State
+  const [workMinutes, setWorkMinutes] = useState(25);
+  const [breakMinutes, setBreakMinutes] = useState(5);
+  const [secondsLeft, setSecondsLeft] = useState(workMinutes * 60);
+
+  const [isPaused, setIsPaused] = useState(true);
+  const [mode, setMode] = useState("work");
+  const [key, setKey] = useState(0);
+  
+
+  const [pomoCount, setPomoCount] = useState(0);
+
+  function onPomoComplete() {
+    setPomoCount(prev => prev + 1);
+  }
+  const secondsLeftRef = useRef(secondsLeft);
+  const isPausedRef = useRef(isPaused);
+  const modeRef = useRef(mode);
+
+  useEffect(() => {
+    secondsLeftRef.current = workMinutes * 60;
+    setSecondsLeft(secondsLeftRef.current);
+
+    const interval = setInterval(() => {
+      if (!isPausedRef.current) {
+        tick();
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [workMinutes, breakMinutes]);
+
+  function tick() {
+    if (secondsLeftRef.current > 0) {
+      secondsLeftRef.current--;
+      setSecondsLeft(secondsLeftRef.current);
+    } else {
+      switchMode();
+    }
+  }
+
+  function switchMode() {
+    const nextMode = modeRef.current === "work" ? "break" : "work";
+    const nextSeconds =
+      (nextMode === "work" ? workMinutes : breakMinutes) * 60;
+
+    setMode(nextMode);
+    modeRef.current = nextMode;
+    setSecondsLeft(nextSeconds);
+    secondsLeftRef.current = nextSeconds;
+    setKey((prevKey) => prevKey + 1);
+
+    if (nextMode === "break") {
+      onPomoComplete();
+    }
+  }
+
+  function handlePlay() {
+    setIsPaused(false);
+    isPausedRef.current = false;
+  }
+
+  function handlePause() {
+    setIsPaused(true);
+    isPausedRef.current = true;
+  }
+
+  function handleStop() {
+    setIsPaused(true);
+    isPausedRef.current = true;
+    setMode("work");
+    modeRef.current = "work";
+    const resetTime = workMinutes * 60;
+    setSecondsLeft(resetTime);
+    secondsLeftRef.current = resetTime;
+    setKey((prevKey) => prevKey + 1);
+  }
+
+  // Variable to hold all the states
+  const timer = {
+    isPaused,
+    mode,
+    keyId: key,
+    secondsLeft,
+    workMinutes,
+    breakMinutes,
+    onPlay: handlePlay,
+    onPause: handlePause,
+    onStop: handleStop,
+    onPomoComplete,
+  };
+
 
 
   const router = useRouter();
@@ -156,7 +248,7 @@ function Dashboard() {
             /* Pomodoro Page */
             activeMainTab === "pomodoro" ? (
               <main className="flex-grow bg-gray-50">
-                <PomodoroPage userId={userId} stopwatch = {stopwatch} elapsed = {elapsed} laps={laps} handleLap={handleLap}/> 
+                <PomodoroPage userId={userId} stopwatch = {stopwatch} timer = {timer} elapsed = {elapsed} laps={laps} handleLap={handleLap} pomoCount = {pomoCount} workMinutes={workMinutes} breakMinutes={breakMinutes} setWorkMinutes={setWorkMinutes} setBreakMinutes={setBreakMinutes}/> 
               </main>
             )
             :
