@@ -112,7 +112,7 @@ function Dashboard() {
             /* Pomodoro Page */
             activeMainTab === "pomodoro" ? (
               <main className="flex-grow bg-gray-50">
-                <PomodoroPage /> 
+                <PomodoroPage userId={userId}/> 
               </main>
             )
             :

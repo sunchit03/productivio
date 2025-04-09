@@ -85,73 +85,79 @@ function CalendarPage({ userId }) {
   };
 
   const handleTrashOrRestore = async(taskId, restore) => {
-    try{
+    try {
       const data = await updateTask(taskId, userId, {isTrash: restore})
-      if(data){
+      if (data) {
         setTasks(prevTasks => prevTasks.filter(task => task._id != taskId));
         setEvents(prevEvents => prevEvents.filter(event => event.extendedProps.id != taskId));
-      if(selectedTask?._id === taskId){
-        setSelectedTask(null);
-        toast.success("Task moved to trash!")
+        if (selectedTask?._id === taskId) {
+          setSelectedTask(null);
+          toast.success("Task moved to trash!")
+        }
       }
-    }
-    else{
-      console.log("Error while moving task to trash: ", data.error)
-      toast.error("Error while moving task to trash.")}
-    }catch(error){
+      else {
+        console.log("Error while moving task to trash: ", data.error)
+        toast.error("Error while moving task to trash.")
+      }
+    } catch (error) {
       console.log("Error updating task: ", error.message);
-      }
     }
+  }
 
 const handleEditTask = async(taskId, title, description) => {
-  try{
-      const data = await updateTask(taskId, userId, {title: title, description: (description === "" ? null : description)})
-      if(data){
+  try {
+    const data = await updateTask(taskId, userId, {title: title, description: (description === "" ? null : description)})
+    if (data) {
       setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, title: title, description: description} : task));
-      setEvents(prevEvents=>prevEvents.map(event => event.extendedProps.id === taskId ? {...event, title: title} : event))
-      if(selectedTask?._id === taskId){
-      setSelectedTask(prevTask=>({...prevTask, title: title, description: description}));
-      toast.success("Task details updated!")
+      setEvents(prevEvents => prevEvents.map(event => event.extendedProps.id === taskId ? {...event, title: title} : event))
+      if (selectedTask?._id === taskId) {
+        setSelectedTask(prevTask => ({...prevTask, title: title, description: description}));
+        toast.success("Task details updated!")
       }
       setSelectedTask(null);
-  }
-  else{
+    } 
+    else {
       console.log("Error updating task with title and description: ", data.error)
-      toast.error("Error while updating task details.")}
-  }catch(error){
+      toast.error("Error while updating task details.")
+    }
+  } 
+  catch(error) {
       console.log("Error updating task: ", error.message);
-      }
+    }
   }
 
   const handleTaskPriorityChange = async(taskId, setPriority) => {
-    try{
+    try {
       const data = await updateTask(taskId, userId, {priority: setPriority})
-      if(data){
+      if (data) {
         setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, priority: setPriority} : task));
         setEvents(prevEvents => prevEvents.map(event => event.extendedProps.id === taskId ? {...event, backgroundColor: getPriorityColor(setPriority)} : event));
-      if(selectedTask?._id === taskId){
-        setSelectedTask(prevTask=>({...prevTask, priority: setPriority}));
+        if (selectedTask?._id === taskId) {
+          setSelectedTask(prevTask=>({...prevTask, priority: setPriority}));
+        }
       }
-    }
-    else{
-      console.log("Error while updating task to priority: ", data.error)}
-    }catch(error){
+      else {
+        console.log("Error while updating task to priority: ", data.error)
+      }
+    } 
+    catch (error) {
       console.log("Error updating task priority: ", error.message);
-      }
     }
+  }
 
 const handleDueDateUpdate = async(taskId, date) => {
   try{
     const data = await updateTask(taskId, userId, {dueDate: date})
-    if(data){
+    if (data) {
       setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, dueDate: date} : task));
       setEvents(prevEvents => prevEvents.map(event => event.extendedProps.id === taskId ? {...event, start: date, end: date} : event));
-    if(selectedTask?._id === taskId){
-      setSelectedTask(prevTask=>({...prevTask, dueDate: date}));
+      if (selectedTask?._id === taskId) {
+        setSelectedTask(prevTask=>({...prevTask, dueDate: date}));
+      }
+    } 
+    else {
+      console.log("Error while updating task to new date: ", data.error)
     }
-  }
-  else{
-    console.log("Error while updating task to new date: ", data.error)}
   }catch(error){
     console.log("Error updating task date: ", error.message);
     }
@@ -161,19 +167,21 @@ const handleDueDateUpdate = async(taskId, date) => {
   const handleCheckBoxCheck = async (e, taskId, updatedCompletion) => {
     e.stopPropagation();
     try {
-        const data = await updateTask(taskId, userId, { isCompleted: updatedCompletion });
-        if (data.success) {
-          setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, isCompleted: updatedCompletion} : task));
-          setEvents(setEvents => setEvents.filter(event => event.extendedProps.id !== taskId));
-            if (selectedTask?._id === taskId) {
-                setSelectedTask(prevTask => ({ ...prevTask, isCompleted: updatedCompletion }));
-            }
-          setSelectedTask(null);
-       }else {
-            console.log("Error in changing completed state of task:", data.error);
-        }
-    } catch (error) {
-        console.error("Error updating task state:", error.message);
+      const data = await updateTask(taskId, userId, { isCompleted: updatedCompletion });
+      if (data.success) {
+        setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, isCompleted: updatedCompletion} : task));
+        setEvents(setEvents => setEvents.filter(event => event.extendedProps.id !== taskId));
+          if (selectedTask?._id === taskId) {
+            setSelectedTask(prevTask => ({ ...prevTask, isCompleted: updatedCompletion }));
+          }
+        setSelectedTask(null);
+      } 
+      else {
+        console.log("Error in changing completed state of task:", data.error);
+      }
+    } 
+    catch (error) {
+      console.error("Error updating task state:", error.message);
     }
 };
 
@@ -196,15 +204,16 @@ const handleDueDateUpdate = async(taskId, date) => {
   return (
     <div className="p-4 sm:p-6 bg-white shadow-md rounded-lg max-w-full overflow-x-auto h-screen">
       <Toaster
-      toastOptions={{
-      removeDelay: 500,
-      position: 'bottom-center',
-      style: {
-          backgroundColor: "#E6E6FA",
-          padding: '16px',
-          color: '#6A0DAD',
-          textAlign: "center",},
-      }}
+        toastOptions={{
+          removeDelay: 500,
+          position: 'bottom-center',
+          style: {
+            backgroundColor: "#E6E6FA",
+            padding: '16px',
+            color: '#6A0DAD',
+            textAlign: "center"
+          },
+        }}
       />
       <FullCalendar 
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]} 
@@ -226,18 +235,20 @@ const handleDueDateUpdate = async(taskId, date) => {
       />
 
       {selectedTask &&
-      <div className="fixed inset-0 bg-opacity-5 flex flex-col justify-center items-center z-50" onClick={()=>{setSelectedTask(null)} }> 
-      <div className="p-2 shadow-xl rounded-md bg-gray-50 min-w-[25%] max-w-[50%] min-h-[50%] md:min-w-[50%] md:min-h-[50%] sm:min-h-[50%] sm:min-w-[75%] flex flex-col justify-between z-50" onClick={(e) => e.stopPropagation()}>
-      <DetailTaskView
-        setSelectedTask={setSelectedTask}
-        task={selectedTask}
-        handleCheckBoxCheck={handleCheckBoxCheck}
-        handleTaskPriorityChange={handleTaskPriorityChange}
-        handleDueDateUpdate={handleDueDateUpdate}
-        handleTrashOrRestore={handleTrashOrRestore}
-        handleEditTask={handleEditTask}/>
+        <div className="fixed inset-0 bg-opacity-5 flex flex-col justify-center items-center z-50" onClick={()=>{setSelectedTask(null)} }> 
+          <div className="p-2 shadow-xl rounded-md bg-gray-50 min-w-[25%] max-w-[50%] min-h-[50%] md:min-w-[50%] md:min-h-[50%] sm:min-h-[50%] sm:min-w-[75%] flex flex-col justify-between z-50" onClick={(e) => e.stopPropagation()}>
+            <DetailTaskView
+              setSelectedTask={setSelectedTask}
+              task={selectedTask}
+              handleCheckBoxCheck={handleCheckBoxCheck}
+              handleTaskPriorityChange={handleTaskPriorityChange}
+              handleDueDateUpdate={handleDueDateUpdate}
+              handleTrashOrRestore={handleTrashOrRestore}
+              handleEditTask={handleEditTask}
+            />
+          </div>
         </div>
-      </div>}
+      }
     </div>
   );
 }
@@ -247,17 +258,17 @@ function renderEventContent(eventInfo) {
   return (
     <div style={{
         height: "auto",
-      backgroundColor: eventInfo.event.backgroundColor,
-      color: "#FFF",
-      padding: "2px",
-      borderRadius: "8px",
-      fontSize: "0.85rem",
-      fontWeight: "600",
-      whiteSpace: "normal",
-      wordWrap: "break-word",
-      transition: "all 0.3s ease-in-out",
-      cursor: "pointer",
-      fontSize: "0.75rem"
+        backgroundColor: eventInfo.event.backgroundColor,
+        color: "#FFF",
+        padding: "2px",
+        borderRadius: "8px",
+        fontSize: "0.85rem",
+        fontWeight: "600",
+        whiteSpace: "normal",
+        wordWrap: "break-word",
+        transition: "all 0.3s ease-in-out",
+        cursor: "pointer",
+        fontSize: "0.75rem"
     }}>
       {eventInfo.event.title}
     </div>
