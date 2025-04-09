@@ -76,7 +76,7 @@ export default function AboutPage() {
 
         <section className="mb-28">
           <h2 className="text-3xl font-bold mb-24 text-purple-800 text-center">Meet the Contributors</h2>
-          <div className="flex flex-wrap justify-center gap-16 space-y-8">
+          <div className="flex flex-wrap justify-center gap-16">
             {contributors.map((person, index) => (
               <div key={index} className="relative w-80 bg-white rounded-2xl shadow-xl pt-16 pb-6 px-6 flex flex-col items-center text-center">
                 <div className="absolute -top-12 w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden">
