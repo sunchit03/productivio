@@ -63,7 +63,7 @@ const MainSidebar = ({ activeMainTab, setActiveMainTab, user, selectedTeam, setS
     if (data.success) {
       setNotifications([]);
     } else {
-      toast.error("Failed to mark notifications as read");
+      toast.error("Failed to clear notifications");
     }
   }
 
