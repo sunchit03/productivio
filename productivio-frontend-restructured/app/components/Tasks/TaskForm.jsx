@@ -9,9 +9,8 @@ import toast, { Toaster } from 'react-hot-toast';
 
 import 'react-calendar/dist/Calendar.css';
 
-const TaskForm = ( {todayOrNext = false, listId = null, teamId = null, refresh, userId, taskBarCollapse, membersSectionCollapse, pageTitle="" } ) => {
+const TaskForm = ( {todayOrNext = false, listId = null, teamId = null, refresh, userId, taskBarCollapse, membersSectionCollapse, pageTitle="", datePicker, setDatePicker} ) => {
   const [title, setTitle] = useState("");
-  const [datePicker, setDatePicker] = useState(false);
   const [dueDate, setDueDate] = useState(null);
   const [dueDateSelected, setDueDateSelected] = useState(false);
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -214,7 +213,7 @@ const TaskForm = ( {todayOrNext = false, listId = null, teamId = null, refresh, 
             {
               dueDateSelected ? 
                 <>
-                  <div className={`p-1 flex items-center ${formatDate().color} hover:bg-gray-100 hover:rounded-md`} onClick={() => setDatePicker((val) => !val)}>
+                  <div className={`p-1 flex items-center ${formatDate().color} hover:bg-gray-100 hover:rounded-md`} onClick={(e) => {e.stopPropagation(); setDatePicker((val) => !val)}}>
                     <BsCalendar2Date className="mr-1"/>
                     <span> 
                       {formatDate().dateText}
@@ -223,7 +222,7 @@ const TaskForm = ( {todayOrNext = false, listId = null, teamId = null, refresh, 
                   { datePicker &&
                     <span 
                       className="ml-2 p-2 hover:bg-gray-100 hover:rounded-md"
-                      onClick={() => { setDueDate(null); setDueDateSelected(false); }}
+                      onClick={(e) => { setDueDate(null); setDueDateSelected(false); e.stopPropagation() }}
                     >
                       <GrClear className="text-gray-600"/>
                     </span>
@@ -232,7 +231,7 @@ const TaskForm = ( {todayOrNext = false, listId = null, teamId = null, refresh, 
                 :
                 <span 
                   className="ml-2 p-2 hover:bg-gray-100 hover:rounded-md"
-                  onClick={() => setDatePicker((val) => !val)}
+                  onClick={(e) => {e.stopPropagation() ; setDatePicker((val) => !val)}}
                 >
                   <IoCalendarOutline className="text-gray-600"/>
                 </span>
