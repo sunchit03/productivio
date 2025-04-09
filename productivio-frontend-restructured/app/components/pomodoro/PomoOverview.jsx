@@ -2,7 +2,7 @@
 "use client";
 import { useState, useEffect } from "react";
 
-export default function Overview({ pomoCount }) {
+export default function PomoOverview({ pomoCount}) {
   const [todayPomo, setTodayPomo] = useState(0);
   const [todayFocus, setTodayFocus] = useState(0);
   const [totalPomo, setTotalPomo] = useState(0);
@@ -53,7 +53,9 @@ export default function Overview({ pomoCount }) {
           <p className="text-gray-600">Total Focus Duration</p>
           <p className="text-3xl font-bold text-green-600">{totalFocus}m</p>
         </div>
+
       </div>
+      
     </div>
   );
 }
