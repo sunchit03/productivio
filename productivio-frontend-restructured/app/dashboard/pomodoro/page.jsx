@@ -2,10 +2,12 @@
 "use client";
 import Timer from "@/app/components/pomodoro/Timer";
 import SettingsContext from "@/app/components/pomodoro/SettingsContext";
-import Overview from "@/app/components/pomodoro/Overview";
+import PomoOverview from "@/app/components/pomodoro/pomoOverview";
+import StopwatchOverview from "@/app/components/pomodoro/stopwatchOverview";
 import { useState, useEffect } from "react";
+import Stopwatch from "@/app/components/pomodoro/Stopwatch";
 
-export default function PomodoroPage( {userId} ) {
+export default function PomodoroPage( {userId, stopwatch, elapsed, laps, handleLap} ) {
   const [main, setMain] = useState('pomo');
   const [workMinutes, setWorkMinutes] = useState(2);
   const [breakMinutes, setBreakMinutes] = useState(5);
@@ -39,9 +41,10 @@ export default function PomodoroPage( {userId} ) {
           <div className="flex flex-1 justify-center items-center">
             {main === 'pomo' ?
               <Timer onPomoComplete={() => setPomoCount((prev) => prev + 1)} />
-            :
-              <></>
-            }
+            :(
+              <Stopwatch {...{ ...stopwatch, elapsed, onLap: handleLap }} />
+
+            )}
           </div>
           
         </div>
@@ -51,7 +54,14 @@ export default function PomodoroPage( {userId} ) {
           <div className="relative w-2/5 h-full">
             <div className="absolute w-[1px] h-dvh left-0 z-10 bg-purple-100"></div>
               <div className="w-full h-full pl-2 pt-2 flex flex-col justify-between">
-                <Overview pomoCount={pomoCount} />
+                {main === 'pomo' ? 
+                  <PomoOverview pomoCount={pomoCount} />
+                :(
+
+                  <StopwatchOverview laps = {laps}/>
+                  
+                )}
+              
               </div>
           </div>
         )}
