@@ -74,7 +74,6 @@ export default function TeamCard({ team, userId, editTeam, removeTeam, setSelect
             shift={0}
             >
                 <MenuItem key={"Edit"} onClick={() => setAddEditTeamModal(true)}>{"Edit"}</MenuItem>
-                {/* onClick={() => setIsListDeleteModalOpen(true) } */}
                 <MenuItem key={"Delete"} onClick={() => setDeleteTeamModal(true)}>{"Delete"}</MenuItem>
             </Menu>
         </div>

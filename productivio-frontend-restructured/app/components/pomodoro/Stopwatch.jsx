@@ -35,7 +35,7 @@ export default function Stopwatch({ seconds, minutes, hours, isRunning, start, p
         <CircularProgressbar
           key={cycleKey}
           value={progressValue}
-          strokeWidth={strokeWidth}
+          // strokeWidth={strokeWidth}
           styles={buildStyles({
             pathColor: "#a78bfa",
             trailColor: "#ddd6f3",
@@ -103,7 +103,7 @@ export default function Stopwatch({ seconds, minutes, hours, isRunning, start, p
                 setCycleKey(prev => prev + 1);
               }}
             >
-              End
+              Reset
             </button>
           </>
         )}

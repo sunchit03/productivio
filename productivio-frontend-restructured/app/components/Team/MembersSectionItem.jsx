@@ -85,6 +85,7 @@ export default function MembersSectionItem({ member, isAdmin, adminId, userId, m
         {isInfoModalOpen && 
           <InfoMemberModal 
             member={member}
+            adminId={adminId}
             onClose={() => setIsInfoModalOpen(false)}
           />
         }

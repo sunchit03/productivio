@@ -1,7 +1,6 @@
 // InfoMemberModal.jsx
-import { IoClose  } from "react-icons/io5";
 
-export default function InfoMemberModal({ member, onClose }) {
+export default function InfoMemberModal({ member, adminId, onClose }) {
 
     return (
         <div className="fixed inset-0 flex items-start justify-center bg-gray-100 bg-opacity-40 z-50 pt-20 drop-shadow-xl" onClick={onClose}>
@@ -15,8 +14,14 @@ export default function InfoMemberModal({ member, onClose }) {
                     />
                 </div>
                 <h3 className="text-lg font-bold text-purple-900 mb-2 mt-1">{member.email}</h3>
-                <p className="text-md text-purple-700 mb-2">BOSS</p>
-                <p className="text-md text-gray-600 mb-5">idk what to write, its 4:40 AM. too tired, about to sleep</p>
+                <p className="text-md text-purple-700 mb-2">
+                  {member._id === adminId ? 
+                    "Admin"
+                  :
+                    "Member"
+                  }
+                </p>
+                {/* <p className="text-md text-gray-600 mb-5">Coming Up</p> */}
                 {/* <div className="flex justify-center space-x-4 text-lg text-blue-600">
                   <a href={person.github} target="_blank"><FaGithub className='text-purple-900'/></a>
                   <a href={person.linkedin} target="_blank"><FaLinkedin className='text-purple-900'/></a>

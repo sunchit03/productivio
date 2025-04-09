@@ -1,4 +1,3 @@
-
 "use client";
 import { useState, useEffect } from "react";
 
@@ -32,7 +31,7 @@ export default function PomoOverview({ pomoCount}) {
 
   return (
     <div className={`w-full p-2 transition-all duration-300`}>
-      <div className="flex justify-between items-center cursor-pointer">
+      <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold text-gray-800">Overview</h2>
       </div>
 

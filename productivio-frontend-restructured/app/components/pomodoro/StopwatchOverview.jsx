@@ -1,10 +1,12 @@
-
 "use client";
-
 export default function StopwatchOverview({laps = []}) {
   return (
     <div className={`w-full p-2 transition-all duration-300`}>
-    <h3 className="text-lg font-semibold text-gray-700 mb-3">Lap Times</h3>
+    
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-bold text-gray-800">Lap Times</h2>
+      </div>
+
       {laps?.length > 0 && (
         <div className="mt-8">
           <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-lg shadow-inner p-4 max-h-96 overflow-y-auto border border-purple-100">

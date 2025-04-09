@@ -1,13 +1,12 @@
-
 "use client";
+import { useState, useEffect } from "react";
 import Timer from "@/app/components/pomodoro/Timer";
 import SettingsContext from "@/app/components/pomodoro/SettingsContext";
-import PomoOverview from "@/app/components/pomodoro/pomoOverview";
-import StopwatchOverview from "@/app/components/pomodoro/stopwatchOverview";
-import { useState, useEffect } from "react";
+import PomoOverview from "@/app/components/pomodoro/PomoOverview";
+import StopwatchOverview from "@/app/components/pomodoro/StopwatchOverview";
 import Stopwatch from "@/app/components/pomodoro/Stopwatch";
 
-export default function PomodoroPage( {userId, stopwatch,timer, elapsed, laps, handleLap, pomoCount, workMinutes,breakMinutes, setWorkMinutes, setBreakMinutes} ) {
+export default function PomodoroPage({ userId, stopwatch, timer, elapsed, laps, handleLap, pomoCount, workMinutes, breakMinutes, setWorkMinutes, setBreakMinutes }) {
   const [main, setMain] = useState('pomo');
   const [showSettings, setShowSettings] = useState(false);
 
@@ -38,10 +37,9 @@ export default function PomodoroPage( {userId, stopwatch,timer, elapsed, laps, h
           <div className="flex flex-1 justify-center items-center">
             {main === 'pomo' ?
               <Timer timer={timer} />
-            :(
+            :
               <Stopwatch {...{ ...stopwatch, elapsed, onLap: handleLap }} />
-
-            )}
+            }
           </div>
           
         </div>
