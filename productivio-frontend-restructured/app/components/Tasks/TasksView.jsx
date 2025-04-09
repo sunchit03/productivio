@@ -32,6 +32,9 @@ const TasksView = ({
 }) => {
   const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [tFDatePicker, setTFDatePicker] = useState(false);
+  const [dTVDatePicker, setDTVDatePicker] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
 
   let todayOrNext = title == "Today" || title == "Next 7 Days";
   let completedOrTrash = title == "Completed" || title == "Trash";
@@ -305,9 +308,9 @@ const handleTaskAssignment = async(taskId, assignedTo) => {
       try{
         const data = await updateTask(taskId, userId, {priority: setPriority})
         if(data){
-          setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, priority: setPriority, updatedBy: mongoUser, updatedAat: new Date()} : task));
+          setTasks(prevTasks => prevTasks.map(task => task._id === taskId ? {...task, priority: setPriority, updatedBy: mongoUser, updatedAt: new Date()} : task));
         if(selectedTask?._id === taskId){
-          setSelectedTask(prevTask=>({...prevTask, priority: setPriority, updatedBy: mongoUser, updatedAat: new Date()}));
+          setSelectedTask(prevTask=>({...prevTask, priority: setPriority, updatedBy: mongoUser, updatedAt: new Date()}));
         }
       }
       else{
@@ -364,9 +367,16 @@ const handleTaskAssignment = async(taskId, assignedTo) => {
     jsonToCsvExport({ data: tasks, filename: title + " Tasks" })
     toast.success("Tasks exported successfully!")
   }
+
+  const handleDatePickerDismissal = () => {
+    console.log("clicked!!!!!!!")
+    setDTVDatePicker(false);
+    setTFDatePicker(false);
+  }
+
   
   return (
-    <div className={`relative w-full flex h-full px-5 overflow-hidden`} onClick={handleTaskBarDismissal}>
+    <div className={`relative w-full flex h-full px-5 overflow-hidden`} onClick={() => {handleTaskBarDismissal(); handleDatePickerDismissal(); setDeleteModal(false)}}>
       <Toaster
           toastOptions={{
             removeDelay: 500,
@@ -401,6 +411,8 @@ const handleTaskAssignment = async(taskId, assignedTo) => {
             todayOrNext={todayOrNext}
             listId={listId} 
             teamId={teamId} 
+            setDatePicker={setTFDatePicker}
+            datePicker={tFDatePicker}
             refresh={teamId ? fetchTeamTasks : fetchTasks} 
             userId={userId} 
             taskBarCollapse={taskBarCollapse}
@@ -426,7 +438,7 @@ const handleTaskAssignment = async(taskId, assignedTo) => {
                     }
                   }
                 }>
-                  <TaskItem task={task} handleCheckBoxCheck={handleCheckBoxCheck} pageTitle={title}/>
+                  <TaskItem task={task} handleCheckBoxCheck={handleCheckBoxCheck} pageTitle={title} teamId={teamId}/>
                 </div>
                 <div className={`h-[1px] bottom-0 group-hover:invisible z-10 ${typeof window !== "undefined" && window.innerWidth < 639 && (teamId ? !membersSectionCollapse : !taskBarCollapse) ? "bg-gray-300/90" : "bg-purple-50"}`}></div>
               </div> 
@@ -470,13 +482,17 @@ const handleTaskAssignment = async(taskId, assignedTo) => {
       <div className="absolute w-[1px] h-dvh left-0 z-10 bg-purple-100 visible mdlg:invisible"></div>
         {selectedTask && 
           <div className="relative w-full h-full pl-2 pt-2 flex flex-col justify-between"
-            onClick={(e) => e.stopPropagation()}>
+            onClick={(e) => {e.stopPropagation(); handleDatePickerDismissal(); setDeleteModal(false)}}>
             <DetailTaskView 
             task={selectedTask} 
+            deleteModal={deleteModal}
+            setDeleteModal={setDeleteModal}
             handleTaskAssignment={handleTaskAssignment}
             pageTitle={title}
             userId={userId} 
             teamId={teamId}
+            setDatePicker={setDTVDatePicker}
+            datePicker={dTVDatePicker}
             handleCheckBoxCheck={handleCheckBoxCheck}
             handleEditTask={handleEditTask} 
             handleTrashOrRestore={handleTrashOrRestore} 

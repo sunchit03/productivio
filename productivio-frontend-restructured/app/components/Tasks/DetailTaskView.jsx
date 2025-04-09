@@ -1,3 +1,4 @@
+//detailTaskView
 import { useEffect, useState } from "react";
 import { IoIosFlag } from "react-icons/io";
 import { Menu, MenuItem, MenuButton } from '@szhsin/react-menu';
@@ -13,15 +14,14 @@ import { Combobox, ComboboxInput, ComboboxButton, ComboboxOption, ComboboxOption
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import React, {useCallback} from 'react'
 import {useDropzone} from 'react-dropzone'
-
+import { uploadFileToServer, downloadFileFromServer, deleteFileFromServer } from "@/app/services/files";
 
 const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, handleTrashOrRestore, handleTaskPriorityChange, 
-    handleDueDateUpdate, handleDeleteTask, matrixBlockPriority, handleMatrixAddNewTask, setSelectedTask, pageTitle="", teamId, teamMembers, formatUpdatedAtTime, handleTaskAssignment} ) => {
+    handleDueDateUpdate, handleDeleteTask, matrixBlockPriority, handleMatrixAddNewTask, setSelectedTask, pageTitle="", teamId, teamMembers, formatUpdatedAtTime, handleTaskAssignment,
+    setDatePicker, datePicker, deleteModal, setDeleteModal} ) => {
 
     const [completion, setCompletion] = useState(task?.isCompleted || false);
-    const [datePicker, setDatePicker] = useState(false);
     const [title, setTitle] = useState("");
-    const [deleteModal, setDeleteModal] = useState(false);
     const [description, setDescription] = useState("");
     const [selectedPriority, setSelectedPriority] = useState(task?.priority || matrixBlockPriority);
     const [dueDate, setDueDate] = useState(null);
@@ -33,12 +33,23 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
     const [filteredMembers, setFilteredMembers] = useState(teamMembers);
     const [uploadedFiles, setUploadedFiles] = useState([]);
 
-    // only Trigger this function when files are dropped
-    const onDrop = useCallback((acceptedFiles) => {
-        setUploadedFiles(prevFiles => [...prevFiles, ...acceptedFiles]);
-        console.log("Dropped files:", uploadedFiles);
-        // Can make a POST call here to upload files
-    }, [uploadedFiles]);
+    //Grabs file from user, triggers upload
+    const onDrop = useCallback(async (acceptedFiles) => {
+    for (const file of acceptedFiles) {
+        const data = await uploadFileToServer(file, task._id);
+        //console.log("upload begin!!!!!")
+        if (data.success) {
+        console.log("Uploaded file key:", data.key);
+        setUploadedFiles(prev => [...prev, {
+            name: file.name,
+            key: data.key,
+        }]);
+        } else {
+        console.error("Upload failed:", data.error);
+        }
+    }
+    }, [uploadedFiles, task]);
+
 
     const {getRootProps, getInputProps} = useDropzone({
         onDrop,
@@ -123,7 +134,7 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
             setDescription(task?.description || "");
             setSelectedPriority(task?.priority || selectedPriority);
             setCompletion(task?.isCompleted || false);
-    
+            setUploadedFiles(task?.files || []);    
             if (task?.dueDate) {
                 setDueDateSelected(true);
                 setDueDate(new Date(task?.dueDate));
@@ -136,6 +147,7 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
             setTitle("");
             setDueDateSelected(false);
             setDueDate(null);
+            setUploadedFiles([]);    
         }
     }, [task]);
 
@@ -198,13 +210,25 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
             handleMatrixAddNewTask(userId, title, description, dueDate, selectedPriority, completion);
     }
 
-    const handleDeleteFile = (number) => {
-        console.log(`delete delete delete!!!!!! ${number}`);
-    }
-
-    const handleDownloadFile = (number) => {
-        console.log(`Downloaded file ${number}`);
-    }
+    // Trigger file download
+    const handleDownloadFile = async (index) => {
+        const file = uploadedFiles[index];
+        const result = await downloadFileFromServer(file.key);
+        if (!result.success) {
+        console.error("Download failed:", result.error);
+        }
+    };
+    
+    // Delete file from R2, mongodb and remove it from the list
+    const handleDeleteFile = async (index) => {
+        const file = uploadedFiles[index];
+        const result = await deleteFileFromServer(file.key, task._id);
+        if (result.success) {
+        setUploadedFiles(prevFiles=> prevFiles.filter(prev=>prev.key !== file.key));
+        } else {
+        console.error("Delete failed:", result.error);
+        }
+    };
 
     return ( 
         <>
@@ -239,7 +263,7 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                         <>
                             <div
                             className={`flex items-center ${pageTitle === "Trash" ? "cursor-not-allowed" : "cursor-pointer hover:bg-gray-100 hover:rounded-md"} p-1 ${(dueDate && pageTitle !== "Trash") ? formatDate(dueDate).color : "text-gray-400"}`} 
-                            onClick={() => setDatePicker((val) => !val)}
+                            onClick={(e) => {e.stopPropagation(); setDatePicker((val) => !val)}}
                             >
                             <BsCalendar2Date className="mr-1" size={19} />
                             {dueDate && <span className="text-sm mt-1">{formatDate(dueDate).dateText}</span>}
@@ -250,23 +274,23 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                             <GrClear 
                                 className="cursor-pointer text-gray-400" 
                                 size={20} 
-                                onClick={clearDueDate}
+                                onClick={(e)=>{clearDueDate(); e.stopPropagation()}}
                             />
                             )}
                             </> : 
                             (
                             <div 
                             className={`flex items-center ${pageTitle === "Trash" ? "cursor-not-allowed" : "cursor-pointer hover:bg-gray-100 hover:rounded-md "} p-1 text-gray-500`} 
-                            onClick={() => setDatePicker((val) => !val)}
+                            onClick={(e) => {setDatePicker((val) => !val); e.stopPropagation()}}
                             >
                             <IoCalendarOutline className="mr-1" size={20} />
-                            <span className="text-sm mt-1">Due Date</span>
+                            <span className="text-sm mt-1 font-thin">Due Date</span>
                             </div>
                             )
                         }
                         {/* Date Picker (Calendar) */}
                         {datePicker && pageTitle !== "Trash" && (
-                        <div className={(task && pageTitle !== "") || (teamId && teamId !== null) ? `absolute top-12 left-0 mt-2 z-50 bg-white shadow-lg p-2 border border-gray-300 rounded-md` :`absolute top-56 left-60 z-50 bg-gray-100 shadow-lg p-2 border border-gray-300 rounded-md`}>
+                        <div className={(task && pageTitle !== "") || (teamId && teamId !== null) ? `absolute top-12 left-0 mt-2 z-50 bg-white shadow-lg p-2 border border-gray-300 rounded-md` :`absolute top-16 left-20 lg:left-12 mdlg:left-10 md:left-6 sm:left-4 sm:w-72 xssm:left-4 xssm:w-72 xs:left-2 xs:w-72 z-50 bg-gray-100 shadow-lg p-2 border border-gray-300 rounded-md`}>
                             <Calendar 
                             className="text-black" 
                             onChange={handleDueDateSelection} 
@@ -304,14 +328,14 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                 </div>
                 <div className="h-[1px] w-full bottom-0 bg-purple-100 z-10"></div>
                 {/* create two fields - to display title or description */}
-                <div className="flex flex-col pt-2 pr-1 gap-4">
+                <div className="flex flex-col pt-2 pr-1 gap-4 max-h-[calc(100vh-180px)] overflow-y-auto">
                     <input
                         type = "text"
                         value={title}
                         placeholder="What would you like to do?"
                         onChange={(e)=> setTitle(e.target.value)}
                         disabled={pageTitle === "Trash"}
-                        className={`${pageTitle === "Trash" ? "cursor-not-allowed" : ""} text-xl text-black font-bold  p-1 rounded-sm focus:outline-none`}
+                        className={`${pageTitle === "Trash" ? "cursor-not-allowed" : ""} placeholder:font-thin text-xl text-black font-bold  p-1 rounded-sm focus:outline-none`}
                     />
                     <article className="text-wrap w-full">
                         <textarea
@@ -324,7 +348,7 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                             rows={3}
                         />  
                     </article>
-                    {uploadedFiles.length < 2 &&
+                    {uploadedFiles?.length < 2 &&
                         <div disabled={pageTitle === "Trash"} {...getRootProps({className: pageTitle !== "Trash" ? "flex bg-purple-50 hover:bg-purple-100 hover: cursor-pointer w-full text-gray-500 font-thin items-center rounded-md p-2 text-md justify-center" : "cursor-not-allowed flex bg-gray-100 w-full text-gray-500 font-thin items-center rounded-md p-2 text-md justify-center"})}>
                         <input disabled={pageTitle === "Trash"} {...getInputProps()} />
                         {
@@ -334,7 +358,7 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                             </>                      
                         }
                         </div>}
-                        {uploadedFiles.length > 0 && 
+                        {uploadedFiles?.length > 0 && 
                         <div>
                             <h2 className="font-bold text-md mb-2 text-gray-400">Uploaded files:</h2>
                             <div>
@@ -432,7 +456,7 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                 </div>
             </div>
             {/* update button and  trash button*/}
-            <div className="relative">
+            <div className="sticky bottom-0 bg-white p-2 border-t border-gray-200 z-10">
                 <div className={`flex space-x-1 ${task ? "mb-2" : ""}`}>
                     {task && (
                         <button disabled={pageTitle && pageTitle === "Trash" ? false : !taskIsEnable} 
@@ -442,11 +466,11 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
                         </button>)}
                         {!task && (<button disabled={!taskIsEnable}
                             onClick={handleAddEditTask} 
-                            className={`flex-grow bottom-5 right-2 text-center p-2 rounded ${ taskIsEnable ? "text-gray-400 bg-gray-200 hover:bg-gray-300" : "bg-gray-200 text-gray-300 cursor-not-allowed"}`}>
+                            className={`font-thin flex-grow bottom-5 right-2 text-center p-2 rounded ${ taskIsEnable ? "text-purple-700 bg-purple-100 hover:bg-purple-200" : "bg-gray-200 text-gray-300 cursor-not-allowed"}`}>
                             Create
                         </button>)}
                     { task && ( 
-                        <div onClick={()=>{setDeleteModal(true)}} className="cursor-pointer flex-shrink-0">
+                        <div onClick={(e)=>{setDeleteModal(true); e.stopPropagation()}} className="cursor-pointer flex-shrink-0">
                             <RiDeleteBin5Line className="rounded text-purple-700 bg-purple-100 hover:bg-purple-200 p-2" size={40}/>
                         </div>
                     )}
@@ -454,7 +478,7 @@ const DetailTaskView = ( { task, userId, handleCheckBoxCheck, handleEditTask, ha
             </div>
             {deleteModal && (
                 <div className="fixed inset-0 flex items-start justify-center bg-gray-900 bg-opacity-0 z-50 top-10 drop-shadow-xl">
-                    <div className="xs:w-5/6 xssm:w-4/5 mdlg:w-3/5 bg-white p-6 rounded-md shadow-lg w-2/5">
+                    <div className="xs:w-5/6 xssm:w-4/5 mdlg:w-3/5 bg-white p-6 rounded-md shadow-lg w-2/5"  onClick={(e)=>e.stopPropagation()}>
                         <h2 className="text-lg font-semibold mb-4 text-black">{pageTitle === "Trash" ? `Delete Task?` : `Trash Task?`}</h2>   
                         <p className="text-black font-thin mb-2">{pageTitle !== "Trash" ? `Are you sure that you want to move task "${initTaskTitle}" to trash?` : `Are you sure you want to delete the task "${initTaskTitle}"?`}</p>        
                         <div className="flex justify-between mt-8">
