@@ -70,6 +70,7 @@ export default function MembersSection({ user, teamId, teamName, members, isAdmi
 
     if (data.success) {
       setNotifications([]);
+      toast.success("Notifications cleared successfully!")
     } else {
       toast.error("Failed to mark notifications as read");
     }
@@ -126,7 +127,7 @@ export default function MembersSection({ user, teamId, teamName, members, isAdmi
         toast.error("Something went wrong, don't worry");
       }
 
-      console.log("addeddddddd");
+      toast.success("User is added to team successfully!")
       setShowAddModal(false);
       refresh();
     }
@@ -134,8 +135,8 @@ export default function MembersSection({ user, teamId, teamName, members, isAdmi
 
   const inviteUser = async (email) => {
     if (invitations.includes(email)) {
-      console.log('555');
       // email already sent
+      toast("User already requested for invitation!")
       return;
     }
     const data = await sendInvite(email);
@@ -143,11 +144,11 @@ export default function MembersSection({ user, teamId, teamName, members, isAdmi
       setShowAddModal(false);
       setInvitations((prevState) => [...prevState, email]);
       // invite sent successfully
-      console.log("email sentttt")
+      toast.success("Invitation sent successfully!")
       setShowAddModal(false);
     } else {
       // something went wrong
-      console.log("oh nooooo")
+      toast.error("Failed to send the notification")
     }
   }
 
