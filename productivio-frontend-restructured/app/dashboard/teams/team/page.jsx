@@ -1,5 +1,4 @@
 // app/teams/team/page.jsx
-"use client";
 import { useState, useEffect } from "react";
 import MembersSection from "@/app/components/Team/MembersSection";
 import TasksView from "@/app/components/Tasks/TasksView";

@@ -1,4 +1,3 @@
-"use client";
 import { useState, useEffect } from "react";
 import { IoAdd } from "react-icons/io5";
 import toast,{Toaster} from "react-hot-toast";
