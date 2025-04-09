@@ -3,7 +3,6 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
 export default function Stopwatch({ seconds, minutes, hours, isRunning, start, pause, reset, elapsed, onLap }) {
-  const strokeWidth = 14; // Balanced thickness
   const cycleDuration = 60;
 
   const displayMinutes = Math.floor((elapsed % 3600000) / 60000);
@@ -29,13 +28,13 @@ export default function Stopwatch({ seconds, minutes, hours, isRunning, start, p
   }, [seconds, computedPercentage]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-[90vh] w-full py-0">
+    <div className="flex flex-col items-center justify-center h-[90%] w-full py-0">
       {/* Slightly bigger but not huge */}
-      <div className="relative w-full max-w-[24rem] sm:max-w-[32rem] aspect-square transition-all duration-500">
+      <div className="relative w-full max-w-[24rem] md:max-w-[14rem] mdlg:max-w-[14rem] aspect-square transition-all duration-500">
         <CircularProgressbar
           key={cycleKey}
           value={progressValue}
-          // strokeWidth={strokeWidth}
+          strokeWidth={typeof window !== "undefined" && window.innerWidth >= 767 ? 8 : 8}
           styles={buildStyles({
             pathColor: "#a78bfa",
             trailColor: "#ddd6f3",

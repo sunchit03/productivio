@@ -1,8 +1,6 @@
-import { useContext, useState } from "react";
-import SettingsContext from "./SettingsContext";
+import { useState } from "react";
 
-export default function SettingsModal({ closeModal }) {
-    const { workMinutes, breakMinutes, setWorkMinutes, setBreakMinutes } = useContext(SettingsContext);
+export default function SettingsModal({ workMinutes, breakMinutes, setWorkMinutes, setBreakMinutes, closeModal }) {
 
     const [workTime, setWorkTime] = useState(workMinutes);
     const [breakTime, setBreakTime] = useState(breakMinutes);
@@ -14,7 +12,7 @@ export default function SettingsModal({ closeModal }) {
     };
 
     return (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 flex justify-center items-center bg-gray-100 bg-opacity-40 z-50 pt-16 drop-shadow-xl">
             <div className="bg-white p-6 rounded-lg shadow-lg w-96">
                 <h2 className="text-xl font-bold mb-4 text-black">Pomodoro Settings</h2>
 

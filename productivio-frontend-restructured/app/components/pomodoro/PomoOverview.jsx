@@ -1,33 +1,30 @@
 "use client";
 import { useState, useEffect } from "react";
 
-export default function PomoOverview({ pomoCount}) {
+export default function PomoOverview({ pomoStats }) {
   const [todayPomo, setTodayPomo] = useState(0);
   const [todayFocus, setTodayFocus] = useState(0);
   const [totalPomo, setTotalPomo] = useState(0);
   const [totalFocus, setTotalFocus] = useState(0);
 
   useEffect(() => {
-    const savedTotalPomo = localStorage.getItem("totalPomo");
-    const savedTotalFocus = localStorage.getItem("totalFocus");
+    if (pomoStats) {
+      setTodayPomo(pomoStats.todayPomo);
+      setTotalPomo(pomoStats.totalPomo);
+      setTodayFocus(pomoStats.todayFocus);
+      setTotalFocus(pomoStats.totalFocus);
+    }
+  }, [pomoStats]);
 
-    if (savedTotalPomo) setTotalPomo(parseInt(savedTotalPomo));
-    if (savedTotalFocus) setTotalFocus(parseInt(savedTotalFocus));
-  }, []);
+  const formatTime = (seconds) => {
+    const totalMinutes = Math.floor(seconds / 60);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
 
-  useEffect(() => {
-    setTodayPomo(pomoCount);
-    setTodayFocus(pomoCount * 25);
+    const paddedMinutes = minutes < 10 ? `0${minutes}` : minutes;
 
-    const newTotalPomo = pomoCount + totalPomo;
-    const newTotalFocus = newTotalPomo * 25;
-
-    setTotalPomo(newTotalPomo);
-    setTotalFocus(newTotalFocus);
-
-    localStorage.setItem("totalPomo", newTotalPomo);
-    localStorage.setItem("totalFocus", newTotalFocus);
-  }, [pomoCount]);
+    return `${hours}h ${paddedMinutes}m`;
+  }
 
   return (
     <div className={`w-full p-2 transition-all duration-300`}>
@@ -35,22 +32,22 @@ export default function PomoOverview({ pomoCount}) {
         <h2 className="text-xl font-bold text-gray-800">Overview</h2>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-3">
+      <div className="grid grid-cols-2 md:grid-cols-2 gap-4 mt-3">
         <div className="p-4 bg-gray-100 rounded-md shadow-sm transition-transform transform hover:scale-105">
           <p className="text-gray-600">Today's Pomo</p>
-          <p className="text-3xl font-bold text-indigo-600">{todayPomo}</p>
+          <p className="text-3xl font-bold text-indigo-600">{formatTime(todayPomo)}</p>
         </div>
         <div className="p-4 bg-gray-100 rounded-md shadow-sm transition-transform transform hover:scale-105">
           <p className="text-gray-600">Today's Focus</p>
-          <p className="text-3xl font-bold text-green-600">{todayFocus}m</p>
+          <p className="text-3xl font-bold text-green-600">{formatTime(todayFocus)}</p>
         </div>
         <div className="p-4 bg-gray-100 rounded-md shadow-sm transition-transform transform hover:scale-105">
           <p className="text-gray-600">Total Pomo</p>
-          <p className="text-3xl font-bold text-indigo-600">{totalPomo}</p>
+          <p className="text-3xl font-bold text-indigo-600">{formatTime(totalPomo)}</p>
         </div>
         <div className="p-4 bg-gray-100 rounded-md shadow-sm transition-transform transform hover:scale-105">
           <p className="text-gray-600">Total Focus Duration</p>
-          <p className="text-3xl font-bold text-green-600">{totalFocus}m</p>
+          <p className="text-3xl font-bold text-green-600">{formatTime(totalFocus)}</p>
         </div>
 
       </div>
