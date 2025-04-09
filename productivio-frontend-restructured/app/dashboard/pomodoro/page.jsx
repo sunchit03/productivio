@@ -37,10 +37,9 @@ export default function PomodoroPage( {userId, stopwatch,timer, elapsed, laps, h
           <div className="flex flex-1 justify-center items-center">
             {main === 'pomo' ?
               <Timer timer={timer} />
-            :(
+            :
               <Stopwatch {...{ ...stopwatch, elapsed, onLap: handleLap }} />
-
-            )}
+            }
           </div>
           
         </div>
