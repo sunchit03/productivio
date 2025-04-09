@@ -1,6 +1,7 @@
+"use client";
 import { useState, useEffect } from "react";
 import { IoAdd } from "react-icons/io5";
-import toast,{Toaster} from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import TeamCard from "@/app/components/Teams/TeamCard";
 import CreateOrEditTeam from "@/app/components/Teams/CreateOrEditTeam";
 import { getUserTeams, updateTeam, deleteTeam } from "@/app/services/teams";

@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect } from "react";
 import { TbCircleNumber1Filled, TbCircleNumber2Filled, TbCircleNumber3Filled, TbCircleNumber4Filled} from "react-icons/tb";
 import { getUserTasks } from "@/app/services/tasks";

@@ -1,3 +1,4 @@
+"use client";
 export default function StopwatchOverview({laps = []}) {
   return (
     <div className={`w-full p-2 transition-all duration-300`}>
