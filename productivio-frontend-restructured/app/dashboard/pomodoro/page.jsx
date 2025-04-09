@@ -7,12 +7,9 @@ import StopwatchOverview from "@/app/components/pomodoro/stopwatchOverview";
 import { useState, useEffect } from "react";
 import Stopwatch from "@/app/components/pomodoro/Stopwatch";
 
-export default function PomodoroPage( {userId, stopwatch, elapsed, laps, handleLap} ) {
+export default function PomodoroPage( {userId, stopwatch,timer, elapsed, laps, handleLap, pomoCount, workMinutes,breakMinutes, setWorkMinutes, setBreakMinutes} ) {
   const [main, setMain] = useState('pomo');
-  const [workMinutes, setWorkMinutes] = useState(2);
-  const [breakMinutes, setBreakMinutes] = useState(5);
   const [showSettings, setShowSettings] = useState(false);
-  const [pomoCount, setPomoCount] = useState(0);
 
   return (
     <SettingsContext.Provider value={{ workMinutes, breakMinutes, setShowSettings }}>
@@ -40,7 +37,7 @@ export default function PomodoroPage( {userId, stopwatch, elapsed, laps, handleL
           </div>
           <div className="flex flex-1 justify-center items-center">
             {main === 'pomo' ?
-              <Timer onPomoComplete={() => setPomoCount((prev) => prev + 1)} />
+              <Timer timer={timer} />
             :(
               <Stopwatch {...{ ...stopwatch, elapsed, onLap: handleLap }} />
 

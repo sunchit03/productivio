@@ -29,7 +29,7 @@ export default function Stopwatch({ seconds, minutes, hours, isRunning, start, p
   }, [seconds, computedPercentage]);
 
   return (
-    <div className="flex flex-col items-center min-h-screen w-full px-4 py-6">
+    <div className="flex flex-col items-center justify-center h-[90vh] w-full py-0">
       {/* Slightly bigger but not huge */}
       <div className="relative w-full max-w-[24rem] sm:max-w-[32rem] aspect-square transition-all duration-500">
         <CircularProgressbar
