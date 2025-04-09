@@ -16,7 +16,9 @@ const titleColorMap = {
 const MatrixBlock = ({tasks, title, refresh, userId, setTasks}) => {
 const [addEditTaskModal,setAddEditTaskModal] = useState(false);
 const [selectedTask, setSelectedTask] = useState(null); // Track the task being edited
+const [deleteModal, setDeleteModal] = useState(false);
 // Extract text from JSX title prop
+const [eHMDatePicker, setEHMDatePicker] = useState(false);
 const textContent = title.props.children.filter(child => typeof child === "string").join(" ");
 const textColor = titleColorMap[textContent] || "text-gray-800"; // Default color
 
@@ -176,13 +178,25 @@ return(
                 </button>
             </div>
             {addEditTaskModal &&
-            <div className="fixed inset-0 bg-opacity-5 flex flex-col justify-center items-center z-50" onClick={()=>{setAddEditTaskModal(false); setSelectedTask(null)} }> 
-                <div className="relative p-2 shadow-xl rounded-md bg-gray-50 min-w-[25%] max-w-[50%] min-h-[50%] md:min-w-[50%] md:min-h-[50%] sm:min-h-[50%] sm:min-w-[75%] flex flex-col justify-between z-50" onClick={(e) => e.stopPropagation()}>
+            <div className="fixed inset-0 bg-opacity-5 flex flex-col justify-center items-center z-50" onClick={() => {
+                if (eHMDatePicker) {
+                  setEHMDatePicker(false);
+                } else {
+                  setAddEditTaskModal(false);
+                  setSelectedTask(null);
+                }
+                setDeleteModal(false);
+              }}> 
+                <div className="relative p-2 shadow-xl rounded-md bg-gray-50 min-w-[35%] max-w-[50%] min-h-[60%] lg:min-w-[50%] md:min-w-[50%] md:min-h-[50%] sm:min-h-[50%] sm:min-w-[75%] flex flex-col justify-between z-50" onClick={(e) => {e.stopPropagation(); setEHMDatePicker(false); setDeleteModal(false)}}>
                 <DetailTaskView
                 setSelectedTask={setSelectedTask}
                 handleTrashOrRestore={handleTrashOrRestore}
                 handleCheckBoxCheck={handleCheckBoxCheck}
                 handleEditTask={handleEditTask}
+                setDatePicker={setEHMDatePicker}
+                deleteModal={deleteModal}
+                setDeleteModal={setDeleteModal}
+                datePicker={eHMDatePicker}
                 task={selectedTask}
                 handleMatrixAddNewTask={handleMatrixAddNewTask}
                 handleDueDateUpdate={handleDueDateUpdate}
@@ -198,7 +212,7 @@ return(
             {tasks.length > 0 ? (
                 tasks.map(task => { return (
                 <div className="group-task pr-2" key={task._id}>
-                    <div className={`px-3 py-2 rounded-md ${selectedTask == task ? "bg-purple-100 hover:bg-purple-200" : "hover:bg-purple-50"}`} 
+                    <div className={`px-3 py-2 rounded-md ${selectedTask?._id == task?._id ? "bg-purple-100 hover:bg-purple-200" : "hover:bg-purple-50"}`} 
                     onClick={() => {handleTaskSelection(task); setAddEditTaskModal(true);}}>
                     <TaskItem handleCheckBoxCheck={handleCheckBoxCheck} task={task} />
                     </div>

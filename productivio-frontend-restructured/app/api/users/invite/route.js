@@ -13,8 +13,7 @@ export async function POST(req) {
 
     const msg = {
       to: email,
-      from: `${process.env.PRODUCTIVIO_EMAIL}`,  // Replace with a verified sender email from SendGrid
-      //from: "sunchit333@gmail.com",
+      from: `${process.env.PRODUCTIVIO_EMAIL}`,
       subject: 'You have been invited to join!',
       html: emailHtml,
     };

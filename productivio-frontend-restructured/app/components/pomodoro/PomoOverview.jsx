@@ -1,8 +1,7 @@
-
 "use client";
 import { useState, useEffect } from "react";
 
-export default function Overview({ pomoCount }) {
+export default function PomoOverview({ pomoCount}) {
   const [todayPomo, setTodayPomo] = useState(0);
   const [todayFocus, setTodayFocus] = useState(0);
   const [totalPomo, setTotalPomo] = useState(0);
@@ -32,7 +31,7 @@ export default function Overview({ pomoCount }) {
 
   return (
     <div className={`w-full p-2 transition-all duration-300`}>
-      <div className="flex justify-between items-center cursor-pointer">
+      <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold text-gray-800">Overview</h2>
       </div>
 
@@ -53,7 +52,9 @@ export default function Overview({ pomoCount }) {
           <p className="text-gray-600">Total Focus Duration</p>
           <p className="text-3xl font-bold text-green-600">{totalFocus}m</p>
         </div>
+
       </div>
+      
     </div>
   );
 }

@@ -27,25 +27,25 @@ const contributors = [
     role: "Full-Stack Developer",
     github: "https://github.com/Artomking",
     linkedin: "https://www.linkedin.com/in/artom-zabihi/",
-    avatar: "/assets/default-avatar.jpg",
+    avatar: "/assets/artom.png",
     description: "Balancing deadlines, debugging errors, and answering ‘when will it be done?’ at least 10 times a day."
   },
   {
-    name: "Ali Mohamed Ali Ahmed Rezk",
+    name: "Ali Rezk",
     role: "Full-Stack Developer",
     github: "https://github.com/arezk11",
-    linkedin: "https://linkedin.com/in/eveadams",
+    linkedin: "https://www.linkedin.com/in/ali-rezk-a50681308/",
     avatar: "/assets/ali.png",
     description: "Brews coffee, writes code, squashes bugs—sometimes in that order."
   },
-//   {
-//     name: "Ankit Thapar",
-//     role: "Full-Stack Developer",
-//     github: "https://github.com/Ankit16727",
-//     linkedin: "https://www.linkedin.com/in/ankit-thapar-417873275/",
-//     avatar: "/assets/default-avatar.jpg",
-//     description: "Does nothing but listen while you solve your own problems. Occasionally types."
-//   },
+  {
+    name: "Ankit Thapar",
+    role: "Full-Stack Developer",
+    github: "https://github.com/Ankit16727",
+    linkedin: "https://www.linkedin.com/in/ankit-thapar-417873275/",
+    avatar: "/assets/ankitThapar.png",
+    description: "Building restful systems and a restful soul—one line of code, one breath at a time."
+  },
 ];
 
 export default function AboutPage() {
@@ -67,14 +67,18 @@ export default function AboutPage() {
             <div className="bg-white rounded-lg p-4 shadow-md">📎 Upload images and PDFs to tasks</div>
             <div className="bg-white rounded-lg p-4 shadow-md">👁️ Detailed task view with file previews</div>
             <div className="bg-white rounded-lg p-4 shadow-md">🧠 MongoDB-backed user and task management</div>
+            <div className="bg-white rounded-lg p-4 shadow-md">⏱️ Pomodoro Timer integration</div>
+            <div className="bg-white rounded-lg p-4 shadow-md">🗓️ Task with due dates appear in integrated calendar</div>
+            <div className="bg-white rounded-lg p-4 shadow-md">🔔 Recieve real time notiifcations</div>
+            <div className="bg-white rounded-lg p-4 shadow-md">Create teams, share and assign tasks</div>
           </div>
         </section>
 
         <section className="mb-28">
           <h2 className="text-3xl font-bold mb-24 text-purple-800 text-center">Meet the Contributors</h2>
-          <div className="grid xxl:grid-cols-4 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-16">
+          <div className="flex flex-wrap justify-center gap-16 space-y-8">
             {contributors.map((person, index) => (
-              <div key={index} className="relative bg-white rounded-2xl shadow-xl pt-16 pb-6 px-6 flex flex-col items-center text-center">
+              <div key={index} className="relative w-80 bg-white rounded-2xl shadow-xl pt-16 pb-6 px-6 flex flex-col items-center text-center">
                 <div className="absolute -top-12 w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden">
                   <img src={person.avatar} alt={person.name} className="w-full h-full object-cover rounded-full" />
                 </div>

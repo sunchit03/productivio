@@ -1,5 +1,4 @@
-"use client"
-
+"use client";
 import { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -14,6 +13,8 @@ function CalendarPage({ userId }) {
   const [tasks, setTasks] = useState([]);
   const [events, setEvents] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [cVDatePicker, setCVDatePicker] = useState(false);
 
   const fetchTasks = async() => {
     try {
@@ -236,10 +237,14 @@ const handleDueDateUpdate = async(taskId, date) => {
 
       {selectedTask &&
         <div className="fixed inset-0 bg-opacity-5 flex flex-col justify-center items-center z-50" onClick={()=>{setSelectedTask(null)} }> 
-          <div className="p-2 shadow-xl rounded-md bg-gray-50 min-w-[25%] max-w-[50%] min-h-[50%] md:min-w-[50%] md:min-h-[50%] sm:min-h-[50%] sm:min-w-[75%] flex flex-col justify-between z-50" onClick={(e) => e.stopPropagation()}>
+          <div className="relative p-2 shadow-xl rounded-md bg-gray-50 min-w-[35%] max-w-[50%] min-h-[60%] lg:min-w-[50%] md:min-w-[50%] md:min-h-[50%] sm:min-h-[50%] sm:min-w-[75%] flex flex-col justify-between z-50" onClick={(e) => e.stopPropagation()}>
             <DetailTaskView
               setSelectedTask={setSelectedTask}
               task={selectedTask}
+              setDatePicker={setCVDatePicker}
+              deleteModal={deleteModal}
+              setDeleteModal={setDeleteModal}
+              datePicker={cVDatePicker}
               handleCheckBoxCheck={handleCheckBoxCheck}
               handleTaskPriorityChange={handleTaskPriorityChange}
               handleDueDateUpdate={handleDueDateUpdate}

@@ -7,17 +7,26 @@ import SettingsModal from "./SettingsModal";
 import "@szhsin/react-menu/dist/index.css";
 import SettingsButton from "@/app/components/pomodoro/SettingsButton";
 
-export default function Timer({ onPomoComplete, userId }) {
-    const [workMinutes, setWorkMinutes] = useState(25);
-    const [breakMinutes, setBreakMinutes] = useState(5);
+export default function Timer({ onPomoComplete, userId, timer }) {
+    // const [workMinutes, setWorkMinutes] = useState(25);
+    // const [breakMinutes, setBreakMinutes] = useState(5);
     const [showSettings, setShowSettings] = useState(false);
 
-    const [isPaused, setIsPaused] = useState(true);
-    const [mode, setMode] = useState("work");
-    const [key, setKey] = useState(0);
-    const [secondsLeft, setSecondsLeft] = useState(workMinutes * 60);
-    const [sessionId, setSessionId] = useState(null);
-    const [focusSeconds, setFocusSeconds] = useState(0);
+    if (!timer) return null; // or a loading skeleton / fallback
+    
+  const {
+    isPaused,
+    mode,
+    key,
+    secondsLeft,
+    workMinutes,
+    breakMinutes,
+    onPlay,
+    onPause,
+    onStop,
+  } = timer;
+
+  const [focusSeconds, setFocusSeconds] = useState(0);
     const [breakSeconds, setBreakSeconds] = useState(0);
     const [workAmounts, setWorkAmounts] = useState(0);
     const [breakAmounts, setBreakAmounts] = useState(0);
@@ -32,31 +41,8 @@ export default function Timer({ onPomoComplete, userId }) {
     const hasStartedRef = useRef(false);
     const startTimeRef = useRef(null);
 
-    async function loadPreviousSession() {
-        const storedSessionId = localStorage.getItem("sessionId");
-        if (!storedSessionId) return;
 
-        try {
-            const response = await fetch(`/api/pomodoro?sessionId=${storedSessionId}`);
-            const data = await response.json();
-
-            if (data?.session) {
-                focusSecondsRef.current = data.session.focusSeconds || 0;
-                breakSecondsRef.current = data.session.breakSeconds || 0;
-                workAmountsRef.current = data.session.workAmounts || 0;
-                breakAmountsRef.current = data.session.breakAmounts || 0;
-
-                setFocusSeconds(focusSecondsRef.current);
-                setBreakSeconds(breakSecondsRef.current);
-                setWorkAmounts(workAmountsRef.current);
-            }
-        } catch (error) {
-            console.error("Error loading previous session:", error);
-        }
-    }
-
-
-    async function createSession() {
+    async function createSession({ focusSeconds, workAmounts }) {
         try {
             const response = await fetch("/api/pomodoro", {
                 method: "POST",
@@ -66,10 +52,8 @@ export default function Timer({ onPomoComplete, userId }) {
                 body: JSON.stringify({
                     currentMode: "work",
                     focusSeconds: focusSeconds.current,
-                    breakSeconds: breakSeconds.current,
                     assignedUser: userId,
                     workAmounts: workAmounts.current,
-                    breakAmounts: breakAmounts.current,
                 }),
             });
 
@@ -83,184 +67,120 @@ export default function Timer({ onPomoComplete, userId }) {
         }
     }
 
-    async function stopSession({ focusSeconds, breakSeconds, workAmounts=0, breakAmounts=0 }) {
-        try {
-            const response = await fetch("/api/pomodoro", {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    sessionId: localStorage.getItem("sessionId"),
-                    currentMode: modeRef.current,
-                    focusSeconds,
-                    breakSeconds,
-                    workAmounts,
-                    breakAmounts,
-                }),
-            });
-
-            const data = await response.json();
-            console.log("Session Updated:", data);
-        } catch (error) {
-            console.error("Error updating session:", error);
-        }
-    }
-
-
-    useEffect(() => {
-        loadPreviousSession();
-    }, []);
-
-
-    useEffect(() => {
-        secondsLeftRef.current = workMinutes * 60;
-        setSecondsLeft(secondsLeftRef.current);
-
-        const interval = setInterval(() => {
-            if (!isPausedRef.current) {
-                tick();
-            }
-        }, 1000);
-
-        return () => clearInterval(interval);
-    }, [workMinutes, breakMinutes]);
-
-    function tick() {
-        if (secondsLeftRef.current > 0) {
-            secondsLeftRef.current--;
-            setSecondsLeft(secondsLeftRef.current);
-
-            if (modeRef.current === "work") {
-                focusSecondsRef.current++;
-                setFocusSeconds(focusSecondsRef.current);
-            } else {
-                breakSecondsRef.current++;
-                setBreakSeconds(breakSecondsRef.current);
-            }
-        } else {
-            switchMode();
-        }
-    }
-
-
-    function switchMode() {
-        const nextMode = modeRef.current === "work" ? "break" : "work";
-        const nextSeconds = (nextMode === "work" ? workMinutes : breakMinutes) * 60;if (modeRef.current === "work") {
-
-            const updatedWork = workAmountsRef.current + 1;
-            setWorkAmounts(updatedWork);
-            workAmountsRef.current = updatedWork;
-
-            console.log(workAmountsRef.current)
-        } else {
-
-            const updatedBreakCount = breakAmountsRef.current + 1;
-            setBreakAmounts(updatedBreakCount);
-            breakAmountsRef.current = updatedBreakCount;
-        }
-
-        setMode(nextMode);
-        modeRef.current = nextMode;
-        setSecondsLeft(nextSeconds);
-        secondsLeftRef.current = nextSeconds;
-        setKey((prevKey) => prevKey + 1);
-
-        if (nextMode === "break") {
-            onPomoComplete();
-        }
-    }
-
     const totalSeconds = mode === "work" ? workMinutes * 60 : breakMinutes * 60;
     const colors = mode === "work" ? ["#8f304e", "#2c7a1d"] : ["#2c7a1d", "#8f304e"];
 
-    return (
-        <div value={{
-            workMinutes,
-            breakMinutes,
-            setWorkMinutes,
-            setBreakMinutes
-        }}>
-            <div className="flex justify-center items-center overflow-hidden">
-                <div className="w-1/3 h-1/3 flex flex-col items-center">
-                    <CountdownCircleTimer
-                        size={350}
-                        strokeWidth={40}
-                        key={key}
-                        isPlaying={!isPaused}
-                        duration={totalSeconds}
-                        colors={colors}
-                        colorsTime={[totalSeconds, 0]}
-                        onComplete={() => {
-                            switchMode();
-                            return { shouldRepeat: false };
-                        }}
-                    >
-                        {({ remainingTime }) => (
-                            <div className="timer text-indigo-400 text-4xl font-bold">
-                                {Math.floor(remainingTime / 60)}:{remainingTime % 60 < 10 ? "0" : ""}
-                                {remainingTime % 60}
-                            </div>
-                        )}
-                    </CountdownCircleTimer>
 
-                    <p className="mt-3 text-lg font-semibold" style={{ color: colors[0] }}>
-                        {mode === "work" ? "Work Time" : "Break Time"}
-                    </p>
+  const percentage = Math.round((secondsLeft / totalSeconds) * 100);
+  const minutes = Math.floor(secondsLeft / 60);
+  let seconds = secondsLeft % 60;
+  if (seconds < 10) seconds = "0" + seconds;
 
-                    <div className="flex justify-center items-center gap-4 mt-5">
-                        {isPaused ? (
-                            <PlayButton onClick={() => {
-                                if (!hasStartedRef.current) {
-                                    createSession();
-                                    hasStartedRef.current = true;
-                                }
-                                startTimeRef.current = Date.now();
-                                setIsPaused(false);
-                            }} />
-                        ) : (
-                            <PauseButton onClick={() =>{
-                                const now = Date.now();
-                                const elapsedMs = now - startTimeRef.current;
-                                const elapsedSec = Math.floor(elapsedMs / 1000);
-                                setIsPaused(true)
-                                startTimeRef.current = Date.now();
-                                stopSession({
-                                    focusSeconds: modeRef.current === "work" ? elapsedSec : 0,
-                                    breakSeconds: modeRef.current === "break" ? elapsedSec : 0
-                                });
-                            }}/>
-                        )}
-                        <StopButton onClick={() => {
-                            const now = Date.now();
-                            const elapsedMs = now - startTimeRef.current;
-                            const elapsedSec = Math.floor(elapsedMs / 1000);
-                            setIsPaused(true)
-                            startTimeRef.current = Date.now();
+  return (
+    <div className="flex flex-col items-center justify-center h-[90vh]">
+      {/* <CircularProgressbar
+        key={keyId}
+        value={percentage}
+        text={`${minutes}:${seconds}`}
+        styles={buildStyles({
+          textColor: "#3c1361",
+          pathColor: mode === "work" ? workColors : breakColors,
+          tailColor: "rgba(255,255,255,.2)",
+        })}
+      /> */}
 
-                            stopSession({
-                                focusSeconds: modeRef.current === "work" ? elapsedSec : 0,
-                                breakSeconds: modeRef.current === "break" ? elapsedSec : 0,
-                                workAmounts: modeRef.current === "work" ? 1 : 0,
-                                breakAmounts: modeRef.current === "break" ? 1 : 0,
-                            });
-
-                            setIsPaused(true);
-                            setMode("work");
-                            modeRef.current = "work";
-                            setSecondsLeft(workMinutes * 60);
-                            setKey((prevKey) => prevKey + 1);
-                        }} />
-
-
-                        <SettingsButton onClick={() => setShowSettings(true)}/>
-                    </div>
+        <CountdownCircleTimer
+            size={350}
+            strokeWidth={40}
+            key={key}
+            isPlaying={!isPaused}
+            duration={totalSeconds}
+            colors={colors}
+            colorsTime={[totalSeconds, 0]}
+            onComplete={() => {
+                switchMode();
+                return { shouldRepeat: false };
+            }}
+        >
+            {({ remainingTime }) => (
+                <div className="timer text-indigo-400 text-4xl font-bold">
+                    {minutes}:{seconds}
                 </div>
+            )}
+        </CountdownCircleTimer>
 
-                {showSettings && (
-                    <SettingsModal closeModal={() => setShowSettings(false)} />
-                )}
-            </div>
+      {/* <p
+        className="mt-3 text-lg font-semibold"
+        style={{ color: mode === "work" ? workColors : breakColors }}
+      >
+        {mode === "work" ? "Work Time" : "Break Time"}
+      </p> */}
+
+      <p className="mt-3 text-lg font-semibold" style={{ color: colors[0] }}>
+        {mode === "work" ? "Work Time" : "Break Time"}
+    </p>
+
+      <div className="flex justify-center items-center gap-4 mt-5">
+        {isPaused ? (
+          <PlayButton onClick={onPlay} />
+        ) : (
+          <PauseButton onClick={onPause} />
+        )}
+        <StopButton onClick={onStop} />
+      </div>
+
+        <div className="flex justify-center items-center gap-4 mt-5">
+            {isPaused ? (
+                <PlayButton onClick={() => {
+                    if (!hasStartedRef.current) {
+                        createSession();
+                        hasStartedRef.current = true;
+                    }
+                    startTimeRef.current = Date.now();
+                    onPlay()
+                }} />
+            ) : (
+                <PauseButton onClick={() =>{
+                    const now = Date.now();
+                    onPause()
+                    const elapsedMs = now - startTimeRef.current;
+                    const elapsedSec = Math.floor(elapsedMs / 1000);
+                    //setIsPaused(true)
+                    startTimeRef.current = Date.now();
+                    // stopSession({
+                    //     focusSeconds: modeRef.current === "work" ? elapsedSec : 0,
+                    //     breakSeconds: modeRef.current === "break" ? elapsedSec : 0
+                    // });
+                }}/>
+            )}
+            <StopButton onClick={() => {
+                const now = Date.now();
+                const elapsedMs = now - startTimeRef.current;
+                const elapsedSec = Math.floor(elapsedMs / 1000);
+                setIsPaused(true)
+                startTimeRef.current = Date.now();
+
+                createSession({
+                    focusSeconds: modeRef.current === "work" ? elapsedSec : 0,
+                    workAmounts: modeRef.current === "work" ? 1 : 0,
+                });
+            
+                onStop()
+                // setIsPaused(true);
+                // setMode("work");
+                // modeRef.current = "work";
+                // setSecondsLeft(workMinutes * 60);
+                // setKey((prevKey) => prevKey + 1);
+            }} />
+
+
+            <SettingsButton onClick={() => setShowSettings(true)}/>
         </div>
-    );
+        
+        {showSettings && (
+        <SettingsModal closeModal={() => setShowSettings(false)} />
+        )}
+
+    </div>
+  );
 }
