@@ -58,6 +58,7 @@ function Dashboard() {
       setActiveMainTab("task");
 
       const token = await getJWT();
+      console.log(token)
       if (!token) {
           console.error("No token available");
           return;

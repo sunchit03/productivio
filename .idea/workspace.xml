@@ -5,10 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8f5e9c6b-ba65-411c-96e0-78a0a66d55eb" name="Changes" comment="Updated Pomodoro to use react-countdown-circle-timer">
-      <change beforePath="$PROJECT_DIR$/productivio-frontend-restructured/app/components/pomodoro/SettingsContext.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/productivio-frontend-restructured/app/components/pomodoro/SettingsContext.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/productivio-frontend-restructured/app/api/pomodoro/route.js" beforeDir="false" afterPath="$PROJECT_DIR$/productivio-frontend-restructured/app/api/pomodoro/route.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/productivio-frontend-restructured/app/components/pomodoro/Timer.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/productivio-frontend-restructured/app/components/pomodoro/Timer.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/productivio-frontend-restructured/app/dashboard/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/productivio-frontend-restructured/app/dashboard/page.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/productivio-frontend-restructured/app/models/Session.js" beforeDir="false" afterPath="$PROJECT_DIR$/productivio-frontend-restructured/app/models/Session.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/productivio-frontend-restructured/app/models/User.js" beforeDir="false" afterPath="$PROJECT_DIR$/productivio-frontend-restructured/app/models/User.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/productivio-frontend-restructured/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/productivio-frontend-restructured/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/productivio-frontend-restructured/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/productivio-frontend-restructured/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,6 +27,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="feature/issue03-Ali" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -35,7 +43,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/sunchit03/PRJ666NAA-G6.git&quot;,
-    &quot;accountId&quot;: &quot;20e34047-586b-4677-bc49-0ca5ec34e5e4&quot;
+    &quot;accountId&quot;: &quot;0f21b52b-5459-4dd7-937a-17821f452356&quot;
   }
 }</component>
   <component name="ProblemsViewState">
@@ -50,32 +58,36 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Node.js.Timer.jsx.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "#88 on feature/issue03-Ali",
-    "javascript.nodejs.core.library.configured.version": "18.18.0",
-    "javascript.nodejs.core.library.typings.version": "18.18.14",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/artom/OneDrive/Documents/GitHub/PRJ666NAA-G6",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "reference.settingsdialog.project.grazie",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2024.3.2.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Node.js.Timer.jsx.executor&quot;: &quot;Run&quot;,
+    &quot;Node.js.route.js.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/issue12Artomm&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;18.18.0&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;18.18.14&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/artom/OneDrive/Documents/GitHub/PRJ666NAA-G6&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.grazie&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\WebStorm 2024.3.2.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\artom\OneDrive\Documents\GitHub\PRJ666NAA-G6" />
       <recent name="C:\Users\artom\OneDrive\Documents\GitHub\PRJ666NAA-G6\productivio-frontend-restructured" />
       <recent name="C:\Users\artom\OneDrive\Documents\GitHub\PRJ666NAA-G6\productivio-frontend-restructured\app\dashboard" />
       <recent name="C:\Users\artom\OneDrive\Documents\GitHub\PRJ666NAA-G6\productivio-frontend-restructured\app\components" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\artom\OneDrive\Documents\GitHub\PRJ666NAA-G6" />
     </key>
   </component>
   <component name="RunManager">
@@ -90,13 +102,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-WS-243.23654.157" />
-      </set>
-    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -125,7 +130,8 @@
       <workItem from="1742791250902" duration="8260000" />
       <workItem from="1743116572979" duration="628000" />
       <workItem from="1743124528364" duration="1351000" />
-      <workItem from="1743193461212" duration="7512000" />
+      <workItem from="1743193461212" duration="9719000" />
+      <workItem from="1744057824837" duration="27096000" />
     </task>
     <task id="LOCAL-00001" summary="Pomodoro timer implemented">
       <option name="closed" value="true" />
@@ -143,7 +149,23 @@
       <option name="project" value="LOCAL" />
       <updated>1741659643484</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Updated Pomodoro to use react-countdown-circle-timer">
+      <option name="closed" value="true" />
+      <created>1743210034921</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1743210034922</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Updated Pomodoro to use react-countdown-circle-timer">
+      <option name="closed" value="true" />
+      <created>1743210055243</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1743210055243</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

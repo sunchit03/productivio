@@ -31,6 +31,12 @@ const userSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Notification',
     }
+  ],
+  sessions: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Session',
+    }
   ]
 });
 

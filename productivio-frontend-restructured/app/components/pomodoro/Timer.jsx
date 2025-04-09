@@ -19,15 +19,24 @@ export default function Timer({ onPomoComplete }) {
     const [mode, setMode] = useState("work");
     const [key, setKey] = useState(0);
     const [secondsLeft, setSecondsLeft] = useState(workMinutes * 60);
-    const [sessionId, setSessionId] = useState(null); // Store session ID
+    const [sessionId, setSessionId] = useState(null);
+    const [focusSeconds, setFocusSeconds] = useState(0);
+    const [breakSeconds, setBreakSeconds] = useState(0);
+    const [workAmounts, setWorkAmounts] = useState(0);
+    const [breakAmounts, setBreakAmounts] = useState(0);
 
     const secondsLeftRef = useRef(secondsLeft);
+    const focusSecondsRef = useRef(focusSeconds);
+    const breakSecondsRef = useRef(breakSeconds);
+    const workAmountsRef = useRef(workAmounts);
+    const breakAmountsRef = useRef(breakAmounts);
     const isPausedRef = useRef(isPaused);
     const modeRef = useRef(mode);
     const hasStartedRef = useRef(false);
+    const startTimeRef = useRef(null);
 
 
-    async function createSession(userId) {
+    async function createSession() {
         try {
             const response = await fetch("/api/pomodoro", {
                 method: "POST",
@@ -36,20 +45,49 @@ export default function Timer({ onPomoComplete }) {
                 },
                 body: JSON.stringify({
                     currentMode: "work",
-                    focusSeconds: 0,
-                    breakSeconds: 0,
+                    focusSeconds: focusSeconds.current,
+                    breakSeconds: breakSeconds.current,
                     assignedUser: localStorage.getItem("userId"),
-                    workAmounts: 0,
-                    breakAmounts: 0,
+                    workAmounts: workAmounts.current,
+                    breakAmounts: breakAmounts.current,
                 }),
             });
 
             const data = await response.json();
+            localStorage.setItem("sessionId", data.session._id);
+
             console.log("Session Created:", data);
         } catch (error) {
             console.error("Error creating session:", error);
         }
     }
+
+    async function stopSession({ focusSeconds, breakSeconds, workAmounts, breakAmounts }) {
+        try {
+            const response = await fetch("/api/pomodoro", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    userId: localStorage.getItem("userId"),
+                    sessionId: localStorage.getItem("sessionId"),
+                    currentMode: modeRef.current,
+                    focusSeconds,
+                    breakSeconds,
+                    workAmounts,
+                    breakAmounts,
+                }),
+            });
+
+            const data = await response.json();
+            console.log("Session Updated:", data);
+        } catch (error) {
+            console.error("Error updating session:", error);
+        }
+    }
+
+
 
 
 
@@ -70,14 +108,35 @@ export default function Timer({ onPomoComplete }) {
         if (secondsLeftRef.current > 0) {
             secondsLeftRef.current--;
             setSecondsLeft(secondsLeftRef.current);
+
+            if (modeRef.current === "work") {
+                focusSecondsRef.current++;
+                setFocusSeconds(focusSecondsRef.current);
+            } else {
+                breakSecondsRef.current++;
+                setBreakSeconds(breakSecondsRef.current);
+            }
         } else {
             switchMode();
         }
     }
 
+
     function switchMode() {
         const nextMode = modeRef.current === "work" ? "break" : "work";
-        const nextSeconds = (nextMode === "work" ? workMinutes : breakMinutes) * 60;
+        const nextSeconds = (nextMode === "work" ? workMinutes : breakMinutes) * 60;if (modeRef.current === "work") {
+
+            const updatedWork = workAmountsRef.current + 1;
+            setWorkAmounts(updatedWork);
+            workAmountsRef.current = updatedWork;
+
+            console.log(workAmountsRef.current)
+        } else {
+
+            const updatedBreakCount = breakAmountsRef.current + 1;
+            setBreakAmounts(updatedBreakCount);
+            breakAmountsRef.current = updatedBreakCount;
+        }
 
         setMode(nextMode);
         modeRef.current = nextMode;
@@ -91,7 +150,7 @@ export default function Timer({ onPomoComplete }) {
     }
 
     const totalSeconds = mode === "work" ? workMinutes * 60 : breakMinutes * 60;
-    const colors = mode === "work" ? ["#A5B4FC", "#F2C8E0"] : ["#F2C8E0", "#A5B4FC"];
+    const colors = mode === "work" ? ["#8f304e", "#2c7a1d"] : ["#2c7a1d", "#8f304e"];
 
     return (
         <SettingsContext.Provider value={{
@@ -131,15 +190,36 @@ export default function Timer({ onPomoComplete }) {
                         {isPaused ? (
                             <PlayButton onClick={() => {
                                 if (!hasStartedRef.current) {
-                                    createSession(); // Create session on first play
+                                    createSession();
                                     hasStartedRef.current = true;
                                 }
+                                startTimeRef.current = Date.now();
                                 setIsPaused(false);
                             }} />
                         ) : (
-                            <PauseButton onClick={() => setIsPaused(true)} />
+                            <PauseButton onClick={() =>
+                                setIsPaused(true)} />
                         )}
                         <StopButton onClick={() => {
+                            const now = Date.now();
+                            const elapsedMs = now - startTimeRef.current;
+                            const elapsedSec = Math.floor(elapsedMs / 1000);
+
+                            if (modeRef.current === "work") {
+                                setFocusSeconds(elapsedSec);
+                                setWorkAmounts((prev) => prev + 1);
+                            } else {
+                                setBreakSeconds(elapsedSec);
+                                setBreakAmounts((prev) => prev + 1);
+                            }
+
+                            stopSession({
+                                focusSeconds: modeRef.current === "work" ? elapsedSec : 0,
+                                breakSeconds: modeRef.current === "break" ? elapsedSec : 0,
+                                workAmounts: modeRef.current === "work" ? 1 : 0,
+                                breakAmounts: modeRef.current === "break" ? 1 : 0,
+                            });
+
                             setIsPaused(true);
                             isPausedRef.current = true;
                             setMode("work");
@@ -147,7 +227,8 @@ export default function Timer({ onPomoComplete }) {
                             setSecondsLeft(workMinutes * 60);
                             secondsLeftRef.current = workMinutes * 60;
                             setKey((prevKey) => prevKey + 1);
-                        }}/>
+                        }} />
+
 
                         <SettingsButton onClick={() => setShowSettings(true)}/>
                     </div>
