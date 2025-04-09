@@ -17,6 +17,9 @@ import { getJWT } from "@/app/utils/auth";
 import PomodoroPage from "./pomodoro/page";
 // Importing StopWatch
 import { useStopwatch } from 'react-timer-hook';
+import { createSession, getUserPomoStats } from "../services/pomodoro";
+import toast, { Toaster } from "react-hot-toast";
+
 function Dashboard() {
   const { user, error, isLoading } = useUser();
 
@@ -29,6 +32,7 @@ function Dashboard() {
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [taskBarCollapse, setTaskBarCollapse] = useState(false)
   const [membersSectionCollapse, setMembersSectionCollapse] = useState(false);
+  const [pomoStats, setPomoStats] = useState({});
   const stopwatch = useStopwatch({ autoStart: false }); // Initializing the stopwatch once
 
   // For milliseconds
@@ -77,17 +81,28 @@ function Dashboard() {
   const [secondsLeft, setSecondsLeft] = useState(workMinutes * 60);
 
   const [isPaused, setIsPaused] = useState(true);
+  const [isStopped, setIsStopped] = useState(true);
   const [mode, setMode] = useState("work");
   const [key, setKey] = useState(0);
-  
 
-  const [pomoCount, setPomoCount] = useState(0);
-
-  function onPomoComplete() {
-    setPomoCount(prev => prev + 1);
+  const onPomoComplete = async() => {
+    const creationData = await createSession(userId, workMinutes * 60);
+      if (creationData) {
+        const statsData = await getUserPomoStats(userId);
+      if (statsData) {
+        setPomoStats(statsData);
+      } else {
+        setPomoStats({});
+        toast.error("Error retrieving session data");
+      }
+    } else {
+      toast.error("Something went wrong, try again!");
+    }
+    
   }
   const secondsLeftRef = useRef(secondsLeft);
   const isPausedRef = useRef(isPaused);
+  const isStoppedRef = useRef(isStopped);
   const modeRef = useRef(mode);
 
   useEffect(() => {
@@ -129,6 +144,8 @@ function Dashboard() {
   }
 
   function handlePlay() {
+    setIsStopped(false);
+    isStoppedRef.current = false;
     setIsPaused(false);
     isPausedRef.current = false;
   }
@@ -141,6 +158,8 @@ function Dashboard() {
   function handleStop() {
     setIsPaused(true);
     isPausedRef.current = true;
+    setIsStopped(true);
+    isStoppedRef.current = true;
     setMode("work");
     modeRef.current = "work";
     const resetTime = workMinutes * 60;
@@ -152,11 +171,15 @@ function Dashboard() {
   // Variable to hold all the states
   const timer = {
     isPaused,
+    isStopped,
     mode,
-    keyId: key,
+    key,
     secondsLeft,
     workMinutes,
+    setWorkMinutes,
     breakMinutes,
+    setBreakMinutes,
+    switchMode,
     onPlay: handlePlay,
     onPause: handlePause,
     onStop: handleStop,
@@ -195,6 +218,7 @@ function Dashboard() {
       setActiveMainTab("task");
 
       const token = await getJWT();
+      console.log(token)
       if (!token) {
           console.error("No token available");
           return;
@@ -205,6 +229,13 @@ function Dashboard() {
       if (data.success) {
         localStorage.setItem("userId", data.user._id);
         setUserId(data.user._id);
+      }
+
+      const statsData = await getUserPomoStats(data.user._id);
+      if (statsData) {
+        setPomoStats(statsData);
+      } else {
+        setPomoStats({});
       }
     }
     if (!isLoading && user) {
@@ -248,7 +279,15 @@ function Dashboard() {
             /* Pomodoro Page */
             activeMainTab === "pomodoro" ? (
               <main className="flex-grow bg-gray-50">
-                <PomodoroPage userId={userId} stopwatch = {stopwatch} timer = {timer} elapsed = {elapsed} laps={laps} handleLap={handleLap} pomoCount = {pomoCount} workMinutes={workMinutes} breakMinutes={breakMinutes} setWorkMinutes={setWorkMinutes} setBreakMinutes={setBreakMinutes}/> 
+                <PomodoroPage 
+                  userId={userId} 
+                  stopwatch={stopwatch} 
+                  timer={timer} 
+                  elapsed={elapsed} 
+                  laps={laps} 
+                  handleLap={handleLap} 
+                  pomoStats={pomoStats}
+                /> 
               </main>
             )
             :
