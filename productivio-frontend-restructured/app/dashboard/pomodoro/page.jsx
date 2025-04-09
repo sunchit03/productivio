@@ -38,7 +38,9 @@ export default function PomodoroPage( {userId} ) {
           </div>
           <div className="flex flex-1 justify-center items-center">
             {main === 'pomo' ?
-              <Timer onPomoComplete={() => setPomoCount((prev) => prev + 1)} />
+              <Timer 
+                onPomoComplete={() => setPomoCount((prev) => prev + 1)}
+                userId={userId} />
             :
               <></>
             }

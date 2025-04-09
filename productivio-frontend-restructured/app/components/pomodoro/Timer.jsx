@@ -9,7 +9,7 @@ import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import SettingsButton from "@/app/components/pomodoro/SettingsButton";
 
-export default function Timer({ onPomoComplete }) {
+export default function Timer({ onPomoComplete, userId }) {
     // Store settings state inside context
     const [workMinutes, setWorkMinutes] = useState(25);
     const [breakMinutes, setBreakMinutes] = useState(5);
@@ -47,7 +47,7 @@ export default function Timer({ onPomoComplete }) {
                     currentMode: "work",
                     focusSeconds: focusSeconds.current,
                     breakSeconds: breakSeconds.current,
-                    assignedUser: localStorage.getItem("userId"),
+                    assignedUser: userId,
                     workAmounts: workAmounts.current,
                     breakAmounts: breakAmounts.current,
                 }),
@@ -65,7 +65,7 @@ export default function Timer({ onPomoComplete }) {
     async function stopSession({ focusSeconds, breakSeconds, workAmounts, breakAmounts }) {
         try {
             const response = await fetch("/api/pomodoro", {
-                method: "PUT",
+                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -162,7 +162,7 @@ export default function Timer({ onPomoComplete }) {
             <div className="flex justify-center items-center overflow-hidden">
                 <div className="w-1/3 h-1/3 flex flex-col items-center">
                     <CountdownCircleTimer
-                        size={500}
+                        size={350}
                         strokeWidth={40}
                         key={key}
                         isPlaying={!isPaused}

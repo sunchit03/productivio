@@ -34,6 +34,7 @@ export async function POST(req) {
             workAmounts: 0,
             breakAmounts: 0,
         });
+        await newSession.save();
 
         user.sessions.push(newSession);
 
